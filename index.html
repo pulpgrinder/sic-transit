@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Sic Transit Demo. Copyright 2023 by Anthony W. Hursh. -->
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store,must-revalidate,max-age=-1">
+    <meta http-equiv="Pragma" content="no-store">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="sic-transit.css">
+    <title>Sic Transit</title>
+  </head>
+  <body>
+  
+    <div id="sic-container">
+        <div class="sic-item" id="slide1">
+            Slide 1
+        </div>
+        <div class="sic-item" id="slide2">
+            Slide 2
+        </div>
+        <div class="sic-item booba" id="slide3">
+            Slide 3
+        </div>
+        <div class="sic-item" id="slide4">
+            Slide 4
+        </div>
+        <div class="sic-item" id="slide5">
+            Slide 5
+        </div>
+        <div class="sic-item hooha" id="slide6">
+            Slide 6
+        </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="sic-transit.js"></script>
+  <script type="text/javascript">
+    let transit = new SicTransit("#sic-container",".sic-item",".hooha");
+  </script>
+ </html>

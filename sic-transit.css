@@ -1,0 +1,31 @@
+.sic-item {
+   position:absolute;
+   left:0;
+   top: 0;
+   bottom:0;
+   right:0;
+   width:150px;
+   height:150px;
+   margin:0;
+    display:none;
+    z-index:-30;
+    border:1px solid black;
+    background-color:paleturquoise;
+    color:darkblue;
+
+
+}
+#sic-container {
+    /* Container needs to have a position in order for z-index to work
+       on children. Anything other than static should work.
+    */
+    position:relative;
+    padding:0;
+    width:155px;
+    height:155px;
+    /* Don't display off-screen portions of children. */
+    overflow: hidden;
+    resize:both;
+   /* border:1px solid black; */
+
+}
