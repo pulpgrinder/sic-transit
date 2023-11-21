@@ -1,3 +1,6 @@
+/* Stylesheet for Sic Transit, copyright 2023 by
+ * Anthony W. Hursh. MIT license.
+
 .sic-item {
    position:absolute;
    left:0;
@@ -28,8 +31,8 @@
     */
     position:relative;
     padding:0;
-    width:155px;
-    height:155px;
+    width:250px;
+    height:250px;
     /* Don't display off-screen portions of children. */
     overflow: hidden;
     resize:both;
