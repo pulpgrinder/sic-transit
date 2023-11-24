@@ -1,0 +1,41 @@
+.sic-panel{
+    border:1px solid black;
+    background-color:paleturquoise;
+    color:darkblue;
+}
+#slide1 {
+    background-color:paleturquoise;
+    color:darkblue;
+ 
+ 
+ }
+ #slide2 {
+    background-color:orange;
+    color:darkblue;
+ 
+ 
+ }
+ #slide3 {
+    background-color:darkgreen;
+    color:white;
+ 
+ 
+ }
+
+ #slide4 {
+    background-color: yellow;
+    color:darkblue;
+ 
+ 
+ }
+
+ #slide5 {
+    background-color: red;
+    color:palegoldenrod;
+ }
+
+ #slide6 {
+    background-color: lavender;
+    color:darkblue;
+ 
+ }

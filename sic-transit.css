@@ -1,7 +1,7 @@
 /*  Stylesheet for Sic Transit, copyright 2023 by
  *  Anthony W. Hursh. MIT license.
  */
-.sic-item {
+.sic-panel {
    position:absolute;
    left:0;
    top: 0;
@@ -11,11 +11,10 @@
    box-sizing: border-box;
    display:none;
    z-index:-30;
-   border:1px solid black;
-   background-color:paleturquoise;
-   color:darkblue;
-
-
+   backface-visibility: hidden;
+   transform-style: preserve-3d;
+   box-shadow: 50px 50px 20px rgba(0,0,0,0.5); 
+ 
 }
 .sic-transit-overlay{
     position:absolute;
@@ -25,6 +24,49 @@
     display:block;
     background-color:black;
 }
+
+.sic-transit-black-panel{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    background-color:black;
+}
+.sic-transit-white-panel{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    background-color:white;
+}
+.sic-transit-gray-panel{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    background-color:gray;
+}
+
+.sic-transit-flip-panel {
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    perspective: 500px;
+    background-color:gray;
+}
+
+  
+  .sic-transit-flip-panel-front,
+  .sic-transit-flip-panel-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: transform 1s;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+  
 #sic-container {
     /* Container needs to have a position in order for z-index to work
        on children. Anything other than static should work.
