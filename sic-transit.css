@@ -5,15 +5,18 @@
    position:absolute;
    left:0;
    top: 0;
+   /*  We usually want panels to fill their container. Can change this
+    *  if desired.
+    */
    width:100%;
    height:100%;
    margin:0;
+   /*  We want any borders to show up. */
    box-sizing: border-box;
    display:none;
    z-index:-30;
    backface-visibility: hidden;
    transform-style: preserve-3d;
-   box-shadow: 50px 50px 20px rgba(0,0,0,0.5); 
  
 }
 .sic-transit-overlay{
@@ -57,16 +60,6 @@
 }
 
   
-  .sic-transit-flip-panel-front,
-  .sic-transit-flip-panel-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transition: transform 1s;
-    backface-visibility: hidden;
-    transform-style: preserve-3d;
-  }
-  
 #sic-container {
     /* Container needs to have a position in order for z-index to work
        on children. Anything other than static should work.
@@ -75,7 +68,11 @@
     padding:0;
     width:250px;
     height:250px;
-    /* Don't display off-screen portions of children. */
+    /*  Don't display portions of children that lie outside the boundary. 
+     *  Might want to use scroll in some situations, or the overflow-x
+     *  and/or overflow-y properties.
+     */
     overflow: hidden;
+    /*  Optionally, make the container resizable. */
     resize:both;
 }

@@ -1,12 +1,14 @@
 /*  sic-transit.js Copyright 2023 by Anthony W. Hursh
- *  MIT license
+ *  MIT license.
  */
 
 class SicTransit {
-    constructor(containerId, elementClass) {
+    constructor(containerId, elementClass,transitionCallback = null) {
       this.containerId = containerId;
       this.container = document.querySelector(containerId);
       this.elementClass = elementClass;
+      this.transitionCallback = transitionCallback;
+      this.synchro = 0;
       this.loadStack(this);
       let overlay = document.createElement('div');
       this.overlay = overlay;
@@ -34,166 +36,223 @@ class SicTransit {
       this.container.appendChild(flippanel);
       this.elementStack.unshift(flippanel);
       this.normalizeStack(this);
-      this.showElement(this,this.elementStack[this.elementStack.length - 1]);     
+      this.showElement(this.elementStack[this.elementStack.length - 1]);     
     }
 
     dispatchTable =  {
+        "cutIn": {
+            forwardTransition: this.cutIn,
+            undo:"cutOut",
+            animation: [],
+            secondanimation: [],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {}
+        },
+        "cutOut": {
+            forwardTransition: this.cutOut,
+            undo:"cutIn",
+            animation: [],
+            secondanimation: [],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {}
+        },
+        "dissolveIn": {
+            forwardTransition: this.dissolveIn,
+            undo:"dissolveOut",
+            animation: [{ display:"block", opacity: 0}, {display:"block",opacity:1}],
+            secondanimation: [{display:"block", opacity:1}, {display:"block", opacity:0}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "dissolveOut": {
+            forwardTransition: this.dissolveOut,
+            undo:"dissolveIn",
+            animation: [{ display:"block", opacity: 1}, {display:"block",opacity:0}],
+            secondanimation: [{display:"block", opacity:0}, {display:"block", opacity:1}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'ease-in-out', duration:500}
+        },
         "fadeInFromWhite": {
             forwardTransition: this.fadeInFromWhite,
             undo:"fadeOutToWhite",
             animation: [{ display:"block", opacity: 0}, {display:"block",opacity:1}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "fadeOutToWhite": {
             forwardTransition: this.fadeOutToWhite,
             undo:"fadeInFromWhite",
             animation: [{opacity:1}, {opacity:0}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "fadeInFromBlack": {
             forwardTransition: this.fadeInFromBlack,
             undo:"fadeOutToBlack",
             animation: [{ display:"block", opacity: 0}, {display:"block",opacity:1}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "fadeOutToBlack": {
             forwardTransition: this.fadeOutToBlack,
             undo:"fadeInFromBlack",
             animation: [{opacity:1}, {opacity:0}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "fadeInFromGray": {
             forwardTransition: this.fadeInFromGray,
             undo:"fadeOutToGray",
             animation: [{ display:"block", opacity: 0}, {display:"block",opacity:1}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "fadeOutToGray": {
             forwardTransition: this.fadeOutToGray,
             undo:"fadeInFromGray",
             animation: [{opacity:1}, {opacity:0}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "slideInLeft": {
                         forwardTransition: this.slideInLeft,
                         undo:"slideOutLeft",
                         animation: [{display:"block", transform: "translateX(-100%)"}, {display:"block",transform: "translateX(0%)"}],
-                        
+                        boxShadow:  "10px 20px 20px 30px rgba(0,0,0,0.5)",
                         timing: {easing: 'ease-in-out', duration:500}
         },
         "slideOutLeft": {
             forwardTransition: this.slideOutLeft,
             undo:"slideInLeft",
-            animation: [{display:"block", transform: "translateX(0%)"}, {display:"block",transform: "translateX(-100%)"}],
+            animation: [{display:"block", transform: "translateX(0%)"}, {display:"block",transform: "translateX(-120%)"}],
+            boxShadow: "10px 20px 20px 30px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "slideInRight": {
             forwardTransition: this.slideInRight,
             undo:"slideOutRight",
             animation: [{ display:"block", transform: "translateX(100%)"}, {display:"block",transform: "translateX(0%)"}],
+            boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
            timing: {easing: 'ease-in-out', duration:500}
         },
         "slideOutRight": {
             forwardTransition: this.slideOutRight,
             undo:"slideInRight",
-            animation: [{transform: "translateX(0%)"}, {transform: "translateX(100%)"}],
+            animation: [{transform: "translateX(0%)"}, {transform: "translateX(120%)"}],
+            boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             timing:{easing: 'ease-in-out',duration:500}
         },
         "slideInTop": {
             forwardTransition: this.slideInTop,
             undo:"slideOutTop",
             animation: [{display:"block", transform: "translateY(-100%)"}, {display:"block",transform: "translateY(0%)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "slideOutTop": {
             forwardTransition: this.slideOutTop,
             undo:"slideInTop",
             animation:[{transform: "translateY(0%)"}, {transform: "translateY(-100%)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing:{easing: 'ease-in-out', duration:500}
         },
         "slideInBottom": {
             forwardTransition: this.slideInBottom,
             undo:"slideOutBottom",
             animation: [{display:"block", transform: "translateY(100%)"}, {display:"block",transform: "translateY(0%)"}],
+            boxShadow: "-10px -10px 30px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "slideOutBottom": {
             forwardTransition: this.slideOutBottom,
             undo:"slideInBottom",
             animation: [{transform: "translateY(0%)"}, {transform: "translateY(100%)"}],
+            boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "newspaperIn": {
             forwardTransition: this.newspaperIn,
             undo:"newspaperOut",
             animation: [{display:"block", transform: "rotate(0deg)  scale(0)"}, {display:"block", transform: "rotate(720deg) scale(1)"}],
-           timing: {easing: 'ease-in-out', duration:500}
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'linear', duration:500}
         },
         "newspaperOut":{
             forwardTransition: this.newspaperOut,
             undo:"newspaperIn",
             animation:[{display:"block", transform: "rotate(0deg)  scale(1)"}, {display:"block", transform: "rotate(-720deg) scale(0)"}],
-           timing: {easing: 'ease-in-out', duration:500}
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'linear', duration:500}
         },
         "zoomIn": {
             forwardTransition: this.zoomIn,
             undo:"zoomOut",
             animation: [{display:"block", transform: "scale(0)"}, {display:"block", transform: "scale(1)"}],
-            timing: {easing: 'ease-in-out', duration:500}
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'linear', duration:500}
 
         },
         "zoomOut":{
             forwardTransition: this.zoomOut,
             undo:"zoomIn",
             animation: [{display:"block", transform: "scale(1)"}, {display:"block", transform: "scale(0)"}],
-            timing: {easing: 'ease-in-out', duration:500}
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'linear', duration:500}
         },
         "hingeInLeft":{
             forwardTransition: this.hingeInLeft,
             undo:"hingeOutLeft",
             animation: [{display:"block", transform: "rotateY(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'linear', duration:500}
         },
         "hingeOutLeft":{
             forwardTransition: this.hingeOutLeft,
             undo:"hingeInLeft",
             animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'linear', duration:500}
         },
         "hingeInRight":{
             forwardTransition: this.hingeInRight,
             undo:"hingeOutRight",
             animation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
+            boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-out', duration:500}
         },
         "hingeOutRight":{
             forwardTransition: this.hingeOutRight,
             undo:"hingeInRight",
             animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
+            boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in', duration:500}
         },
         "hingeInTop":{
             forwardTransition: this.hingeInTop,
             undo:"hingeOutTop",
             animation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-out', duration:500}
         },
         "hingeOutTop":{
             forwardTransition: this.hingeOutTop,
             undo:"hingeInTop",
             animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in', duration:500}
         },
         "hingeInBottom":{
             forwardTransition: this.hingeInBottom,
             undo:"hingeOutBottom",
             animation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
+            boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-out', duration:500}
         },
         "hingeOutBottom":{
             forwardTransition: this.hingeOutBottom,
             undo:"hingeInBottom",
             animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
+            boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in', duration:500}
         },
         "flipInY":{
@@ -201,14 +260,32 @@ class SicTransit {
             undo:"flipOutY",
             animation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(360deg)"}],
             secondanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-out', duration:500}
         },
         "flipOutY":{
             forwardTransition: this.flipOutY,
             undo:"flipInY",
-            animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
-            secondanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(360deg)"}],
-            timing: {easing: 'ease-in', duration:500}
+            animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
+            secondanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'ease-out', duration:500}
+        },
+        "flipInX":{
+            forwardTransition: this.flipInX,
+            undo:"flipOutX",
+            animation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(360deg)"}],
+            secondanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'ease-out', duration:500}
+        },
+        "flipOutX":{
+            forwardTransition: this.flipOutY,
+            undo:"flipInX",
+            animation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
+            secondanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'ease-out', duration:500}
         },
     }
     loadStack(self){
@@ -252,7 +329,7 @@ class SicTransit {
             }
         }
     }
-    showElement(self,element){
+    showElement(element,self=this){
         self.moveToTos(self,element);
         element.style.display = "block";
         self.normalizeStack(self);
@@ -266,12 +343,12 @@ class SicTransit {
         let selectedElement;
         if(Number.isInteger(elementSelector)){
             // We're selecting the new item by index
-            let elements = document.querySelectorAll(self.elementClass);
-            selectedElement =  elements[elementSelector];
+            selectedElement =  self.elementStack[elementSelector];
         }
         else {
             selectedElement = document.querySelector(elementSelector);
         }
+        // Throws an error if the element does not exist.
         self.checkElementExists(self,selectedElement, elementSelector);
         return selectedElement;
     }
@@ -292,6 +369,8 @@ class SicTransit {
         if(transitionFunction === null){
             throw new Error("SicTransit: " + transitionName + " is not a recognized transition");
         }
+        let selectedElement = this.selectElement(this,elementSelector);
+        selectedElement.style.boxShadow = this.dispatchTable[transitionName];
         const animation = this.dispatchTable[transitionName]["animation"];
         const secondanimation = this.dispatchTable[transitionName]["secondanimation"];
         let timing = this.dispatchTable[transitionName]["timing"];
@@ -310,6 +389,14 @@ class SicTransit {
         }
         const animation = selectedElement.animate(firstanimation,timing);
         animation.onfinish = onfinish; 
+    }
+    cutIn(self,elementSelector,animation,secondanimation, timing){
+        const selectedElement = self.selectElement(self,elementSelector);
+        self.showElement(selectedElement);
+    }
+    cutOut(self,elementSelector,animation,secondanimation, timing){
+        const selectedElement = self.selectElement(self,elementSelector);
+        self.moveToBos(self,selectedElement);
     }
     slideInLeft(self,elementSelector,animation,secondanimation, timing){
         self.moveToTos(self,self.overlay);
@@ -353,7 +440,7 @@ class SicTransit {
         self.moveToTos(self,self.overlay)
         const selectedElement = self.selectElement(self,elementSelector);
         let finishHandler = function(){
-            self.moveToBos(self.overlay)
+            self.moveToBos(self,self.overlay)
             selectedElement.style.display= "block";
         }
         self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
@@ -373,7 +460,7 @@ class SicTransit {
         const selectedElement = self.selectElement(self,elementSelector);
     
         let finishHandler = function(){
-            self.moveToBos(self.overlay)
+            self.moveToBos(self,self.overlay)
             selectedElement.style.display= "block";
         }
         self.performAnimation(self,selectedElement,animation, 1,timing,finishHandler);
@@ -433,7 +520,6 @@ class SicTransit {
         }
         self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
     }
-  
     fadeInFromBlack(self,elementSelector, animation,secondanimation,timing){
         self.moveToTos(self,self.blackpanel);
         const selectedElement = self.selectElement(self,elementSelector);
@@ -471,6 +557,29 @@ class SicTransit {
     }
     fadeOutToWhite(self,elementSelector,animation,secondanimation,timing){
         self.moveToTos(self,self.whitepanel);
+        const selectedElement = self.selectElement(self,elementSelector);
+        self.moveToTos(self,selectedElement);
+        let finishHandler = function(){
+            self.moveToBos(self,selectedElement);
+            selectedElement.style.display = "none";
+            selectedElement.style.opacity = 1;
+        }
+        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+    }
+    fadeInFromGray(self,elementSelector, animation,secondanimation,timing){
+        self.moveToTos(self,self.graypanel);
+        const selectedElement = self.selectElement(self,elementSelector);
+        selectedElement.style.opacity = 0;
+        self.moveToTos(self,selectedElement);
+        let finishHandler = function(){
+            self.moveToBos(self,self.graypanel);
+            selectedElement.style.display = "block";
+            selectedElement.style.opacity = 1;
+        }
+        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+    }
+    fadeOutToGray(self,elementSelector,animation,secondanimation,timing){
+        self.moveToTos(self,self.graypanel);
         const selectedElement = self.selectElement(self,elementSelector);
         self.moveToTos(self,selectedElement);
         let finishHandler = function(){
@@ -519,7 +628,7 @@ class SicTransit {
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.transformOrigin = "right";
         self.container.style.perspective =  "1000px";
-        self.container.style.perspectiveOrigin = "right";
+        self.container.style.perspectiveOrigin = "left";
         let finishHandler = function(){
             self.moveToBos(self,self.overlay);
             selectedElement.style.display= "block";
@@ -535,7 +644,7 @@ class SicTransit {
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.transformOrigin = "right";
         self.container.style.perspective =  "1000px";
-        self.container.style.perspectiveOrigin = "right";
+        self.container.style.perspectiveOrigin = "left";
         let finishHandler = function(){
             self.moveToBos(self,self.overlay);
             self.moveToBos(self,selectedElement);
@@ -671,5 +780,122 @@ class SicTransit {
             secondElement.style.transform = "";
         }
         self.performFlip(self,topElement,secondElement,firstanimation,secondanimation,timing,finishHandler);
+    }
+    flipInX(self,elementSelector,firstanimation,secondanimation,timing){
+        console.log("in flipInX")
+        const selectedElement = self.selectElement(self,elementSelector);
+        self.moveToBos(self,selectedElement);
+        selectedElement.style.display = "none";
+        self.normalizeStack(self);
+        selectedElement.style.transform = "rotateX(180deg)";
+        selectedElement.style.display = "block";
+        self.flippanel.replaceChildren([]);
+        let tosItem = self.elementStack.pop();
+        self.flippanel.appendChild(selectedElement);
+        self.flippanel.appendChild(tosItem);
+        console.log("flippanel");
+        console.log(self.flippanel.children);
+        self.moveToTos(self,self.flippanel);
+        self.flippanel.style.display="block";
+        self.normalizeStack(self);
+        let finishHandler = function(){
+            self.moveToBos(self,self.flippanel);
+            self.container.appendChild(tosItem);
+            self.container.appendChild(selectedElement);
+            self.moveToTos(self,tosItem);
+            self.moveToTos(self,selectedElement);
+            self.normalizeStack(self);
+            selectedElement.style.transform = "";
+        }
+        self.performFlip(self,selectedElement,tosItem,firstanimation,secondanimation,timing,finishHandler);
+    }
+    flipOutX(self,elementSelector,firstanimation,secondanimation,timing){
+        console.log("in flipOutY")
+        let animElement = self.selectElement(self,elementSelector);
+        self.moveToTos(self,animElement);
+        self.normalizeStack(self);
+        let topElement = self.elementStack.pop();
+        let secondElement= self.elementStack.pop();
+        secondElement.style.display = "block";
+       // self.normalizeStack(self);
+        secondElement.style.transform = "rotateX(180deg)";
+        self.flippanel.replaceChildren([]);
+        self.flippanel.appendChild(secondElement);
+        self.flippanel.appendChild(topElement);
+        console.log("flippanel");
+        console.log(self.flippanel.children);
+        self.moveToTos(self,self.flippanel);
+        self.flippanel.style.display="block";
+        self.normalizeStack(self);
+        let finishHandler = function(){
+            self.moveToBos(self,self.flippanel);
+            self.container.appendChild(topElement);
+            self.container.appendChild(secondElement);
+            self.moveToTos(self,topElement);
+            self.moveToTos(self,secondElement);
+            self.normalizeStack(self);
+            secondElement.style.transform = "";
+        }
+        self.performFlip(self,topElement,secondElement,firstanimation,secondanimation,timing,finishHandler);
+    }
+    dissolveIn(self,elementSelector,firstanimation,secondanimation,timing){
+        self.synchro = 0;
+        let selectedElement = self.selectElement(self,elementSelector);
+        self.moveToBos(self,selectedElement);
+        selectedElement.style.display = "none";
+        console.log(selectedElement.id);
+
+        let topElement = self.elementStack.pop();
+        self.elementStack.push(topElement);
+        self.moveToTos(self,self.blackpanel);
+        self.moveToTos(self,topElement);
+        self.normalizeStack(self);
+        selectedElement.style.opacity = 0;
+        self.moveToTos(self,selectedElement);
+        let finishHandler = function(){
+            self.synchro++;
+            if(self.synchro < 2){
+                // Second animation is still running.
+                return;
+            }
+            selectedElement.style.opacity = 1;
+            selectedElement.style.display = "block";
+            topElement.style.opacity = 1;
+            self.normalizeStack(self);
+            self.synchro = 0;
+        }
+        const animation = selectedElement.animate(firstanimation,timing);
+        animation.onfinish = finishHandler;
+        const topAnimation = topElement.animate(secondanimation,timing);
+        topAnimation.onfinish = finishHandler;
+    }
+    dissolveOut(self,elementSelector,firstanimation,secondanimation,timing){
+        self.synchro = 0;
+        let selectedElement = self.selectElement(self,elementSelector);
+        self.removeFromStack(self,selectedElement);
+        console.log(selectedElement.id);
+        let topElement = self.elementStack.pop();
+        self.moveToTos(self,self.blackpanel);
+        self.moveToTos(self,topElement);
+        self.moveToTos(self,selectedElement);
+        self.normalizeStack(self);
+        self.stackDump(self);
+        selectedElement.style.opacity = 1;
+        topElement.style.opacity = 0;
+        let finishHandler = function(){
+            self.synchro++;
+            if(self.synchro < 2){
+                 // Second animation is still running.
+                return;
+            }
+            self.moveToTos(self,topElement);
+            topElement.style.opacity = 1;
+            self.normalizeStack(self);
+            self.synchro = 0;
+        }
+        const animation = selectedElement.animate(firstanimation,timing);
+        animation.onfinish = finishHandler; 
+        const topanimation = topElement.animate(secondanimation,timing);
+        topanimation.onfinish = finishHandler;
     }
   }
