@@ -59,7 +59,7 @@
     background-color:gray;
 }
 
-#sic-container {
+.sic-container {
     /* Container needs to have a position in order for z-index to work
        on children. Anything other than static should work.
     */

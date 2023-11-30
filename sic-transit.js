@@ -14,27 +14,27 @@ class SicTransit {
       this.performCallback = null;
       let overlay = document.createElement('div');
       this.overlay = overlay;
-      overlay.className = 'sic-transit-overlay sic-transit-overlay-panel sic-panel';
+      overlay.className = elementClass + ' sicpanel sic-transit-overlay sic-transit-overlay-panel';
       this.container.appendChild(overlay);
       this.elementStack.unshift(overlay);
       let blackpanel = document.createElement('div');
       this.blackpanel = blackpanel;
-      blackpanel.className = 'sic-transit-black-panel sic-transit-overlay-panel sic-panel';
+      blackpanel.className = elementClass + ' sicpanel sic-transit-black-panel sic-transit-overlay-panel';
       this.container.appendChild(blackpanel);
       this.elementStack.unshift(blackpanel);
       let graypanel = document.createElement('div');
       this.graypanel = graypanel;
-      graypanel.className = 'sic-transit-gray-panel sic-transit-overlay-panel sic-panel';
+      graypanel.className = elementClass + ' sicpanel sic-transit-gray-panel sic-transit-overlay-panel';
       this.container.appendChild(graypanel);
       this.elementStack.unshift(graypanel);
       let whitepanel = document.createElement('div');
       this.whitepanel = whitepanel;
-      whitepanel.className = 'sic-transit-white-panel  sic-transit-overlay-panel sic-panel';
+      whitepanel.className = elementClass +  ' sicpanel sic-transit-white-panel  sic-transit-overlay-panel';
       this.container.appendChild(whitepanel);
       this.elementStack.unshift(whitepanel);
       let flippanel = document.createElement('div');
       this.flippanel = flippanel;
-      flippanel.className = 'sic-transit-flip-panel sic-transit-overlay-panel sic-panel';
+      flippanel.className = elementClass +  ' sicpanel sic-transit-flip-panel sic-transit-overlay-panel';
       this.container.appendChild(flippanel);
       this.elementStack.unshift(flippanel);
       this.showElement(this,this.elementStack[this.elementStack.length - 1]);
@@ -128,7 +128,7 @@ class SicTransit {
             timing: {easing: 'ease-out', duration:500}
         },
         "flipOutX":{
-            forwardTransition: this.flipOutY,
+            forwardTransition: this.flipOutX,
             undo:"flipInX",
             animation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
             secondanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
@@ -309,6 +309,31 @@ class SicTransit {
     }
 
 // Utility methods
+    getContainerId(){
+        return this.containerId;
+    }
+    getElementClass(){
+        return this.elementClass;
+    }
+    getTransitionList(){
+        let transitions = [];
+        for (let key in this.dispatchTable) {
+            if (this.dispatchTable.hasOwnProperty(key)) {
+              transitions.push(key);
+            }
+         }
+         return transitions;
+    }
+    getPanelList(){
+        let panelList = [];
+        let elements = document.querySelectorAll(this.containerId + " > " + this.elementClass);
+        for(let i = 0; i < elements.length; i++){
+            if(elements[i].id !== undefined){
+                panelList.push(elements[i].id);
+            }
+        }
+        return panelList;
+    }
     getBos(self){
         return self.elementStack[0];
     }
@@ -359,35 +384,32 @@ class SicTransit {
         animation.onfinish = onfinish; 
         secondanimation = replaceElement.animate(secondanimation,timing);
     }
-    performTransition(elementSelector,transitionName,delay,direction = 1){
-        let transitionFunction;
-        if(direction === 1){
-             transitionFunction = this.dispatchTable[transitionName]["forwardTransition"];
+    performTransition(args){
+        if(args.self === undefined){
+            args.self = this;
         }
-        else if(direction ===  -1){
-            this.performTransition(elementSelector,this.dispatchTable[transitionName]["undo"],delay,1);
+        let transitionFunction;
+        if((args.direction === "forward") || (args.direction > 0)){
+             args.transitionFunction = args.self.dispatchTable[args.transitionName]["forwardTransition"];
+        }
+        else if((args.direction === "reverse") || (args.direction < 0)){
+            args.transitionName = args.self.dispatchTable[args.transitionName]["undo"];
+            args.direction = "forward";
+            args.self.performTransition(args);
             return;
         }
-        if(transitionFunction === null){
-            throw new Error("SicTransit: " + transitionName + " is not a recognized transition");
-        }
-        let selectedElement = this.selectElement(this,elementSelector);
-        const animation = this.dispatchTable[transitionName]["animation"];
-        const secondanimation = this.dispatchTable[transitionName]["secondanimation"];
-        let timing = this.dispatchTable[transitionName]["timing"];
-        timing.duration = delay;
-        let self = this;
-        let startTime = Date.now();
-        if(this.callback !== null){
-            this.performCallback = function(){
-                let endTime = date.now();
-                self.callback(elementSelector,transitionName,delay,direction,startTime,endTime);
-            }
-        }
         else {
-            this.performCallback = null;
+            throw new Error("sicTransit: " + args.direction + " is not defined as a valid direction.")
         }
-        transitionFunction(this,elementSelector,animation,secondanimation,timing);
+        if(transitionFunction === null){
+            throw new Error("SicTransit: " + args.transitionName + " is not a recognized transition");
+        }
+        args.selectedElement = args.self.selectElement(args.self.elementSelector);
+        args.animation = args.self.dispatchTable[args.transitionName]["animation"];
+        args.secondanimation = args.self.dispatchTable[args.transitionName]["secondanimation"];
+        args.timing = args.self.dispatchTable[args.transitionName]["timing"];
+        args.timing.duration = duration;
+        transitionFunction(args);
     }
     removeFromStack(self,element){
         for(let i = 0; i < self.elementStack.length; i++){
@@ -426,7 +448,7 @@ class SicTransit {
         element.style.opacity = 1.0;
         self.moveToTos(self,element);
     }
-    stackDump(self){
+    stackDump(self = this){
         console.log("stackDump:");
         for (const element of self.elementStack) {
             if(element.id !== ""){
@@ -439,26 +461,25 @@ class SicTransit {
     }
 
 // Transitions
-    cutIn(self,elementSelector,animation,secondanimation, timing){
+    cutIn(self,elementSelector,animation,secondanimation, timing,rotation){
         const selectedElement = self.selectElement(self,elementSelector);
         self.showElement(self,selectedElement);
-        if(this.performCallback !== null){
-            this.performCallback();
+        if(self.performCallback !== null){
+            self.performCallback();
         }
     }
-    cutOut(self,elementSelector,animation,secondanimation, timing){
+    cutOut(self,elementSelector,animation,secondanimation, timing,rotation){
         const selectedElement = self.selectElement(self,elementSelector);
         self.moveToBos(self,selectedElement);
-        if(this.performCallback !== null){
-            this.performCallback();
+        if(self.performCallback !== null){
+            self.performCallback();
         }
     }
-    dissolveIn(self,elementSelector,firstanimation,secondanimation,timing){
+    dissolveIn(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.synchro = 0;
         let selectedElement = self.selectElement(self,elementSelector);
         self.moveToBos(self,selectedElement);
         selectedElement.style.display = "none";
-
         let topElement = self.elementStack.pop();
         self.elementStack.push(topElement);
         self.moveToTos(self,self.blackpanel);
@@ -486,14 +507,11 @@ class SicTransit {
         const topAnimation = topElement.animate(secondanimation,timing);
         topAnimation.onfinish = finishHandler;
     }
-    dissolveOut(self,elementSelector,firstanimation,secondanimation,timing){
+    dissolveOut(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.synchro = 0;
         let selectedElement = self.selectElement(self,elementSelector);
-        self.removeFromStack(self,selectedElement);
-        let topElement = self.elementStack.pop();
-        self.moveToTos(self,self.blackpanel);
-        self.moveToTos(self,topElement);
         self.moveToTos(self,selectedElement);
+        let topElement = self.elementStack[self.elementStack.length - 2];
         self.normalizeStack(self);
         selectedElement.style.opacity = 1;
         topElement.style.opacity = 0;
@@ -516,7 +534,7 @@ class SicTransit {
         const topanimation = topElement.animate(secondanimation,timing);
         topanimation.onfinish = finishHandler;
     }
-    fadeInFromBlack(self,elementSelector, animation,secondanimation,timing){
+    fadeInFromBlack(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.blackpanel);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.opacity = 0;
@@ -530,9 +548,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
     }
-    fadeOutToBlack(self,elementSelector,animation,secondanimation,timing){
+    fadeOutToBlack(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.blackpanel);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.opacity = 1;
@@ -546,9 +564,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    fadeInFromGray(self,elementSelector, animation,secondanimation,timing){
+    fadeInFromGray(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.graypanel);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.opacity = 0;
@@ -563,7 +581,7 @@ class SicTransit {
         }
         self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
     }
-    fadeOutToGray(self,elementSelector,animation,secondanimation,timing){
+    fadeOutToGray(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.graypanel);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.opacity = 1;
@@ -577,9 +595,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    fadeInFromWhite(self,elementSelector, animation,secondanimation,timing){
+    fadeInFromWhite(self,elementSelector, firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.whitepanel);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.opacity = 0;
@@ -592,9 +610,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
     }
-    fadeOutToWhite(self,elementSelector,animation,secondanimation,timing){
+    fadeOutToWhite(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.whitepanel);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.opacity = 1;
@@ -608,11 +626,10 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    flipInY(self,elementSelector,firstanimation,secondanimation,timing){
+    flipInY(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         const selectedElement = self.selectElement(self,elementSelector);
-        self.moveToBos(self,selectedElement);
         selectedElement.style.display = "none";
         self.normalizeStack(self);
         selectedElement.style.transform = "rotateY(180deg)";
@@ -621,6 +638,7 @@ class SicTransit {
         let tosItem = self.elementStack.pop();
         self.flippanel.appendChild(selectedElement);
         self.flippanel.appendChild(tosItem);
+        self.removeFromStack(self,selectedElement);
         self.moveToTos(self,self.flippanel);
         self.flippanel.style.display="block";
         self.normalizeStack(self);
@@ -628,6 +646,8 @@ class SicTransit {
             self.moveToBos(self,self.flippanel);
             self.container.appendChild(tosItem);
             self.container.appendChild(selectedElement);
+            self.elementStack.unshift(tosItem);
+            self.elementStack.unshift(selectedElement);
             self.moveToTos(self,tosItem);
             self.moveToTos(self,selectedElement);
             self.normalizeStack(self);
@@ -638,14 +658,13 @@ class SicTransit {
         }
         self.performFlip(self,selectedElement,tosItem,firstanimation,secondanimation,timing,finishHandler);
     }
-    flipOutY(self,elementSelector,firstanimation,secondanimation,timing){
+    flipOutY(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         let animElement = self.selectElement(self,elementSelector);
         self.moveToTos(self,animElement);
         self.normalizeStack(self);
         let topElement = self.elementStack.pop();
         let secondElement= self.elementStack.pop();
         secondElement.style.display = "block";
-       // self.normalizeStack(self);
         secondElement.style.transform = "rotateY(180deg)";
         self.flippanel.replaceChildren([]);
         self.flippanel.appendChild(secondElement);
@@ -655,10 +674,11 @@ class SicTransit {
         self.normalizeStack(self);
         let finishHandler = function(){
             self.moveToBos(self,self.flippanel);
+            self.flippanel.replaceChildren([]);
             self.container.appendChild(topElement);
             self.container.appendChild(secondElement);
-            self.moveToTos(self,topElement);
-            self.moveToTos(self,secondElement);
+            self.elementStack.push(topElement);
+            self.elementStack.push(secondElement);
             self.normalizeStack(self);
             secondElement.style.transform = "";
             if(self.performCallback !== null){
@@ -667,7 +687,7 @@ class SicTransit {
         }
         self.performFlip(self,topElement,secondElement,firstanimation,secondanimation,timing,finishHandler);
     }
-    flipInX(self,elementSelector,firstanimation,secondanimation,timing){
+    flipInX(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         const selectedElement = self.selectElement(self,elementSelector);
         self.moveToBos(self,selectedElement);
         selectedElement.style.display = "none";
@@ -678,15 +698,17 @@ class SicTransit {
         let tosItem = self.elementStack.pop();
         self.flippanel.appendChild(selectedElement);
         self.flippanel.appendChild(tosItem);
+        self.removeFromStack(self,selectedElement);
         self.moveToTos(self,self.flippanel);
         self.flippanel.style.display="block";
         self.normalizeStack(self);
         let finishHandler = function(){
+            self.flippanel.replaceChildren([]);
             self.moveToBos(self,self.flippanel);
             self.container.appendChild(tosItem);
+            self.elementStack.push(tosItem);
             self.container.appendChild(selectedElement);
-            self.moveToTos(self,tosItem);
-            self.moveToTos(self,selectedElement);
+            self.elementStack.push(selectedElement);
             self.normalizeStack(self);
             selectedElement.style.transform = "";
             if(self.performCallback !== null){
@@ -695,7 +717,7 @@ class SicTransit {
         }
         self.performFlip(self,selectedElement,tosItem,firstanimation,secondanimation,timing,finishHandler);
     }
-    flipOutX(self,elementSelector,firstanimation,secondanimation,timing){
+    flipOutX(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         let animElement = self.selectElement(self,elementSelector);
         self.moveToTos(self,animElement);
         self.normalizeStack(self);
@@ -712,10 +734,11 @@ class SicTransit {
         self.normalizeStack(self);
         let finishHandler = function(){
             self.moveToBos(self,self.flippanel);
+            self.flippanel.replaceChildren([]);
             self.container.appendChild(topElement);
             self.container.appendChild(secondElement);
-            self.moveToTos(self,topElement);
-            self.moveToTos(self,secondElement);
+            self.elementStack.push(topElement);
+            self.elementStack.push(secondElement);
             self.normalizeStack(self);
             secondElement.style.transform = "";
             if(self.performCallback !== null){
@@ -724,7 +747,7 @@ class SicTransit {
         }
         self.performFlip(self,topElement,secondElement,firstanimation,secondanimation,timing,finishHandler);
     }
-    hingeInBottom(self,elementSelector,animation,secondanimation,timing){
+    hingeInBottom(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.transformOrigin = "bottom";
@@ -740,9 +763,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
     }
-    hingeOutBottom(self,elementSelector,animation,secondanimation,timing){
+    hingeOutBottom(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.transformOrigin = "bottom";
@@ -759,9 +782,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    hingeInLeft(self,elementSelector,animation,secondanimation,timing){
+    hingeInLeft(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.transformOrigin = "left";
@@ -778,9 +801,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
     }
-    hingeOutLeft(self,elementSelector,animation,secondanimation,timing){
+    hingeOutLeft(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.transformOrigin = "left";
@@ -799,9 +822,9 @@ class SicTransit {
             }
             
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    hingeInRight(self,elementSelector,animation,secondanimation,timing){
+    hingeInRight(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.transformOrigin = "right";
@@ -818,9 +841,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
     }
-    hingeOutRight(self,elementSelector,animation,secondanimation,timing){
+    hingeOutRight(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.transformOrigin = "right";
@@ -838,9 +861,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    hingeInTop(self,elementSelector,animation,secondanimation,timing){
+    hingeInTop(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.transformOrigin = "top";
@@ -856,9 +879,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
     }
-    hingeOutTop(self,elementSelector,animation,secondanimation,timing){
+    hingeOutTop(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         selectedElement.style.transformOrigin = "top";
@@ -875,9 +898,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    newspaperIn(self,elementSelector, animation,secondanimation,timing){
+    newspaperIn(self,elementSelector, firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);  
         let finishHandler = function(){
@@ -888,9 +911,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,secondanimation,1,timing,finishHandler);
     }
-    newspaperOut(self,elementSelector,animation,secondanimation,timing){
+    newspaperOut(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
       
@@ -903,9 +926,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    rotateStack(self,number, animation, secondanimation, timing){
+    rotateStack(self,elementSelector, firstanimation, secondanimation, timing,rotation){
        // We don't do anything if number === 0, other than making sure element is visible (below).
        if(number < 0){
             for(let i = 0; i > number; i--){
@@ -921,14 +944,14 @@ class SicTransit {
         let tosElement = self.getTos(self);
         tosElement.style.display = "block";
         tosElement.style.opacity = 1.0;
-        if(this.performCallback !== null){
-            this.performCallback();
+        if(self.performCallback !== null){
+            self.performCallback();
         }
     }
-    unrotateStack(self,number, animation, secondanimation, timing){
-        self.rotateStack(self,-number, animation, secondanimation,timing);
+    unrotateStack(self,elementselector, firstanimation, secondanimation, timing,rotation){
+        self.rotateStack(self,-rotation, firstanimation, secondanimation,timing);
     }
-    slideInBottom(self,elementSelector,animation,secondanimation,timing){
+    slideInBottom(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay)
         const selectedElement = self.selectElement(self,elementSelector);
     
@@ -939,9 +962,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation, 1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation, 1,timing,finishHandler);
     }
-    slideOutBottom(self,elementSelector,animation,secondanimation,timing){
+    slideOutBottom(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
        
@@ -953,9 +976,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    slideInLeft(self,elementSelector,animation,secondanimation, timing){
+    slideInLeft(self,elementSelector,firstanimation,secondanimation, timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         let finishHandler = function(){
@@ -965,9 +988,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
     }
-    slideOutLeft(self,elementSelector,animation,secondanimation, timing){
+    slideOutLeft(self,elementSelector,firstanimation,secondanimation, timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         let finishHandler = function(){
@@ -978,9 +1001,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    slideInRight(self,elementSelector,animation,secondanimation,timing){
+    slideInRight(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         let finishHandler = function(){
@@ -990,9 +1013,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
     }
-    slideOutRight(self,elementSelector,animation,secondanimation,timing){
+    slideOutRight(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         let finishHandler = function(){
@@ -1003,9 +1026,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    slideInTop(self,elementSelector,animation,secondanimation,timing){
+    slideInTop(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay)
         const selectedElement = self.selectElement(self,elementSelector);
         let finishHandler = function(){
@@ -1015,9 +1038,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
     }
-    slideOutTop(self,elementSelector,animation,secondanimation,timing){
+    slideOutTop(self,elementSelector,firstanimation,secondanimation,timing){
         self.moveToTos(self,self.overlay)
         const selectedElement = self.selectElement(self,elementSelector);
         let finishHandler = function(){
@@ -1028,9 +1051,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
-    zoomIn(self,elementSelector, animation,secondanimation,timing){
+    zoomIn(self,elementSelector, firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
         let finishHandler = function(){
@@ -1041,9 +1064,9 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
     }
-    zoomOut(self,elementSelector,animation,secondanimation,timing){
+    zoomOut(self,elementSelector,firstanimation,secondanimation,timing,rotation){
         self.moveToTos(self,self.overlay);
         const selectedElement = self.selectElement(self,elementSelector);
       
@@ -1056,6 +1079,6 @@ class SicTransit {
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,animation,-1,timing,finishHandler);
+        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
     }
   }
