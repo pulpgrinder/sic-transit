@@ -210,7 +210,7 @@ class SicTransit {
             timing: {easing: 'ease-in-out', duration:500}
         },
         "menuOutBottom": {
-            forwardTransition: this.slideOutBottom,
+            forwardTransition: this.menuOutBottom,
             undo:"menuInBottom",
             animation: [{transform: "translateY(50%)"}, {transform: "translateY(100%)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
@@ -247,14 +247,14 @@ class SicTransit {
         "menuInTop": {
             forwardTransition: this.menuInTop,
             undo:"menuOutTop",
-            animation: [{display:"block", transform: "translateY(-100%)"}, {display:"block",transform: "translateY(0%)"}],
+            animation: [{display:"block", transform: "translateY(-100%)"}, {display:"block",transform: "translateY(-50%)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in-out', duration:500}
         },
         "menuOutTop": {
             forwardTransition: this.menuOutTop,
             undo:"menuInTop",
-            animation:[{transform: "translateY(50%)"}, {transform: "translateY(-100%)"}],
+            animation:[{transform: "translateY(-50%)"}, {transform: "translateY(-100%)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing:{easing: 'ease-in-out', duration:500}
         },
@@ -819,8 +819,9 @@ class SicTransit {
         let self = args.self;
         args.selectedElement.transform = "translateY(100%)";
         args.finishHandler = function(){
-            args.selectedElement.style.display= "block";
-            args.selectedElement.transform = "translateY(50%)";
+            self.moveToTos(args,args.selectedElement);
+            args.selectedElement.style.display = "block";
+            args.selectedElement.style.transform = "translateY(50%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
@@ -831,7 +832,7 @@ class SicTransit {
         let self = args.self;
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "translateY(100%)";
+            args.selectedElement.style.transform = "";
             if(self.performCallback !== null){
                 self.performCallback();
             }
@@ -844,7 +845,7 @@ class SicTransit {
         self.moveToTos(args,args.selectedElement);
         args.finishHandler = function(){
             args.selectedElement.style.display= "block";
-            args.selectedElement.transform = "translateX(-50%))";
+            args.selectedElement.style.transform = "translateX(-50%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
@@ -855,7 +856,7 @@ class SicTransit {
         let self = args.self;
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "translateX(-100%)";
+            args.selectedElement.style.transform = "";
             if(self.performCallback !== null){
                 self.performCallback();
             }
@@ -867,7 +868,7 @@ class SicTransit {
         args.selectedElement.transform = "translateX(100%)";
         args.finishHandler = function(){
             args.selectedElement.style.display= "block";
-            args.selectedElement.transform = "translateX(50%)";
+            args.selectedElement.style.transform = "translateX(50%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
@@ -878,7 +879,7 @@ class SicTransit {
         let self = args.self;
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "translateX(100%)";
+            args.selectedElement.style.transform = "";
             if(self.performCallback !== null){
                 self.performCallback();
             }
@@ -889,7 +890,7 @@ class SicTransit {
         let self = args.self;
         args.selectedElement.transform = "translateY(-100%)";
         args.finishHandler = function(){
-            args.selectedElement.transform = "translateY(-50%)"
+            args.selectedElement.style.transform = "translateY(-50%)"
             args.selectedElement.style.display= "block";
             if(self.performCallback !== null){
                 self.performCallback();
@@ -901,7 +902,7 @@ class SicTransit {
         let self = args.self;
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "translateY(100%)";
+            args.selectedElement.style.transform = "";
             if(self.performCallback !== null){
                 self.performCallback();
             }
