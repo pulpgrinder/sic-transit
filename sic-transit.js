@@ -9,39 +9,34 @@ class SicTransit {
       this.elementClass = elementClass;
       this.synchro = 0;
       this.elementStack = [];
-      this.loadStack(this);
+      this.loadStack({self:this});
       this.callback = null;
       this.performCallback = null;
-      let overlay = document.createElement('div');
-      this.overlay = overlay;
-      overlay.className = elementClass + ' sicpanel sic-transit-overlay sic-transit-overlay-panel';
-      this.container.appendChild(overlay);
-      this.elementStack.unshift(overlay);
       let blackpanel = document.createElement('div');
       this.blackpanel = blackpanel;
-      blackpanel.className = elementClass + ' sicpanel sic-transit-black-panel sic-transit-overlay-panel';
+      blackpanel.className = elementClass + ' sicpanel sic-transit-black-panel';
       this.container.appendChild(blackpanel);
       this.elementStack.unshift(blackpanel);
       let graypanel = document.createElement('div');
       this.graypanel = graypanel;
-      graypanel.className = elementClass + ' sicpanel sic-transit-gray-panel sic-transit-overlay-panel';
+      graypanel.className = elementClass + ' sicpanel sic-transit-gray-panel';
       this.container.appendChild(graypanel);
       this.elementStack.unshift(graypanel);
       let whitepanel = document.createElement('div');
       this.whitepanel = whitepanel;
-      whitepanel.className = elementClass +  ' sicpanel sic-transit-white-panel  sic-transit-overlay-panel';
+      whitepanel.className = elementClass +  ' sicpanel sic-transit-white-panel';
       this.container.appendChild(whitepanel);
       this.elementStack.unshift(whitepanel);
       let flippanel = document.createElement('div');
       this.flippanel = flippanel;
-      flippanel.className = elementClass +  ' sicpanel sic-transit-flip-panel sic-transit-overlay-panel';
+      flippanel.className = elementClass +  ' sicpanel sic-transit-flip-panel';
       this.container.appendChild(flippanel);
       this.elementStack.unshift(flippanel);
-      this.showElement(this,this.elementStack[this.elementStack.length - 1]);
+      this.showElement({self:this,selectedElement:this.elementStack[this.elementStack.length - 1]});
     }
-    checkElementExists(self,selectedElement, elementSelector){
-        if(selectedElement === null){
-            throw new Error("SicTransit: Element " + elementSelector + " not found in " + self.containerId);
+    checkElementExists(args){
+        if(args.selectedElement === null){
+            throw new Error("SicTransit: Element " + args.elementSelector + " not found in " + args.self.containerId);
         }
     }
    dispatchTable =  {
@@ -207,6 +202,62 @@ class SicTransit {
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'ease-in', duration:500}
         },
+        "menuInBottom": {
+            forwardTransition: this.menuInBottom,
+            undo:"menuOutBottom",
+            animation: [{display:"block", transform: "translateY(100%)"}, {display:"block",transform: "translateY(50%)"}],
+            boxShadow: "-10px -10px 30px rgba(0,0,0,0.5)",
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "menuOutBottom": {
+            forwardTransition: this.slideOutBottom,
+            undo:"menuInBottom",
+            animation: [{transform: "translateY(50%)"}, {transform: "translateY(100%)"}],
+            boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "menuInLeft": {
+                        forwardTransition: this.menuInLeft,
+                        undo:"menuOutLeft",
+                        animation: [{display:"block", transform: "translateX(-100%)"}, {display:"block",transform: "translateX(-50%)"}],
+                        boxShadow:  "10px 20px 20px 30px rgba(0,0,0,0.5)",
+                        timing: {easing: 'ease-in-out', duration:500}
+        },
+        "menuOutLeft": {
+            forwardTransition: this.menuOutLeft,
+            undo:"menuInLeft",
+            animation: [{display:"block", transform: "translateX(-50%)"}, {display:"block",transform: "translateX(-100%)"}],
+            boxShadow: "10px 20px 20px 30px rgba(0,0,0,0.5)",
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "menuInRight": {
+            forwardTransition: this.menuInRight,
+            undo:"slideOutRight",
+            animation: [{ display:"block", transform: "translateX(100%)"}, {display:"block",transform: "translateX(50%)"}],
+            boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
+           timing: {easing: 'ease-in-out', duration:500}
+        },
+        "menuOutRight": {
+            forwardTransition: this.menuOutRight,
+            undo:"menuInRight",
+            animation: [{transform: "translateX(50%)"}, {transform: "translateX(100%)"}],
+            boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
+            timing:{easing: 'ease-in-out',duration:500}
+        },
+        "menuInTop": {
+            forwardTransition: this.menuInTop,
+            undo:"menuOutTop",
+            animation: [{display:"block", transform: "translateY(-100%)"}, {display:"block",transform: "translateY(0%)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "menuOutTop": {
+            forwardTransition: this.menuOutTop,
+            undo:"menuInTop",
+            animation:[{transform: "translateY(50%)"}, {transform: "translateY(-100%)"}],
+            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing:{easing: 'ease-in-out', duration:500}
+        },
         "newspaperIn": {
             forwardTransition: this.newspaperIn,
             undo:"newspaperOut",
@@ -220,6 +271,13 @@ class SicTransit {
             animation:[{display:"block", transform: "rotate(0deg)  scale(1)"}, {display:"block", transform: "rotate(-720deg) scale(0)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             timing: {easing: 'linear', duration:500}
+        },
+        "nullTransition":{
+            forwardTransition: this.nullTransition,
+            undo:"nullTransition",
+            animation: [],
+            boxShadow: "",
+            timing: {}
         },
         "rotateStack":{
             forwardTransition: this.rotateStack,
@@ -334,123 +392,181 @@ class SicTransit {
         }
         return panelList;
     }
-    getBos(self){
-        return self.elementStack[0];
+    getBos(args){
+        return args.self.elementStack[0];
     }
-    getTos(self){
-        return self.elementStack[self.elementStack.length - 1];
+    getTos(args){
+        return args.self.elementStack[args.self.elementStack.length - 1];
     }
     getZIndex(element){
         return window.getComputedStyle(element).getPropertyValue('z-index');
     }
-    loadStack(self){
+    loadStack(args){
+        let self = args.self;
         const element_list = document.querySelectorAll(self.elementClass);
         self.elementStack = [...element_list];
-        self.normalizeStack(self);
+        self.normalizeStack(args);
     }
-    moveToBos(self,element){
-        self.removeFromStack(self,element);
+    moveToBos(args,element){
+        let self = args.self;
+        self.removeFromStack(args,element);
         self.elementStack.unshift(element);
-        self.normalizeStack(self);
+        self.normalizeStack(args);
     }
-    moveToTos(self,element){
-        self.removeFromStack(self,element);
+    moveToTos(args,element){
+        let self = args.self;
+        self.removeFromStack(args,element);
         self.elementStack.push(element);
-        self.normalizeStack(self);
+        self.normalizeStack(args);
     }
    
-    normalizeStack(self){
-        for(let index = 0; index < self.elementStack.length; index++){
-            let element = self.elementStack[index];
-            element.style.zIndex = (index - self.elementStack.length) + 1;
+    normalizeStack(args){
+        let self = args.self;
+        let elementStack = self.elementStack;
+        for(let index = 0; index < elementStack.length; index++){
+            let element = elementStack[index];
+            element.style.zIndex = (index - elementStack.length) + 1;
         }
     }
-    performAnimation(self,selectedElement,firstanimation,direction,timing,onfinish){
-        self.moveToTos(self,selectedElement);
-        if(direction > 0){
-            self.overlay.style.opacity = 0.0;
-            self.overlay.animate({opacity:"0",opacity:"0.25"},timing);
-        }
-        else{
-            self.overlay.style.opacity = 0.25;
-            self.overlay.animate({opacity:"0.25",opacity:"0"},timing);
-        }
-        const animation = selectedElement.animate(firstanimation,timing);
-        animation.onfinish = onfinish; 
+    performAnimation(args){
+        let self = args.self;
+        self.moveToTos(args,args.selectedElement);
+        const animation = args.selectedElement.animate(args.firstanimation,args.timing);
+        animation.onfinish = args.finishHandler; 
     }
-    performFlip(self,selectedElement,replaceElement, firstanimation,secondanimation, timing,onfinish){
-        self.moveToTos(self,self.flippanel);
-        const animation = selectedElement.animate(firstanimation,timing);
-        animation.onfinish = onfinish; 
-        secondanimation = replaceElement.animate(secondanimation,timing);
+    performFlip(args){
+        let self = args.self;
+        self.flippanel.replaceChildren([]);
+        self.removeFromStack(args,args.selectedElement);
+        self.flippanel.appendChild(args.selectedElement);
+        let tosItem = self.elementStack.pop();
+        self.flippanel.appendChild(tosItem);
+        self.moveToTos(args,self.flippanel);
+        const animation = args.selectedElement.animate(args.firstanimation,args.timing);
+        animation.onfinish = function(){
+            args.selectedElement.style.transform = "";
+            tosItem.style.transform = "";
+            self.flippanel.replaceChildren([]);
+            self.moveToBos(args,self.flippanel);
+            if(args.direction === 1){
+                self.elementStack.push(tosItem);
+                self.elementStack.push(args.selectedElement);
+                self.normalizeStack(args);
+            }
+            else{
+                self.elementStack.push(args.selectedElement);
+                self.elementStack.push(tosItem);
+                self.normalizeStack(args);
+            }
+            self.container.appendChild(tosItem);
+            self.container.appendChild(args.selectedElement);
+            self.normalizeStack(args);
+            if(self.performCallback !== null){
+                self.performCallback();
+            }
+        }
+        self.moveToTos(args,self.flippanel);
+        self.flippanel.style.display = "block";
+        tosItem.animate(args.secondanimation, args.timing);
     }
+    loadDefaults(args){
+        let self = args.self;
+        let defaultArgs = {
+            transitionName: "nullTransition",
+            direction: "forward",
+            duration: 1000,
+            elementSelector: "",
+            firstanimation:() => {},
+            secondanimation: () => {},
+            timing: {easing: "linear", duration:1000},
+            transitionFunction: self.dispatchTable["nullTransition"].forwardTransition,
+            finishHandler:  () => {},
+            fadePanel: self.blackpanel,
+            finalDisplayStyle: 'none',
+            stackRotation:0
+        }
+        for (let key in defaultArgs) {
+            if (defaultArgs.hasOwnProperty(key)) {
+                if(args[key] === undefined){
+                    args[key] = defaultArgs[key];
+                }
+            }
+          }
+        args =  self.selectElement(args);
+        return args;
+    }
+
     performTransition(args){
         if(args.self === undefined){
             args.self = this;
         }
-        let transitionFunction;
+        let self = args.self;
+        args = self.loadDefaults(args);
+        if(self.dispatchTable[args.transitionName] === undefined){
+            throw new Error("SicTransit: " + args.transitionName + " is not a recognized transition");
+        }
         if((args.direction === "forward") || (args.direction > 0)){
-             args.transitionFunction = args.self.dispatchTable[args.transitionName]["forwardTransition"];
+             args.transitionFunction = self.dispatchTable[args.transitionName]["forwardTransition"];
         }
         else if((args.direction === "reverse") || (args.direction < 0)){
-            args.transitionName = args.self.dispatchTable[args.transitionName]["undo"];
+            args.transitionName = self.dispatchTable[args.transitionName]["undo"];
             args.direction = "forward";
-            args.self.performTransition(args);
+            self.performTransition(args);
             return;
         }
         else {
             throw new Error("sicTransit: " + args.direction + " is not defined as a valid direction.")
-        }
-        if(transitionFunction === null){
-            throw new Error("SicTransit: " + args.transitionName + " is not a recognized transition");
-        }
-        args.selectedElement = args.self.selectElement(args.self.elementSelector);
-        args.animation = args.self.dispatchTable[args.transitionName]["animation"];
-        args.secondanimation = args.self.dispatchTable[args.transitionName]["secondanimation"];
-        args.timing = args.self.dispatchTable[args.transitionName]["timing"];
-        args.timing.duration = duration;
-        transitionFunction(args);
+        }  
+        args.firstanimation = self.dispatchTable[args.transitionName]["animation"];
+        args.secondanimation = self.dispatchTable[args.transitionName]["secondanimation"];
+        args.timing = self.dispatchTable[args.transitionName]["timing"];
+        args.timing.duration = args.duration;
+        args.transitionFunction(args);
     }
-    removeFromStack(self,element){
-        for(let i = 0; i < self.elementStack.length; i++){
-            if(self.elementStack[i] === element){
-                self.elementStack.splice(i,1);
+    removeFromStack(args,element){
+        let elementStack = args.self.elementStack;
+        for(let i = 0; i < elementStack.length; i++){
+            if(elementStack[i] === element){
+                elementStack.splice(i,1);
                 return element;
             }
         }
         throw new Error("removeFromStack: element not found.");
     }
-    selectElement(self,elementSelector){
-        let selectedElement;
-        if(Number.isInteger(elementSelector)){
+    selectElement(args){
+        let self = args.self;
+        if(args.elementSelector === ""){
+            args.selectedElement = self.getBos(args);
+        }
+        else if(Number.isInteger(args.elementSelector)){
             // We're selecting the new item by stack position
-            if(elementSelector >= 0){
+            if(args.elementSelector >= 0){
                 // Counting up from bottom of stack.
-                selectedElement =  self.elementStack[elementSelector];
+                args.selectedElement =  self.elementStack[args.elementSelector];
             }
             else{
                 // Counting down from top of stack.
-                selectedElement = self.elementStack[self.elementStack.length - (elementSelector + 1)];
+                args.selectedElement = self.elementStack[self.elementStack.length - (args.elementSelector + 1)];
             }
         }
         else {
-            selectedElement = document.querySelector(elementSelector);
+            args.selectedElement = document.querySelector(args.elementSelector);
         }
         // Throws an error if the element does not exist.
-        self.checkElementExists(self,selectedElement, elementSelector);
-        return selectedElement;
+        self.checkElementExists(args);
+        return args;
     }
     setCallback(func){
         this.callback = func;
     }
-    showElement(self,element){
-        element.style.display = "block";
-        element.style.opacity = 1.0;
-        self.moveToTos(self,element);
+    showElement(args){
+        args.selectedElement.style.display = "block";
+        args.selectedElement.style.opacity = 1.0;
+        args.self.moveToTos(args,args.selectedElement);
     }
-    stackDump(self = this){
+    stackDump(args = {self:this}){
         console.log("stackDump:");
-        for (const element of self.elementStack) {
+        for (const element of args.self.elementStack) {
             if(element.id !== ""){
                 console.log("id: " + element.id + " display:" + element.style.display + " z-index: " + element.style.zIndex);
             }
@@ -461,624 +577,500 @@ class SicTransit {
     }
 
 // Transitions
-    cutIn(self,elementSelector,animation,secondanimation, timing,rotation){
-        const selectedElement = self.selectElement(self,elementSelector);
-        self.showElement(self,selectedElement);
+    cutIn(args){
+        let self = args.self;
+        self.showElement(args);
         if(self.performCallback !== null){
             self.performCallback();
         }
     }
-    cutOut(self,elementSelector,animation,secondanimation, timing,rotation){
-        const selectedElement = self.selectElement(self,elementSelector);
-        self.moveToBos(self,selectedElement);
+    cutOut(args){
+        let self = args.self;
+        self.moveToBos(args,args.selectedElement);
         if(self.performCallback !== null){
             self.performCallback();
         }
     }
-    dissolveIn(self,elementSelector,firstanimation,secondanimation,timing,rotation){
+    dissolveIn(args){
+        let self = args.self;
         self.synchro = 0;
-        let selectedElement = self.selectElement(self,elementSelector);
-        self.moveToBos(self,selectedElement);
-        selectedElement.style.display = "none";
+        self.moveToBos(args,args.selectedElement);
+        args.selectedElement.style.display = "none";
         let topElement = self.elementStack.pop();
         self.elementStack.push(topElement);
-        self.moveToTos(self,self.blackpanel);
-        self.moveToTos(self,topElement);
-        self.normalizeStack(self);
-        selectedElement.style.opacity = 0;
-        self.moveToTos(self,selectedElement);
-        let finishHandler = function(){
+        self.moveToTos(args,self.blackpanel);
+        self.moveToTos(args,topElement);
+        self.normalizeStack(args);
+        args.selectedElement.style.opacity = 0;
+        self.moveToTos(args,args.selectedElement);
+        args.finishHandler = function(){
             self.synchro++;
             if(self.synchro < 2){
                 // Second animation is still running.
                 return;
             }
-            selectedElement.style.opacity = 1;
-            selectedElement.style.display = "block";
+            args.selectedElement.style.opacity = 1;
+            args.selectedElement.style.display = "block";
             topElement.style.opacity = 1;
-            self.normalizeStack(self);
+            self.normalizeStack(args);
             self.synchro = 0;
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        const animation = selectedElement.animate(firstanimation,timing);
-        animation.onfinish = finishHandler;
-        const topAnimation = topElement.animate(secondanimation,timing);
-        topAnimation.onfinish = finishHandler;
+        const animation = args.selectedElement.animate(args.firstanimation,args.timing);
+        animation.onfinish = args.finishHandler;
+        const topAnimation = topElement.animate(args.secondanimation,args.timing);
+        topAnimation.onfinish = args.finishHandler;
     }
-    dissolveOut(self,elementSelector,firstanimation,secondanimation,timing,rotation){
+    dissolveOut(args){
+        let self = args.self;
         self.synchro = 0;
-        let selectedElement = self.selectElement(self,elementSelector);
-        self.moveToTos(self,selectedElement);
+        self.moveToTos(args,args.selectedElement);
         let topElement = self.elementStack[self.elementStack.length - 2];
-        self.normalizeStack(self);
-        selectedElement.style.opacity = 1;
+        self.normalizeStack(args);
+        args.selectedElement.style.opacity = 1;
         topElement.style.opacity = 0;
-        let finishHandler = function(){
+        args.finishHandler = function(){
             self.synchro++;
             if(self.synchro < 2){
                  // Second animation is still running.
                 return;
             }
-            self.moveToTos(self,topElement);
+            self.moveToBos(args,args.selectedElement);
             topElement.style.opacity = 1;
-            self.normalizeStack(self);
+            args.selectedElement.style.opacity = 1;
+            self.normalizeStack(args);
             self.synchro = 0;
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        const animation = selectedElement.animate(firstanimation,timing);
-        animation.onfinish = finishHandler; 
-        const topanimation = topElement.animate(secondanimation,timing);
-        topanimation.onfinish = finishHandler;
+        const animation = args.selectedElement.animate(args.firstanimation,args.timing);
+        animation.onfinish = args.finishHandler; 
+        const topanimation = topElement.animate(args.secondanimation,args.timing);
+        topanimation.onfinish = args.finishHandler;
     }
-    fadeInFromBlack(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.blackpanel);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.opacity = 0;
-        selectedElement.style.display = "block";
-        self.moveToTos(self,selectedElement);
-        let finishHandler = function(){
-            self.moveToBos(self,self.blackpanel);
-            selectedElement.style.display = "block";
-            selectedElement.style.opacity = 1;
-            if(self.performCallback !== null){
-                self.performCallback();
+    fade(args){
+        let self = args.self;
+        if(args.direction === 1){
+            self.moveToTos(args,args.fadePanel);
+            args.selectedElement.style.opacity = 0;
+            args.selectedElement.style.display = "block";
+            self.moveToTos(args,args.selectedElement);
+            args.finishHandler = function(){
+                self.moveToBos(args,args.fadePanel);
+                args.selectedElement.style.display = "block";
+                args.selectedElement.style.opacity = 1;
+                if(self.performCallback !== null){
+                    self.performCallback();
+                }
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
-    }
-    fadeOutToBlack(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.blackpanel);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.opacity = 1;
-        selectedElement.style.display = "block";
-        self.moveToTos(self,selectedElement);
-        let finishHandler = function(){
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.display = "none";
-            selectedElement.style.opacity = 1;
-            if(self.performCallback !== null){
-                self.performCallback();
+        else{
+            self.moveToTos(args,args.fadePanel);
+            args.selectedElement.style.opacity = 1;
+            args.selectedElement.style.display = "block";
+            self.moveToTos(args,args.selectedElement);
+            args.finishHandler = function(){
+                self.moveToBos(args,args.selectedElement);
+                args.selectedElement.style.opacity = 1;
+                if(self.performCallback !== null){
+                    self.performCallback();
+                }
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    fadeInFromGray(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.graypanel);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.opacity = 0;
-        self.moveToTos(self,selectedElement);
-        let finishHandler = function(){
-            self.moveToBos(self,self.graypanel);
-            selectedElement.style.display = "block";
-            selectedElement.style.opacity = 1;
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
-        }
-        self.performAnimation(self,selectedElement,animation,1,timing,finishHandler);
+    fadeInFromBlack(args){
+        let self = args.self;
+        args.fadePanel = self.blackpanel;
+        args.direction = 1;
+        self.fade(args);
     }
-    fadeOutToGray(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.graypanel);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.opacity = 1;
-        selectedElement.style.display = "block";
-        self.moveToTos(self,selectedElement);
-        let finishHandler = function(){
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.display = "none";
-            selectedElement.style.opacity = 1;
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
-        }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+    fadeOutToBlack(args){
+        let self = args.self;
+        args.fadePanel = self.blackpanel;
+        args.direction = -1;
+        self.fade(args);
     }
-    fadeInFromWhite(self,elementSelector, firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.whitepanel);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.opacity = 0;
-        self.moveToTos(self,selectedElement);
-        let finishHandler = function(){
-            self.moveToBos(self,self.whitepanel);
-            selectedElement.style.display = "block";
-            selectedElement.style.opacity = 1;
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
-        }
-        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
+    fadeInFromGray(args){
+        let self = args.self;
+        args.fadePanel = self.graypanel;
+        args.direction = 1;
+        self.fade(args);
     }
-    fadeOutToWhite(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.whitepanel);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.opacity = 1;
-        selectedElement.style.display = "block";
-        self.moveToTos(self,selectedElement);
-        let finishHandler = function(){
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.display = "none";
-            selectedElement.style.opacity = 1;
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
-        }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+    fadeOutToGray(args){
+        let self = args.self;
+        args.fadePanel = self.graypanel;
+        args.direction = -1;
+        self.fade(args);
     }
-    flipInY(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.display = "none";
-        self.normalizeStack(self);
-        selectedElement.style.transform = "rotateY(180deg)";
-        selectedElement.style.display = "block";
-        self.flippanel.replaceChildren([]);
-        let tosItem = self.elementStack.pop();
-        self.flippanel.appendChild(selectedElement);
-        self.flippanel.appendChild(tosItem);
-        self.removeFromStack(self,selectedElement);
-        self.moveToTos(self,self.flippanel);
-        self.flippanel.style.display="block";
-        self.normalizeStack(self);
-        let finishHandler = function(){
-            self.moveToBos(self,self.flippanel);
-            self.container.appendChild(tosItem);
-            self.container.appendChild(selectedElement);
-            self.elementStack.unshift(tosItem);
-            self.elementStack.unshift(selectedElement);
-            self.moveToTos(self,tosItem);
-            self.moveToTos(self,selectedElement);
-            self.normalizeStack(self);
-            selectedElement.style.transform = "";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
-        }
-        self.performFlip(self,selectedElement,tosItem,firstanimation,secondanimation,timing,finishHandler);
+    fadeInFromWhite(args){
+        let self = args.self;
+        args.fadePanel = self.whitepanel;
+        args.direction = 1;
+        self.fade(args);
     }
-    flipOutY(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        let animElement = self.selectElement(self,elementSelector);
-        self.moveToTos(self,animElement);
-        self.normalizeStack(self);
-        let topElement = self.elementStack.pop();
-        let secondElement= self.elementStack.pop();
-        secondElement.style.display = "block";
-        secondElement.style.transform = "rotateY(180deg)";
-        self.flippanel.replaceChildren([]);
-        self.flippanel.appendChild(secondElement);
-        self.flippanel.appendChild(topElement);
-        self.moveToTos(self,self.flippanel);
-        self.flippanel.style.display="block";
-        self.normalizeStack(self);
-        let finishHandler = function(){
-            self.moveToBos(self,self.flippanel);
-            self.flippanel.replaceChildren([]);
-            self.container.appendChild(topElement);
-            self.container.appendChild(secondElement);
-            self.elementStack.push(topElement);
-            self.elementStack.push(secondElement);
-            self.normalizeStack(self);
-            secondElement.style.transform = "";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
-        }
-        self.performFlip(self,topElement,secondElement,firstanimation,secondanimation,timing,finishHandler);
+    fadeOutToWhite(args){
+        let self = args.self;
+        args.fadePanel = self.whitepanel;
+        args.direction = -1;
+        self.fade(args);
     }
-    flipInX(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        const selectedElement = self.selectElement(self,elementSelector);
-        self.moveToBos(self,selectedElement);
-        selectedElement.style.display = "none";
-        self.normalizeStack(self);
-        selectedElement.style.transform = "rotateX(180deg)";
-        selectedElement.style.display = "block";
-        self.flippanel.replaceChildren([]);
-        let tosItem = self.elementStack.pop();
-        self.flippanel.appendChild(selectedElement);
-        self.flippanel.appendChild(tosItem);
-        self.removeFromStack(self,selectedElement);
-        self.moveToTos(self,self.flippanel);
-        self.flippanel.style.display="block";
-        self.normalizeStack(self);
-        let finishHandler = function(){
-            self.flippanel.replaceChildren([]);
-            self.moveToBos(self,self.flippanel);
-            self.container.appendChild(tosItem);
-            self.elementStack.push(tosItem);
-            self.container.appendChild(selectedElement);
-            self.elementStack.push(selectedElement);
-            self.normalizeStack(self);
-            selectedElement.style.transform = "";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
-        }
-        self.performFlip(self,selectedElement,tosItem,firstanimation,secondanimation,timing,finishHandler);
+    flipInY(args){
+        args.direction = 1;
+        let self = args.self;
+        self.moveToBos(args,args.selectedElement);
+        args.selectedElement.style.display = "block";
+        args.selectedElement.style.transform = "rotateY(180deg)";
+        self.performFlip(args);
     }
-    flipOutX(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        let animElement = self.selectElement(self,elementSelector);
-        self.moveToTos(self,animElement);
-        self.normalizeStack(self);
-        let topElement = self.elementStack.pop();
-        let secondElement= self.elementStack.pop();
-        secondElement.style.display = "block";
-       // self.normalizeStack(self);
-        secondElement.style.transform = "rotateX(180deg)";
-        self.flippanel.replaceChildren([]);
-        self.flippanel.appendChild(secondElement);
-        self.flippanel.appendChild(topElement);
-        self.moveToTos(self,self.flippanel);
-        self.flippanel.style.display="block";
-        self.normalizeStack(self);
-        let finishHandler = function(){
-            self.moveToBos(self,self.flippanel);
-            self.flippanel.replaceChildren([]);
-            self.container.appendChild(topElement);
-            self.container.appendChild(secondElement);
-            self.elementStack.push(topElement);
-            self.elementStack.push(secondElement);
-            self.normalizeStack(self);
-            secondElement.style.transform = "";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
-        }
-        self.performFlip(self,topElement,secondElement,firstanimation,secondanimation,timing,finishHandler);
+    flipOutY(args){
+        args.direction = -1;
+        let self = args.self;
+        self.moveToTos(args,args.selectedElement);
+        args.selectedElement.style.display = "block";
+        args.selectedElement.style.transform = "rotateX(0deg)";
+        self.elementStack[self.elementStack.length - 2].style.transform = "rotateX(180deg)";
+        self.performFlip(args);
     }
-    hingeInBottom(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.transformOrigin = "bottom";
+    flipInX(args){
+        args.direction = 1;
+        let self = args.self;
+        self.moveToBos(args,args.selectedElement);
+        args.selectedElement.style.display = "block";
+        args.selectedElement.style.transform = "rotateX(180deg)";
+        self.performFlip(args);
+    }
+    flipOutX(args){
+        args.direction = -1;
+        let self = args.self;
+        self.moveToTos(args,args.selectedElement);
+        args.selectedElement.style.display = "block";
+        args.selectedElement.style.transform = "rotateX(0deg)";
+        self.elementStack[self.elementStack.length - 2].style.transform = "rotateX(180deg)";
+        self.performFlip(args);
+    }
+    hinge(args){
+        let self = args.self;
         self.container.style.perspective =  "1000px";
         self.container.style.perspectiveOrigin = "left";
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            selectedElement.style.display= "block";
-            selectedElement.style.transformOrigin = "";
+        args.finishHandler = function(){
+            args.selectedElement.style.display= args.finalDisplayStyle;
+            args.selectedElement.style.transformOrigin = "";
             self.container.style.perspective =  "";
             self.container.style.perspectiveOrigin = "";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    hingeOutBottom(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.transformOrigin = "bottom";
-        self.container.style.perspective =  "1000px";
-        self.container.style.perspectiveOrigin = "left";
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.display= "none";
-            selectedElement.style.transformOrigin = "";
-            self.container.style.perspective =  "";
-            self.container.style.perspectiveOrigin = "";
+    hingeInBottom(args){
+        let self = args.self;
+        args.selectedElement.style.transformOrigin = "bottom";
+        args.finalDisplayStyle = "block";
+        self.hinge(args);
+    }
+    hingeOutBottom(args){
+        let self = args.self;
+        args.selectedElement.style.transformOrigin = "bottom";
+        args.finalDisplayStyle = "none";
+        self.hinge(args);
+    }
+    hingeInLeft(args){
+        let self = args.self;
+        args.selectedElement.style.transformOrigin = "left";
+        args.finalDisplayStyle = "block";
+        self.hinge(args);
+    }
+    hingeOutLeft(args){
+        let self = args.self;
+        args.selectedElement.style.transformOrigin = "left";
+        args.finalDisplayStyle = "none";
+        self.hinge(args);
+    }
+    hingeInRight(args){
+        let self = args.self;
+        args.selectedElement.style.transformOrigin = "right";
+        args.finalDisplayStyle = "block";
+        self.hinge(args);
+    }
+    hingeOutRight(args){
+        let self = args.self;
+        args.selectedElement.style.transformOrigin = "right";
+        args.finalDisplayStyle = "none";
+        self.hinge(args);
+    }
+    hingeInTop(args){
+        let self = args.self;
+        args.selectedElement.style.transformOrigin = "top";
+        args.finalDisplayStyle = "block";
+        self.hinge(args);
+    }
+    hingeOutTop(args){
+        let self = args.self;
+        args.selectedElement.style.transformOrigin = "top";
+        args.finalDisplayStyle = "none";
+        self.hinge(args);
+    }
+    menuInBottom(args){
+        let self = args.self;
+        args.selectedElement.transform = "translateY(100%)";
+        args.finishHandler = function(){
+            args.selectedElement.style.display= "block";
+            args.selectedElement.transform = "translateY(50%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    hingeInLeft(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.transformOrigin = "left";
-        self.container.style.perspective =  "10000px";
-        self.container.style.perspectiveOrigin = "left";
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            selectedElement.style.display= "block";
-            selectedElement.style.transformOrigin = "";
-            selectedElement.style.scale = "";
-            self.container.style.perspective =  "";
-            self.container.style.perspectiveOrigin = "";
+    menuOutBottom(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            self.moveToBos(args,args.selectedElement);
+            args.selectedElement.style.transform = "translateY(100%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    hingeOutLeft(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.transformOrigin = "left";
-        self.container.style.perspective =  "10000px";
-        self.container.style.perspectiveOrigin = "left";
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.display= "none";
-            selectedElement.style.transformOrigin = ""
-            selectedElement.style.scale = "";
-            self.container.style.perspective =  "";
-            self.container.style.perspectiveOrigin = "";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
-            
-        }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
-    }
-    hingeInRight(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.transformOrigin = "right";
-        self.container.style.perspective =  "1000px";
-        self.container.style.perspectiveOrigin = "left";
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            selectedElement.style.display= "block";
-            selectedElement.style.transformOrigin = "";
-            self.container.style.perspective =  "";
-            self.container.style.scale =  "";
-            self.container.style.perspectiveOrigin = "";
+    menuInLeft(args){
+        let self = args.self;
+        args.selectedElement.transform = "translateX(-100%)";
+        self.moveToTos(args,args.selectedElement);
+        args.finishHandler = function(){
+            args.selectedElement.style.display= "block";
+            args.selectedElement.transform = "translateX(-50%))";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    hingeOutRight(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.transformOrigin = "right";
-        self.container.style.perspective =  "1000px";
-        self.container.style.perspectiveOrigin = "left";
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.display= "none";
-            selectedElement.style.transformOrigin = "";
-            self.container.style.perspective =  "";
-            self.container.style.scale =  "";
-            self.container.style.perspectiveOrigin = "";
+    menuOutLeft(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            self.moveToBos(args,args.selectedElement);
+            args.selectedElement.style.transform = "translateX(-100%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    hingeInTop(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.transformOrigin = "top";
-        self.container.style.perspective =  "1000px";
-        self.container.style.perspectiveOrigin = "left";
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            selectedElement.style.display= "block";
-            selectedElement.style.transformOrigin = "";
-            self.container.style.perspective =  "";
-            self.container.style.perspectiveOrigin = "";
+    menuInRight(args){
+        let self = args.self;
+        args.selectedElement.transform = "translateX(100%)";
+        args.finishHandler = function(){
+            args.selectedElement.style.display= "block";
+            args.selectedElement.transform = "translateX(50%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    hingeOutTop(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        selectedElement.style.transformOrigin = "top";
-        self.container.style.perspective =  "1000px";
-        self.container.style.perspectiveOrigin = "left";
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.display= "none";
-            selectedElement.style.transformOrigin = "";
-            self.container.style.perspective =  "";
-            self.container.style.perspectiveOrigin = "";
+    menuOutRight(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            self.moveToBos(args,args.selectedElement);
+            args.selectedElement.style.transform = "translateX(100%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    newspaperIn(self,elementSelector, firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);  
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            selectedElement.style.display = "block";
-            selectedElement.style.transform = "rotate(0deg) scale(1)";
+    menuInTop(args){
+        let self = args.self;
+        args.selectedElement.transform = "translateY(-100%)";
+        args.finishHandler = function(){
+            args.selectedElement.transform = "translateY(-50%)"
+            args.selectedElement.style.display= "block";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,secondanimation,1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    newspaperOut(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-      
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.display = "none";
-            selectedElement.style.transform = "rotate(0deg) scale(1)";
+    menuOutTop(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            self.moveToBos(args,args.selectedElement);
+            args.selectedElement.style.transform = "translateY(100%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    rotateStack(self,elementSelector, firstanimation, secondanimation, timing,rotation){
+    newspaperIn(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            args.selectedElement.style.display = "block";
+            args.selectedElement.style.transform = "rotate(0deg) scale(1)";
+            if(self.performCallback !== null){
+                self.performCallback();
+            }
+        }
+        self.performAnimation(args);
+    }
+    newspaperOut(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            self.moveToBos(args,args.selectedElement);
+            args.selectedElement.style.display = "none";
+            args.selectedElement.style.transform = "rotate(0deg) scale(1)";
+            if(self.performCallback !== null){
+                self.performCallback();
+            }
+        }
+        self.performAnimation(args);
+    }
+    nullTransition(){
+
+    }
+    rotateStack(args){
+        let self = args.self;
+        let stackRotation = args.stackRotation;
        // We don't do anything if number === 0, other than making sure element is visible (below).
-       if(number < 0){
-            for(let i = 0; i > number; i--){
+       if(stackRotation < 0){
+            for(let i = 0; i > stackRotation; i--){
                self.elementStack.unshift(self.elementStack.pop());
             }
         }
-        else if(number > 0){
-            for(let i = 0; i < number; i++){
+        else if(stackRotation > 0){
+            for(let i = 0; i < stackRotation; i++){
                 self.elementStack.push(self.elementStack.shift())
             }
         }
-        self.normalizeStack(self);
-        let tosElement = self.getTos(self);
+        self.normalizeStack(args);
+        let tosElement = self.getTos(args);
         tosElement.style.display = "block";
         tosElement.style.opacity = 1.0;
         if(self.performCallback !== null){
             self.performCallback();
         }
     }
-    unrotateStack(self,elementselector, firstanimation, secondanimation, timing,rotation){
-        self.rotateStack(self,-rotation, firstanimation, secondanimation,timing);
+    unrotateStack(args){
+        args.stackRotation = -args.stackRotation;
+        args.self.rotateStack(args);
     }
-    slideInBottom(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay)
-        const selectedElement = self.selectElement(self,elementSelector);
-    
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay)
-            selectedElement.style.display= "block";
+    slideInBottom(args){
+        let self = args.self;
+        args.selectedElement.transform = "translateY(100%)";
+        args.finishHandler = function(){
+            args.selectedElement.style.display= "block";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation, 1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    slideOutBottom(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-       
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay)
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.transform = "translateY(0%)";
+    slideOutBottom(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            self.moveToBos(args,args.selectedElement);
+            args.selectedElement.style.transform = "translateY(0%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    slideInLeft(self,elementSelector,firstanimation,secondanimation, timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        let finishHandler = function(){
-            selectedElement.style.display= "block";
-            self.moveToBos(self,self.overlay);
+    slideInLeft(args){
+        let self = args.self;
+        args.selectedElement.transform = "translateX(-100%)";
+        self.moveToTos(args,args.selectedElement);
+        args.finishHandler = function(){
+            args.selectedElement.style.display= "block";
+            args.selectedElement.transform = "translateX(0)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    slideOutLeft(self,elementSelector,firstanimation,secondanimation, timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        let finishHandler = function(){
-            self.moveToBos(self,selectedElement);
-            self.moveToBos(self,self.overlay);
-            selectedElement.style.transform = "translateX(0%)";
+    slideOutLeft(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            self.moveToBos(args,args.selectedElement);
+            args.selectedElement.style.transform = "translateX(0%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    slideInRight(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay)
-            selectedElement.style.display= "block";
+    slideInRight(args){
+        let self = args.self;
+        args.selectedElement.transform = "translateX(100%)";
+        args.finishHandler = function(){
+            args.selectedElement.style.display= "block";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    slideOutRight(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        let finishHandler = function(){
-            self.moveToBos(self,selectedElement);
-            self.moveToBos(self,self.overlay)
-            selectedElement.style.transform = "translateX(0%)";
+    slideOutRight(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            self.moveToBos(args,args.selectedElement);
+            args.selectedElement.style.transform = "translateX(0%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    slideInTop(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay)
-        const selectedElement = self.selectElement(self,elementSelector);
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay)
-            selectedElement.style.display= "block";
+    slideInTop(args){
+        let self = args.self;
+        args.selectedElement.transform = "translateY(100%)";
+        args.finishHandler = function(){
+            args.selectedElement.style.display= "block";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    slideOutTop(self,elementSelector,firstanimation,secondanimation,timing){
-        self.moveToTos(self,self.overlay)
-        const selectedElement = self.selectElement(self,elementSelector);
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay)
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.transform = "translateY(0%)";
+    slideOutTop(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            self.moveToBos(args,args.selectedElement);
+            args.selectedElement.style.transform = "translateY(0%)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    zoomIn(self,elementSelector, firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            selectedElement.style.display = "block";
-            selectedElement.style.transform = "scale(1)";
+    zoomIn(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            args.selectedElement.style.display = "block";
+            args.selectedElement.style.transform = "scale(1)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,1,timing,finishHandler);
+        self.performAnimation(args);
     }
-    zoomOut(self,elementSelector,firstanimation,secondanimation,timing,rotation){
-        self.moveToTos(self,self.overlay);
-        const selectedElement = self.selectElement(self,elementSelector);
-      
-        let finishHandler = function(){
-            self.moveToBos(self,self.overlay);
-            self.moveToBos(self,selectedElement);
-            selectedElement.style.display = "none";
-            selectedElement.style.transform = "scale(1)";
+    zoomOut(args){
+        let self = args.self;
+        args.finishHandler = function(){
+            self.moveToBos(args,args.selectedElement);
+            args.selectedElement.style.display = "none";
+            args.selectedElement.style.transform = "scale(1)";
             if(self.performCallback !== null){
                 self.performCallback();
             }
         }
-        self.performAnimation(self,selectedElement,firstanimation,-1,timing,finishHandler);
+        self.performAnimation(args);
     }
   }

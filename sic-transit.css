@@ -19,14 +19,7 @@
    transform-style: preserve-3d;
  
 }
-.sic-transit-overlay{
-    position:absolute;
-    opacity:0.5;
-    width:100%;
-    height:100%;
-    display:block;
-    background-color:black;
-}
+
 
 .sic-transit-black-panel{
     position:absolute;
