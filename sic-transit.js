@@ -7,11 +7,11 @@ class SicTransit {
       this.containerId = containerId;
       this.container = document.querySelector(containerId);
       this.elementClass = elementClass;
+      this.date = new Date();
       this.synchro = 0;
       this.elementStack = [];
       this.loadStack({self:this});
       this.callback = null;
-      this.performCallback = null;
       let blackpanel = document.createElement('div');
       this.blackpanel = blackpanel;
       blackpanel.className = elementClass + ' sicpanel sic-transit-black-panel';
@@ -46,6 +46,7 @@ class SicTransit {
             animation: [],
             secondanimation: [],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            // cuts happen immediately, no timing parameters
             timing: {}
         },
         "cutOut": {
@@ -54,6 +55,7 @@ class SicTransit {
             animation: [],
             secondanimation: [],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            // cuts happen immediately, no timing parameters
             timing: {}
         },
         "dissolveIn": {
@@ -120,7 +122,7 @@ class SicTransit {
             animation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(360deg)"}],
             secondanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'ease-out', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "flipOutX":{
             forwardTransition: this.flipOutX,
@@ -128,7 +130,7 @@ class SicTransit {
             animation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
             secondanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'ease-out', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "flipInY":{
             forwardTransition: this.flipInY,
@@ -136,7 +138,7 @@ class SicTransit {
             animation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(360deg)"}],
             secondanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'ease-out', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "flipOutY":{
             forwardTransition: this.flipOutY,
@@ -144,63 +146,63 @@ class SicTransit {
             animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
             secondanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'ease-out', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "hingeInBottom":{
             forwardTransition: this.hingeInBottom,
             undo:"hingeOutBottom",
             animation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'ease-out', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "hingeOutBottom":{
             forwardTransition: this.hingeOutBottom,
             undo:"hingeInBottom",
             animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'ease-in', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "hingeInLeft":{
             forwardTransition: this.hingeInLeft,
             undo:"hingeOutLeft",
             animation: [{display:"block", transform: "rotateY(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'linear', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "hingeOutLeft":{
             forwardTransition: this.hingeOutLeft,
             undo:"hingeInLeft",
             animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'linear', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "hingeInRight":{
             forwardTransition: this.hingeInRight,
             undo:"hingeOutRight",
             animation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'ease-out', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "hingeOutRight":{
             forwardTransition: this.hingeOutRight,
             undo:"hingeInRight",
             animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'ease-in', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "hingeInTop":{
             forwardTransition: this.hingeInTop,
             undo:"hingeOutTop",
             animation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'ease-out', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "hingeOutTop":{
             forwardTransition: this.hingeOutTop,
             undo:"hingeInTop",
             animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'ease-in', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "menuInBottom": {
             forwardTransition: this.menuInBottom,
@@ -263,14 +265,14 @@ class SicTransit {
             undo:"newspaperOut",
             animation: [{display:"block", transform: "rotate(0deg)  scale(0)"}, {display:"block", transform: "rotate(720deg) scale(1)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'linear', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "newspaperOut":{
             forwardTransition: this.newspaperOut,
             undo:"newspaperIn",
             animation:[{display:"block", transform: "rotate(0deg)  scale(1)"}, {display:"block", transform: "rotate(-720deg) scale(0)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'linear', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
         "nullTransition":{
             forwardTransition: this.nullTransition,
@@ -284,6 +286,7 @@ class SicTransit {
             undo:"unrotateStack",
             animation: [],
             boxShadow: "",
+            // rotates happen immediately, no timing parameters
             timing: {}
         },
         "unrotateStack":{
@@ -291,6 +294,7 @@ class SicTransit {
             undo:"rotateStack",
             animation: [],
             boxShadow: "",
+            // rotates happen immediately, no timing parameters
             timing: {}
         },
         "slideInBottom": {
@@ -354,7 +358,7 @@ class SicTransit {
             undo:"zoomOut",
             animation: [{display:"block", transform: "scale(0)"}, {display:"block", transform: "scale(1)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'linear', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
 
         },
         "zoomOut":{
@@ -362,7 +366,7 @@ class SicTransit {
             undo:"zoomIn",
             animation: [{display:"block", transform: "scale(1)"}, {display:"block", transform: "scale(0)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            timing: {easing: 'linear', duration:500}
+            timing: {easing: 'ease-in-out', duration:500}
         },
     }
 
@@ -428,6 +432,26 @@ class SicTransit {
             element.style.zIndex = (index - elementStack.length) + 1;
         }
     }
+    setHoleSize(args,percentage) {
+        let self = args.self;
+        self.blackpanel.style.clipPath = `circle(${percentage}% at center)`;
+    }
+    animateHole(args,startSize, endSize, duration) {
+        let self = args.self;
+        self.moveToTos(args,self.blackpanel);
+        const startTime = Date.now();
+        function animate() {
+            const currentTime = Date.now();
+            const elapsedTime = currentTime - startTime;
+            const progress = elapsedTime / duration;
+            const currentSize = startSize + (endSize - startSize) * progress;
+            self.setHoleSize(args,currentSize);
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        }
+        requestAnimationFrame(animate);
+    }
     performAnimation(args){
         let self = args.self;
         self.moveToTos(args,args.selectedElement);
@@ -461,9 +485,7 @@ class SicTransit {
             self.container.appendChild(tosItem);
             self.container.appendChild(args.selectedElement);
             self.normalizeStack(args);
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.moveToTos(args,self.flippanel);
         self.flippanel.style.display = "block";
@@ -471,20 +493,33 @@ class SicTransit {
     }
     loadDefaults(args){
         let self = args.self;
+        if(args["transitionName"] === undefined){
+            args["transitionName"] = "nullTransition";
+        }
         let defaultArgs = {
-            transitionName: "nullTransition",
             direction: "forward",
-            duration: 1000,
+            easing: "linear",
+            duration: 500,
             elementSelector: "",
             firstanimation:() => {},
             secondanimation: () => {},
-            timing: {easing: "linear", duration:1000},
+            timing: self.dispatchTable[args["transitionName"]]["timing"],
             transitionFunction: self.dispatchTable["nullTransition"].forwardTransition,
             finishHandler:  () => {},
             fadePanel: self.blackpanel,
             finalDisplayStyle: 'none',
             stackRotation:0
         }
+        if(args["easing"] !== undefined){
+            self.dispatchTable[args["transitionName"]]["timing"]["easing"] = args["easing"];
+            }
+        if(args["duration"] !== undefined){
+            self.dispatchTable[args["transitionName"]]["timing"]["duration"] = args["duration"];
+        }
+        if(args["timing"] !== undefined){
+            self.dispatchTable[args["transitionName"]]["timing"] = args["timing"];
+        }
+        defaultArgs["timing"] = self.dispatchTable[args["transitionName"]]["timing"];
         for (let key in defaultArgs) {
             if (defaultArgs.hasOwnProperty(key)) {
                 if(args[key] === undefined){
@@ -502,6 +537,7 @@ class SicTransit {
         }
         let self = args.self;
         args = self.loadDefaults(args);
+        args.startTime = new Date().getTime();
         if(self.dispatchTable[args.transitionName] === undefined){
             throw new Error("SicTransit: " + args.transitionName + " is not a recognized transition");
         }
@@ -520,7 +556,6 @@ class SicTransit {
         args.firstanimation = self.dispatchTable[args.transitionName]["animation"];
         args.secondanimation = self.dispatchTable[args.transitionName]["secondanimation"];
         args.timing = self.dispatchTable[args.transitionName]["timing"];
-        args.timing.duration = args.duration;
         args.transitionFunction(args);
     }
     removeFromStack(args,element){
@@ -559,6 +594,14 @@ class SicTransit {
     setCallback(func){
         this.callback = func;
     }
+    performCallback(args){
+        const self = args.self;
+        if(self.callback === null){
+            return;
+        }
+        args.endTime = new Date().getTime();
+        self.callback(args);
+    }
     showElement(args){
         args.selectedElement.style.display = "block";
         args.selectedElement.style.opacity = 1.0;
@@ -580,16 +623,12 @@ class SicTransit {
     cutIn(args){
         let self = args.self;
         self.showElement(args);
-        if(self.performCallback !== null){
-            self.performCallback();
-        }
+        self.performCallback(args);
     }
     cutOut(args){
         let self = args.self;
         self.moveToBos(args,args.selectedElement);
-        if(self.performCallback !== null){
-            self.performCallback();
-        }
+        self.performCallback(args);
     }
     dissolveIn(args){
         let self = args.self;
@@ -614,9 +653,7 @@ class SicTransit {
             topElement.style.opacity = 1;
             self.normalizeStack(args);
             self.synchro = 0;
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         const animation = args.selectedElement.animate(args.firstanimation,args.timing);
         animation.onfinish = args.finishHandler;
@@ -642,9 +679,7 @@ class SicTransit {
             args.selectedElement.style.opacity = 1;
             self.normalizeStack(args);
             self.synchro = 0;
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         const animation = args.selectedElement.animate(args.firstanimation,args.timing);
         animation.onfinish = args.finishHandler; 
@@ -662,9 +697,7 @@ class SicTransit {
                 self.moveToBos(args,args.fadePanel);
                 args.selectedElement.style.display = "block";
                 args.selectedElement.style.opacity = 1;
-                if(self.performCallback !== null){
-                    self.performCallback();
-                }
+                self.performCallback(args);
             }
         }
         else{
@@ -675,9 +708,7 @@ class SicTransit {
             args.finishHandler = function(){
                 self.moveToBos(args,args.selectedElement);
                 args.selectedElement.style.opacity = 1;
-                if(self.performCallback !== null){
-                    self.performCallback();
-                }
+                self.performCallback(args);
             }
         }
         self.performAnimation(args);
@@ -761,9 +792,7 @@ class SicTransit {
             args.selectedElement.style.transformOrigin = "";
             self.container.style.perspective =  "";
             self.container.style.perspectiveOrigin = "";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -822,9 +851,7 @@ class SicTransit {
             self.moveToTos(args,args.selectedElement);
             args.selectedElement.style.display = "block";
             args.selectedElement.style.transform = "translateY(50%)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -833,9 +860,7 @@ class SicTransit {
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
             args.selectedElement.style.transform = "";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -846,9 +871,7 @@ class SicTransit {
         args.finishHandler = function(){
             args.selectedElement.style.display= "block";
             args.selectedElement.style.transform = "translateX(-50%)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -857,9 +880,7 @@ class SicTransit {
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
             args.selectedElement.style.transform = "";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -869,9 +890,7 @@ class SicTransit {
         args.finishHandler = function(){
             args.selectedElement.style.display= "block";
             args.selectedElement.style.transform = "translateX(50%)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -880,9 +899,7 @@ class SicTransit {
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
             args.selectedElement.style.transform = "";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -892,9 +909,7 @@ class SicTransit {
         args.finishHandler = function(){
             args.selectedElement.style.transform = "translateY(-50%)"
             args.selectedElement.style.display= "block";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -903,9 +918,7 @@ class SicTransit {
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
             args.selectedElement.style.transform = "";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -914,9 +927,7 @@ class SicTransit {
         args.finishHandler = function(){
             args.selectedElement.style.display = "block";
             args.selectedElement.style.transform = "rotate(0deg) scale(1)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -926,9 +937,7 @@ class SicTransit {
             self.moveToBos(args,args.selectedElement);
             args.selectedElement.style.display = "none";
             args.selectedElement.style.transform = "rotate(0deg) scale(1)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -953,9 +962,7 @@ class SicTransit {
         let tosElement = self.getTos(args);
         tosElement.style.display = "block";
         tosElement.style.opacity = 1.0;
-        if(self.performCallback !== null){
-            self.performCallback();
-        }
+        self.performCallback(args);
     }
     unrotateStack(args){
         args.stackRotation = -args.stackRotation;
@@ -966,9 +973,7 @@ class SicTransit {
         args.selectedElement.transform = "translateY(100%)";
         args.finishHandler = function(){
             args.selectedElement.style.display= "block";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -977,9 +982,7 @@ class SicTransit {
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
             args.selectedElement.style.transform = "translateY(0%)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -990,9 +993,7 @@ class SicTransit {
         args.finishHandler = function(){
             args.selectedElement.style.display= "block";
             args.selectedElement.transform = "translateX(0)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -1001,9 +1002,7 @@ class SicTransit {
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
             args.selectedElement.style.transform = "translateX(0%)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -1012,9 +1011,7 @@ class SicTransit {
         args.selectedElement.transform = "translateX(100%)";
         args.finishHandler = function(){
             args.selectedElement.style.display= "block";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -1023,9 +1020,7 @@ class SicTransit {
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
             args.selectedElement.style.transform = "translateX(0%)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -1034,9 +1029,7 @@ class SicTransit {
         args.selectedElement.transform = "translateY(100%)";
         args.finishHandler = function(){
             args.selectedElement.style.display= "block";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -1045,9 +1038,7 @@ class SicTransit {
         args.finishHandler = function(){
             self.moveToBos(args,args.selectedElement);
             args.selectedElement.style.transform = "translateY(0%)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -1056,9 +1047,7 @@ class SicTransit {
         args.finishHandler = function(){
             args.selectedElement.style.display = "block";
             args.selectedElement.style.transform = "scale(1)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }
@@ -1068,9 +1057,7 @@ class SicTransit {
             self.moveToBos(args,args.selectedElement);
             args.selectedElement.style.display = "none";
             args.selectedElement.style.transform = "scale(1)";
-            if(self.performCallback !== null){
-                self.performCallback();
-            }
+            self.performCallback(args);
         }
         self.performAnimation(args);
     }

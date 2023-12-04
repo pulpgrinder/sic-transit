@@ -35,7 +35,7 @@
     <div>
     Element: <select title="elementSelector" id="elementSelector"></select>
     Transition: <select id="transitionSelector" title="transitionSelector"></select>
-    Duration (ms): <input type="text" title="duration" id="duration" size="4" value="1000" />
+    Duration (ms): <input type="text" title="duration" id="duration" size="4" value="500" />
     Rotations: <input type="text" title="rotations"  id="rotations" size="4" value="1" />
     Direction: <input type="text" title = "direction" id="direction" size="4" value="1" />
     <button title="performTransition" id="performTransition">Perform Transition</button>
@@ -43,15 +43,12 @@
   <script type="text/javascript" src="sic-transit.js"></script>
   <script type="text/javascript">
  
-    function callbackTest(elementSelector,transitionName,duration,direction,startTime,endTime){
-        console.log("elementSelector: " + elementSelector);
-        console.log("transitionName: " + transitionName);
-        console.log("direction: " + direction);
-        console.log("startTime: " + startTime);
-        console.log("endTime: " + endTime);
-        console.log("Scheduled duration: " + duration + " ms");
-        console.log("Actual elapsed time: " + (endTime - startTime) + " ms");
-        transit.stackDump(transit);
+    function callbackTest(args){
+        console.log("elementSelector: " + args.elementSelector);
+        console.log("transitionName: " + args.transitionName);
+        console.log("direction: " + args.direction);
+        console.log("elapsed time: " + (args.endTime - args.startTime));
+        transit.stackDump(args);
     }
 function loadUI(){
     let transitions = Object.keys(transit.dispatchTable);
