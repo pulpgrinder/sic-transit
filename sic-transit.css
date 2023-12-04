@@ -28,6 +28,13 @@
     display:block;
     background-color:black;
 }
+.sic-transit-iris-panel{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    background: radial-gradient(circle, transparent 0%, transparent 0%, black 0%);
+}
 .sic-transit-white-panel{
     position:absolute;
     width:100%;

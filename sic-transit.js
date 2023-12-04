@@ -27,6 +27,11 @@ class SicTransit {
       whitepanel.className = elementClass +  ' sicpanel sic-transit-white-panel';
       this.container.appendChild(whitepanel);
       this.elementStack.unshift(whitepanel);
+      let irispanel = document.createElement('div');
+      this.irispanel = irispanel;
+      irispanel.className = elementClass +  ' sicpanel sic-transit-iris-panel';
+      this.container.appendChild(irispanel);
+      this.elementStack.unshift(irispanel);
       let flippanel = document.createElement('div');
       this.flippanel = flippanel;
       flippanel.className = elementClass +  ' sicpanel sic-transit-flip-panel';
@@ -202,6 +207,36 @@ class SicTransit {
             undo:"hingeInTop",
             animation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "irisInBlack":{
+            forwardTransition:this.irisInBlack,
+            undo:this.irisOutBlack,
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "irisOutBlack":{
+            forwardTransition:this.irisOutBlack,
+            undo:this.irisInBlack,
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "irisInGray":{
+            forwardTransition:this.irisInGray,
+            undo:this.irisOutGray,
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "irisOutGray":{
+            forwardTransition:this.irisOutGray,
+            undo:this.irisInGray,
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "irisInWhite":{
+            forwardTransition:this.irisInWhite,
+            undo:this.irisOutWhite,
+            timing: {easing: 'ease-in-out', duration:500}
+        },
+        "irisOutWhite":{
+            forwardTransition:this.irisOutWhite,
+            undo:this.irisInWhite,
             timing: {easing: 'ease-in-out', duration:500}
         },
         "menuInBottom": {
@@ -432,20 +467,25 @@ class SicTransit {
             element.style.zIndex = (index - elementStack.length) + 1;
         }
     }
-    setHoleSize(args,percentage) {
-        let self = args.self;
-        self.blackpanel.style.clipPath = `circle(${percentage}% at center)`;
+    setIrisSize(args,holeSize,color) {
+        self = args.self;
+        const irisOverlay = self.irispanel;
+        irisOverlay.style.background = `radial-gradient(circle, transparent ${holeSize}px, ${color} ${holeSize}px)`;
     }
-    animateHole(args,startSize, endSize, duration) {
+    animateIris(args,startSize, endSize, color, duration) {
         let self = args.self;
-        self.moveToTos(args,self.blackpanel);
         const startTime = Date.now();
+        const irisOverlay = self.irispanel;
+        irisOverlay.style.background = "radial-gradient(circle, transparent 0%, transparent 0%, ${color} 0%)";
+        args.selectedElement.style.display = "block";
+        self.moveToTos(args,args.selectedElement);
+        self.moveToTos(args,self.irispanel);
         function animate() {
             const currentTime = Date.now();
             const elapsedTime = currentTime - startTime;
             const progress = elapsedTime / duration;
             const currentSize = startSize + (endSize - startSize) * progress;
-            self.setHoleSize(args,currentSize);
+            self.setIrisSize(args,currentSize,color);
             if (progress < 1) {
                 requestAnimationFrame(animate);
             }
@@ -782,6 +822,36 @@ class SicTransit {
         args.selectedElement.style.transform = "rotateX(0deg)";
         self.elementStack[self.elementStack.length - 2].style.transform = "rotateX(180deg)";
         self.performFlip(args);
+    }
+    irisInBlack(args){
+        let self = args.self;
+        self.animateIris(args,0,175,"black",self.dispatchTable.irisInBlack.timing.duration);
+        self.performCallback(args);
+    }
+    irisOutBlack(args){
+        let self = args.self;
+        self.animateIris(args,175,0,"black",self.dispatchTable.irisOutBlack.timing.duration);
+        self.performCallback(args);
+    }
+    irisInGray(args){
+        let self = args.self;
+        self.animateIris(args,0,175,"gray",self.dispatchTable.irisInGray.timing.duration);
+        self.performCallback(args);
+    }
+    irisOutGray(args){
+        let self = args.self;
+        self.animateIris(args,175,0,"gray",self.dispatchTable.irisOutGray.timing.duration);
+        self.performCallback(args);
+    }
+    irisInWhite(args){
+        let self = args.self;
+        self.animateIris(args,0,175,"white",self.dispatchTable.irisInWhite.timing.duration);
+        self.performCallback(args);
+    }
+    irisOutWhite(args){
+        let self = args.self;
+        self.animateIris(args,175,0,"white",self.dispatchTable.irisOutWhite.timing.duration);
+        self.performCallback(args);
     }
     hinge(args){
         let self = args.self;
