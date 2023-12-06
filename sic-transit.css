@@ -13,8 +13,8 @@
    margin:0;
    /*  We want any borders to show up. */
    box-sizing: border-box;
-   display:none;
-   z-index:-30;
+   display:block;
+   z-index:-3000;
    backface-visibility: hidden;
    transform-style: preserve-3d;
  

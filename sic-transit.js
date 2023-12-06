@@ -3,45 +3,46 @@
  */
 
 class SicTransit {
-    constructor(containerId, elementClass) {
+    constructor(containerId, panelClass) {
       this.containerId = containerId;
       this.container = document.querySelector(containerId);
-      this.elementClass = elementClass;
+      this.panelClass = panelClass.substring(1);
       this.date = new Date();
       this.synchro = 0;
-      this.elementStack = [];
-      this.loadStack({self:this});
+      this.panelStack = [];
+      this.loadStack();
       this.callback = null;
       let blackpanel = document.createElement('div');
       this.blackpanel = blackpanel;
-      blackpanel.className = elementClass + ' sicpanel sic-transit-black-panel';
+      blackpanel.className = this.panelClass + ' sic-panel sic-transit-black-panel';
       this.container.appendChild(blackpanel);
-      this.elementStack.unshift(blackpanel);
+      this.panelStack.unshift(blackpanel);
       let graypanel = document.createElement('div');
       this.graypanel = graypanel;
-      graypanel.className = elementClass + ' sicpanel sic-transit-gray-panel';
+      graypanel.className = this.panelClass + ' sic-panel sic-transit-gray-panel';
       this.container.appendChild(graypanel);
-      this.elementStack.unshift(graypanel);
+      this.panelStack.unshift(graypanel);
       let whitepanel = document.createElement('div');
       this.whitepanel = whitepanel;
-      whitepanel.className = elementClass +  ' sicpanel sic-transit-white-panel';
+      whitepanel.className = this.panelClass +  ' sic-panel sic-transit-white-panel';
       this.container.appendChild(whitepanel);
-      this.elementStack.unshift(whitepanel);
+      this.panelStack.unshift(whitepanel);
       let irispanel = document.createElement('div');
       this.irispanel = irispanel;
-      irispanel.className = elementClass +  ' sicpanel sic-transit-iris-panel';
+      irispanel.className = this.panelClass +  ' sic-panel sic-transit-iris-panel';
       this.container.appendChild(irispanel);
-      this.elementStack.unshift(irispanel);
+      this.panelStack.unshift(irispanel);
       let flippanel = document.createElement('div');
       this.flippanel = flippanel;
-      flippanel.className = elementClass +  ' sicpanel sic-transit-flip-panel';
+      flippanel.className = this.panelClass +  ' sic-panel sic-transit-flip-panel';
       this.container.appendChild(flippanel);
-      this.elementStack.unshift(flippanel);
-      this.showElement({self:this,selectedElement:this.elementStack[this.elementStack.length - 1]});
+      this.panelStack.unshift(flippanel);
+      this.showPanel({self:this,selectedPanel:this.panelStack[this.panelStack.length - 1]});
+      this.normalizeStack();
     }
-    checkElementExists(args){
-        if(args.selectedElement === null){
-            throw new Error("SicTransit: Element " + args.elementSelector + " not found in " + args.self.containerId);
+    checkPanelExists(args){
+        if(args.selectedPanel === null){
+            throw new Error("SicTransit: Panel " + args.panelSelector + " not found in " + args.self.containerId);
         }
     }
    dispatchTable =  {
@@ -405,12 +406,72 @@ class SicTransit {
         },
     }
 
-// Utility methods
+// Public methods.
+    addPanel(selector,self=this){
+        let newPanel;
+        if(typeof selector === 'string'){
+            if((selector.indexOf(".") !== 0) && (selector.indexOf("#") !== 0)){
+                // we assume it's an id
+                newPanel = document.getElementById(selector);
+            }
+            else { // we assume it's a query selector
+                newPanel = document.querySelector(selector);
+            
+            }
+        }
+        else if(selector instanceof HTMLElement){ // It's already an DOM object
+            newPanel = selector;
+        }
+        if(newPanel instanceof HTMLElement){
+           newPanel.remove(); // Remove it from where it is now.
+           newPanel.classList.add(self.panelClass,"sic-panel");
+            self.panelStack.push(newPanel);
+            self.container.appendChild(newPanel);
+            self.normalizeStack(self);
+        }
+        else {
+             throw new Error("Sic Transit: attempting to add invalid panel " + selector.toString())
+        }
+      
+    }
+    displayPanel(panel){
+        this.showPanel({self:this,selectedPanel:panel});
+    }
+    getBos(args){
+        let self;
+        if(args !== undefined){
+            self = args.self;
+        }
+        else{
+            self = this;
+        }
+        return self.panelStack[0];
+    }
     getContainerId(){
         return this.containerId;
     }
-    getElementClass(){
-        return this.elementClass;
+    getPanelClass(){
+        return this.panelClass;
+    }
+    getPanelList(){
+        let panelList = [];
+        let panels = document.querySelectorAll(this.containerId + " > ." + this.panelClass);
+        for(let i = 0; i < panels.length; i++){
+            if(panels[i].id !== ""){
+                panelList.push(panels[i].id);
+            }
+        }
+        return panelList;
+    }
+    getTos(args){
+        let self;
+        if(args !== undefined){
+            self = args.self;
+        }
+        else{
+            self = this;
+        }
+        return args.self.panelStack[args.self.panelStack.length - 1];
     }
     getTransitionList(){
         let transitions = [];
@@ -421,156 +482,9 @@ class SicTransit {
          }
          return transitions;
     }
-    getPanelList(){
-        let panelList = [];
-        let elements = document.querySelectorAll(this.containerId + " > " + this.elementClass);
-        for(let i = 0; i < elements.length; i++){
-            if(elements[i].id !== undefined){
-                panelList.push(elements[i].id);
-            }
-        }
-        return panelList;
+    getZIndex(panel){
+        return window.getComputedStyle(panel).getPropertyValue('z-index');
     }
-    getBos(args){
-        return args.self.elementStack[0];
-    }
-    getTos(args){
-        return args.self.elementStack[args.self.elementStack.length - 1];
-    }
-    getZIndex(element){
-        return window.getComputedStyle(element).getPropertyValue('z-index');
-    }
-    loadStack(args){
-        let self = args.self;
-        const element_list = document.querySelectorAll(self.elementClass);
-        self.elementStack = [...element_list];
-        self.normalizeStack(args);
-    }
-    moveToBos(args,element){
-        let self = args.self;
-        self.removeFromStack(args,element);
-        self.elementStack.unshift(element);
-        self.normalizeStack(args);
-    }
-    moveToTos(args,element){
-        let self = args.self;
-        self.removeFromStack(args,element);
-        self.elementStack.push(element);
-        self.normalizeStack(args);
-    }
-   
-    normalizeStack(args){
-        let self = args.self;
-        let elementStack = self.elementStack;
-        for(let index = 0; index < elementStack.length; index++){
-            let element = elementStack[index];
-            element.style.zIndex = (index - elementStack.length) + 1;
-        }
-    }
-    setIrisSize(args,holeSize,color) {
-        self = args.self;
-        const irisOverlay = self.irispanel;
-        irisOverlay.style.background = `radial-gradient(circle, transparent ${holeSize}px, ${color} ${holeSize}px)`;
-    }
-    animateIris(args,startSize, endSize, color, duration) {
-        let self = args.self;
-        const startTime = Date.now();
-        const irisOverlay = self.irispanel;
-        irisOverlay.style.background = "radial-gradient(circle, transparent 0%, transparent 0%, ${color} 0%)";
-        args.selectedElement.style.display = "block";
-        self.moveToTos(args,args.selectedElement);
-        self.moveToTos(args,self.irispanel);
-        function animate() {
-            const currentTime = Date.now();
-            const elapsedTime = currentTime - startTime;
-            const progress = elapsedTime / duration;
-            const currentSize = startSize + (endSize - startSize) * progress;
-            self.setIrisSize(args,currentSize,color);
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            }
-        }
-        requestAnimationFrame(animate);
-    }
-    performAnimation(args){
-        let self = args.self;
-        self.moveToTos(args,args.selectedElement);
-        const animation = args.selectedElement.animate(args.firstanimation,args.timing);
-        animation.onfinish = args.finishHandler; 
-    }
-    performFlip(args){
-        let self = args.self;
-        self.flippanel.replaceChildren([]);
-        self.removeFromStack(args,args.selectedElement);
-        self.flippanel.appendChild(args.selectedElement);
-        let tosItem = self.elementStack.pop();
-        self.flippanel.appendChild(tosItem);
-        self.moveToTos(args,self.flippanel);
-        const animation = args.selectedElement.animate(args.firstanimation,args.timing);
-        animation.onfinish = function(){
-            args.selectedElement.style.transform = "";
-            tosItem.style.transform = "";
-            self.flippanel.replaceChildren([]);
-            self.moveToBos(args,self.flippanel);
-            if(args.direction === 1){
-                self.elementStack.push(tosItem);
-                self.elementStack.push(args.selectedElement);
-                self.normalizeStack(args);
-            }
-            else{
-                self.elementStack.push(args.selectedElement);
-                self.elementStack.push(tosItem);
-                self.normalizeStack(args);
-            }
-            self.container.appendChild(tosItem);
-            self.container.appendChild(args.selectedElement);
-            self.normalizeStack(args);
-            self.performCallback(args);
-        }
-        self.moveToTos(args,self.flippanel);
-        self.flippanel.style.display = "block";
-        tosItem.animate(args.secondanimation, args.timing);
-    }
-    loadDefaults(args){
-        let self = args.self;
-        if(args["transitionName"] === undefined){
-            args["transitionName"] = "nullTransition";
-        }
-        let defaultArgs = {
-            direction: "forward",
-            easing: "linear",
-            duration: 500,
-            elementSelector: "",
-            firstanimation:() => {},
-            secondanimation: () => {},
-            timing: self.dispatchTable[args["transitionName"]]["timing"],
-            transitionFunction: self.dispatchTable["nullTransition"].forwardTransition,
-            finishHandler:  () => {},
-            fadePanel: self.blackpanel,
-            finalDisplayStyle: 'none',
-            stackRotation:0
-        }
-        if(args["easing"] !== undefined){
-            self.dispatchTable[args["transitionName"]]["timing"]["easing"] = args["easing"];
-            }
-        if(args["duration"] !== undefined){
-            self.dispatchTable[args["transitionName"]]["timing"]["duration"] = args["duration"];
-        }
-        if(args["timing"] !== undefined){
-            self.dispatchTable[args["transitionName"]]["timing"] = args["timing"];
-        }
-        defaultArgs["timing"] = self.dispatchTable[args["transitionName"]]["timing"];
-        for (let key in defaultArgs) {
-            if (defaultArgs.hasOwnProperty(key)) {
-                if(args[key] === undefined){
-                    args[key] = defaultArgs[key];
-                }
-            }
-          }
-        args =  self.selectElement(args);
-        return args;
-    }
-
     performTransition(args){
         if(args.self === undefined){
             args.self = this;
@@ -598,41 +512,188 @@ class SicTransit {
         args.timing = self.dispatchTable[args.transitionName]["timing"];
         args.transitionFunction(args);
     }
-    removeFromStack(args,element){
-        let elementStack = args.self.elementStack;
-        for(let i = 0; i < elementStack.length; i++){
-            if(elementStack[i] === element){
-                elementStack.splice(i,1);
-                return element;
+    setCallback(func){
+        this.callback = func;
+    }
+    stackDump(args = {self:this}){
+        console.log("stackDump:");
+        for (const panel of args.self.panelStack) {
+            if(panel.id !== ""){
+                console.log("id: " + panel.id + " display:" + panel.style.display + " z-index: " + panel.style.zIndex);
+            }
+            else {
+                console.log("class: " + panel.className + " display:" + panel.style.display + " z-index: " + panel.style.zIndex);
+            }
+        } 
+    }
+
+    // Internal methods. Not documented and not intended to be called
+    // directly by user code. These may change at any time. Use at 
+    // your own risk.
+
+    animateIris(args,startSize, endSize, color, duration) {
+        let self = args.self;
+        const startTime = Date.now();
+        const irisOverlay = self.irispanel;
+        irisOverlay.style.background = "radial-gradient(circle, transparent 0%, transparent 0%, ${color} 0%)";
+        args.selectedPanel.style.display = "block";
+        self.moveToTos(args.selectedPanel,self);
+        self.moveToTos(self.irispanel,self);
+        function animate() {
+            const currentTime = Date.now();
+            const elapsedTime = currentTime - startTime;
+            const progress = elapsedTime / duration;
+            const currentSize = startSize + (endSize - startSize) * progress;
+            self.setIrisSize(args,currentSize,color);
+            if (progress < 1) {
+                requestAnimationFrame(animate);
             }
         }
-        throw new Error("removeFromStack: element not found.");
+        requestAnimationFrame(animate);
     }
-    selectElement(args){
+    loadDefaults(args){
         let self = args.self;
-        if(args.elementSelector === ""){
-            args.selectedElement = self.getBos(args);
+        if(args["transitionName"] === undefined){
+            args["transitionName"] = "nullTransition";
         }
-        else if(Number.isInteger(args.elementSelector)){
+        let defaultArgs = {
+            direction: "forward",
+            easing: "linear",
+            duration: 500,
+            panelSelector: "",
+            firstanimation:() => {},
+            secondanimation: () => {},
+            timing: self.dispatchTable[args["transitionName"]]["timing"],
+            transitionFunction: self.dispatchTable["nullTransition"].forwardTransition,
+            finishHandler:  () => {},
+            fadePanel: self.blackpanel,
+            finalDisplayStyle: 'none',
+            stackRotation:0
+        }
+        if(args["easing"] !== undefined){
+            self.dispatchTable[args["transitionName"]]["timing"]["easing"] = args["easing"];
+            }
+        if(args["duration"] !== undefined){
+            self.dispatchTable[args["transitionName"]]["timing"]["duration"] = args["duration"];
+        }
+        if(args["timing"] !== undefined){
+            self.dispatchTable[args["transitionName"]]["timing"] = args["timing"];
+        }
+        defaultArgs["timing"] = self.dispatchTable[args["transitionName"]]["timing"];
+        for (let key in defaultArgs) {
+            if (defaultArgs.hasOwnProperty(key)) {
+                if(args[key] === undefined){
+                    args[key] = defaultArgs[key];
+                }
+            }
+          }
+        args =  self.selectPanel(args);
+        return args;
+    }
+    loadStack(self=this){
+        const panel_list = document.querySelectorAll("." + self.panelClass);
+        self.panelStack = [...panel_list];
+        self.normalizeStack(self);
+    }
+    moveToBos(panel,self=this){
+        self.removeFromStack(panel,self);
+        self.panelStack.unshift(panel);
+        self.normalizeStack(self);
+    }
+    moveToTos(panel,self=this){
+        self.removeFromStack(panel,self);
+        self.panelStack.push(panel);
+        self.normalizeStack(self);
+    }
+    normalizeStack(self=this){
+        let panelStack = self.panelStack;
+        for(let index = 0; index < panelStack.length; index++){
+            let panel = panelStack[index];
+            panel.style.zIndex = (index - panelStack.length) + 1;
+        }
+    }
+    performAnimation(args){
+        let self = args.self;
+        self.moveToTos(args.selectedPanel,self);
+        const animation = args.selectedPanel.animate(args.firstanimation,args.timing);
+        animation.onfinish = args.finishHandler; 
+    }
+    performFlip(args){
+        let self = args.self;
+        self.flippanel.replaceChildren([]);
+        self.removeFromStack(args.selectedPanel,self);
+        self.flippanel.appendChild(args.selectedPanel);
+        let tosItem = self.panelStack.pop();
+        self.flippanel.appendChild(tosItem);
+        self.moveToTos(self.flippanel,self);
+        const animation = args.selectedPanel.animate(args.firstanimation,args.timing);
+        animation.onfinish = function(){
+            args.selectedPanel.style.transform = "";
+            tosItem.style.transform = "";
+            self.flippanel.replaceChildren([]);
+            self.moveToBos(self.flippanel,self);
+            if(args.direction === 1){
+                self.panelStack.push(tosItem);
+                self.panelStack.push(args.selectedPanel);
+                self.normalizeStack(self);
+            }
+            else{
+                self.panelStack.push(args.selectedPanel);
+                self.panelStack.push(tosItem);
+                self.normalizeStack(self);
+            }
+            self.container.appendChild(tosItem);
+            self.container.appendChild(args.selectedPanel);
+            self.normalizeStack(self);
+            self.performCallback(args);
+        }
+        self.moveToTos(self.flippanel,self);
+        self.flippanel.style.display = "block";
+        tosItem.animate(args.secondanimation, args.timing);
+    }
+
+    setIrisSize(args,holeSize,color) {
+        self = args.self;
+        const irisOverlay = self.irispanel;
+        irisOverlay.style.background = `radial-gradient(circle, transparent ${holeSize}px, ${color} ${holeSize}px)`;
+    }
+    showPanel(args){
+        args.selectedPanel.style.display = "block";
+        args.selectedPanel.style.opacity = 1.0;
+        args.self.moveToTos(args.selectedPanel,args.self);
+        }
+    removeFromStack(panel,self=this){
+        let panelStack = self.panelStack;
+        for(let i = 0; i < panelStack.length; i++){
+            if(panelStack[i] === panel){
+                panelStack.splice(i,1);
+                return panel;
+            }
+        }
+        throw new Error("removeFromStack: panel not found.");
+    }
+    selectPanel(args){
+        let self = args.self;
+        if(args.panelSelector === ""){
+            args.selectedPanel = self.getBos(args);
+        }
+        else if(Number.isInteger(args.panelSelector)){
             // We're selecting the new item by stack position
-            if(args.elementSelector >= 0){
+            if(args.panelSelector >= 0){
                 // Counting up from bottom of stack.
-                args.selectedElement =  self.elementStack[args.elementSelector];
+                args.selectedPanel =  self.panelStack[args.panelSelector];
             }
             else{
                 // Counting down from top of stack.
-                args.selectedElement = self.elementStack[self.elementStack.length - (args.elementSelector + 1)];
+                args.selectedPanel = self.panelStack[self.panelStack.length - (args.panelSelector + 1)];
             }
         }
         else {
-            args.selectedElement = document.querySelector(args.elementSelector);
+            args.selectedPanel = document.querySelector(args.panelSelector);
         }
-        // Throws an error if the element does not exist.
-        self.checkElementExists(args);
+        // Throws an error if the panel does not exist.
+        self.checkPanelExists(args);
         return args;
-    }
-    setCallback(func){
-        this.callback = func;
     }
     performCallback(args){
         const self = args.self;
@@ -642,112 +703,98 @@ class SicTransit {
         args.endTime = new Date().getTime();
         self.callback(args);
     }
-    showElement(args){
-        args.selectedElement.style.display = "block";
-        args.selectedElement.style.opacity = 1.0;
-        args.self.moveToTos(args,args.selectedElement);
-    }
-    stackDump(args = {self:this}){
-        console.log("stackDump:");
-        for (const element of args.self.elementStack) {
-            if(element.id !== ""){
-                console.log("id: " + element.id + " display:" + element.style.display + " z-index: " + element.style.zIndex);
-            }
-            else {
-                console.log("class: " + element.className + " display:" + element.style.display + " z-index: " + element.style.zIndex);
-            }
-        } 
-    }
+ 
 
-// Transitions
+// Transition handling code. Not intended to be called directly from user code.
+// Use performTransition instead.
     cutIn(args){
         let self = args.self;
-        self.showElement(args);
+        self.showPanel(args);
         self.performCallback(args);
     }
     cutOut(args){
         let self = args.self;
-        self.moveToBos(args,args.selectedElement);
+        self.moveToBos(args.selectedPanel,self);
         self.performCallback(args);
     }
     dissolveIn(args){
         let self = args.self;
         self.synchro = 0;
-        self.moveToBos(args,args.selectedElement);
-        args.selectedElement.style.display = "none";
-        let topElement = self.elementStack.pop();
-        self.elementStack.push(topElement);
-        self.moveToTos(args,self.blackpanel);
-        self.moveToTos(args,topElement);
-        self.normalizeStack(args);
-        args.selectedElement.style.opacity = 0;
-        self.moveToTos(args,args.selectedElement);
+        self.moveToBos(args.selectedPanel,self);
+        args.selectedPanel.style.display = "none";
+        let topPanel = self.panelStack.pop();
+        self.panelStack.push(topPanel);
+        self.moveToTos(self.blackpanel,self);
+        self.moveToTos(topPanel,self);
+        self.normalizeStack(self);
+        args.selectedPanel.style.opacity = 0;
+        self.moveToTos(args.selectedPanel,self);;
         args.finishHandler = function(){
             self.synchro++;
             if(self.synchro < 2){
                 // Second animation is still running.
                 return;
             }
-            args.selectedElement.style.opacity = 1;
-            args.selectedElement.style.display = "block";
-            topElement.style.opacity = 1;
-            self.normalizeStack(args);
+            args.selectedPanel.style.opacity = 1;
+            args.selectedPanel.style.display = "block";
+            topPanel.style.opacity = 1;
+            self.normalizeStack(self);
             self.synchro = 0;
             self.performCallback(args);
         }
-        const animation = args.selectedElement.animate(args.firstanimation,args.timing);
+        const animation = args.selectedPanel.animate(args.firstanimation,args.timing);
         animation.onfinish = args.finishHandler;
-        const topAnimation = topElement.animate(args.secondanimation,args.timing);
+        const topAnimation = topPanel.animate(args.secondanimation,args.timing);
         topAnimation.onfinish = args.finishHandler;
     }
     dissolveOut(args){
         let self = args.self;
         self.synchro = 0;
-        self.moveToTos(args,args.selectedElement);
-        let topElement = self.elementStack[self.elementStack.length - 2];
-        self.normalizeStack(args);
-        args.selectedElement.style.opacity = 1;
-        topElement.style.opacity = 0;
+        self.moveToTos(args.selectedPanel,self);
+        let topPanel = self.panelStack[self.panelStack.length - 2];
+        self.normalizeStack(self);
+        args.selectedPanel.style.opacity = 1;
+        topPanel.style.opacity = 0;
         args.finishHandler = function(){
             self.synchro++;
             if(self.synchro < 2){
                  // Second animation is still running.
                 return;
             }
-            self.moveToBos(args,args.selectedElement);
-            topElement.style.opacity = 1;
-            args.selectedElement.style.opacity = 1;
-            self.normalizeStack(args);
+            self.moveToBos(args.selectedPanel,self);
+            topPanel.style.opacity = 1;
+            args.selectedPanel.style.opacity = 1;
+            self.normalizeStack(self);
             self.synchro = 0;
             self.performCallback(args);
         }
-        const animation = args.selectedElement.animate(args.firstanimation,args.timing);
+        const animation = args.selectedPanel.animate(args.firstanimation,args.timing);
         animation.onfinish = args.finishHandler; 
-        const topanimation = topElement.animate(args.secondanimation,args.timing);
+        const topanimation = topPanel.animate(args.secondanimation,args.timing);
         topanimation.onfinish = args.finishHandler;
     }
     fade(args){
         let self = args.self;
         if(args.direction === 1){
-            self.moveToTos(args,args.fadePanel);
-            args.selectedElement.style.opacity = 0;
-            args.selectedElement.style.display = "block";
-            self.moveToTos(args,args.selectedElement);
+            self.moveToTos(args.fadePanel,self);
+            args.selectedPanel.style.opacity = 0;
+            args.selectedPanel.style.display = "block";
+            self.moveToTos(args.selectedPanel,self);
             args.finishHandler = function(){
-                self.moveToBos(args,args.fadePanel);
-                args.selectedElement.style.display = "block";
-                args.selectedElement.style.opacity = 1;
+                self.moveToBos(args.fadePanel,self);
+                args.selectedPanel.style.display = "block";
+                args.selectedPanel.style.opacity = 1;
                 self.performCallback(args);
             }
         }
         else{
-            self.moveToTos(args,args.fadePanel);
-            args.selectedElement.style.opacity = 1;
-            args.selectedElement.style.display = "block";
-            self.moveToTos(args,args.selectedElement);
+            self.moveToTos(args.fadePanel,self);
+            args.selectedPanel.style.opacity = 1;
+            args.selectedPanel.style.display = "block";
+            self.moveToTos(args.selectedPanel,self);
             args.finishHandler = function(){
-                self.moveToBos(args,args.selectedElement);
-                args.selectedElement.style.opacity = 1;
+                self.moveToBos(args.selectedPanel,self);
+                args.selectedPanel.style.opacity = 1;
                 self.performCallback(args);
             }
         }
@@ -792,38 +839,93 @@ class SicTransit {
     flipInY(args){
         args.direction = 1;
         let self = args.self;
-        self.moveToBos(args,args.selectedElement);
-        args.selectedElement.style.display = "block";
-        args.selectedElement.style.transform = "rotateY(180deg)";
+        self.moveToBos(args.selectedPanel,self);
+        args.selectedPanel.style.display = "block";
+        args.selectedPanel.style.transform = "rotateY(180deg)";
         self.performFlip(args);
     }
     flipOutY(args){
         args.direction = -1;
         let self = args.self;
-        self.moveToTos(args,args.selectedElement);
-        args.selectedElement.style.display = "block";
-        args.selectedElement.style.transform = "rotateX(0deg)";
-        self.elementStack[self.elementStack.length - 2].style.transform = "rotateX(180deg)";
+        self.moveToTos(args.selectedPanel,self);
+        args.selectedPanel.style.display = "block";
+        args.selectedPanel.style.transform = "rotateX(0deg)";
+        self.panelStack[self.panelStack.length - 2].style.transform = "rotateX(180deg)";
         self.performFlip(args);
     }
     flipInX(args){
         args.direction = 1;
         let self = args.self;
-        self.moveToBos(args,args.selectedElement);
-        args.selectedElement.style.display = "block";
-        args.selectedElement.style.transform = "rotateX(180deg)";
+        self.moveToBos(args.selectedPanel,self);
+        args.selectedPanel.style.display = "block";
+        args.selectedPanel.style.transform = "rotateX(180deg)";
         self.performFlip(args);
     }
     flipOutX(args){
         args.direction = -1;
         let self = args.self;
-        self.moveToTos(args,args.selectedElement);
-        args.selectedElement.style.display = "block";
-        args.selectedElement.style.transform = "rotateX(0deg)";
-        self.elementStack[self.elementStack.length - 2].style.transform = "rotateX(180deg)";
+        self.moveToTos(args.selectedPanel,self);
+        args.selectedPanel.style.display = "block";
+        args.selectedPanel.style.transform = "rotateX(0deg)";
+        self.panelStack[self.panelStack.length - 2].style.transform = "rotateX(180deg)";
         self.performFlip(args);
     }
-    irisInBlack(args){
+    hinge(args){
+        let self = args.self;
+        self.container.style.perspective =  "1000px";
+        self.container.style.perspectiveOrigin = "left";
+        args.finishHandler = function(){
+            args.selectedPanel.style.display= args.finalDisplayStyle;
+            args.selectedPanel.style.transformOrigin = "";
+            self.container.style.perspective =  "";
+            self.container.style.perspectiveOrigin = "";
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
+    }
+    hingeInBottom(args){
+        let self = args.self;
+        args.selectedPanel.style.transformOrigin = "bottom";
+        args.finalDisplayStyle = "block";
+        self.hinge(args);
+    }
+    hingeOutBottom(args){
+        let self = args.self;
+        args.selectedPanel.style.transformOrigin = "bottom";
+        args.finalDisplayStyle = "none";
+        self.hinge(args);
+    }
+    hingeInLeft(args){
+        let self = args.self;
+        args.selectedPanel.style.transformOrigin = "left";
+        args.finalDisplayStyle = "block";
+        self.hinge(args);
+    }
+    hingeOutLeft(args){
+        let self = args.self;
+        args.selectedPanel.style.transformOrigin = "left";
+        args.finalDisplayStyle = "none";
+        self.hinge(args);
+    }
+    hingeInRight(args){
+        let self = args.self;
+        args.selectedPanel.style.transformOrigin = "right";
+        args.finalDisplayStyle = "block";
+        self.hinge(args);
+    }
+    hingeOutRight(args){
+        let self = args.self;
+        args.selectedPanel.style.transformOrigin = "right";
+        args.finalDisplayStyle = "none";
+        self.hinge(args);
+    }
+    hingeInTop(args){
+        let self = args.self;
+        args.selectedPanel.style.transformOrigin = "top";
+        args.finalDisplayStyle = "block";
+        self.hinge(args);
+    }
+        irisInBlack(args){
         let self = args.self;
         self.animateIris(args,0,175,"black",self.dispatchTable.irisInBlack.timing.duration);
         self.performCallback(args);
@@ -853,74 +955,19 @@ class SicTransit {
         self.animateIris(args,175,0,"white",self.dispatchTable.irisOutWhite.timing.duration);
         self.performCallback(args);
     }
-    hinge(args){
-        let self = args.self;
-        self.container.style.perspective =  "1000px";
-        self.container.style.perspectiveOrigin = "left";
-        args.finishHandler = function(){
-            args.selectedElement.style.display= args.finalDisplayStyle;
-            args.selectedElement.style.transformOrigin = "";
-            self.container.style.perspective =  "";
-            self.container.style.perspectiveOrigin = "";
-            self.performCallback(args);
-        }
-        self.performAnimation(args);
-    }
-    hingeInBottom(args){
-        let self = args.self;
-        args.selectedElement.style.transformOrigin = "bottom";
-        args.finalDisplayStyle = "block";
-        self.hinge(args);
-    }
-    hingeOutBottom(args){
-        let self = args.self;
-        args.selectedElement.style.transformOrigin = "bottom";
-        args.finalDisplayStyle = "none";
-        self.hinge(args);
-    }
-    hingeInLeft(args){
-        let self = args.self;
-        args.selectedElement.style.transformOrigin = "left";
-        args.finalDisplayStyle = "block";
-        self.hinge(args);
-    }
-    hingeOutLeft(args){
-        let self = args.self;
-        args.selectedElement.style.transformOrigin = "left";
-        args.finalDisplayStyle = "none";
-        self.hinge(args);
-    }
-    hingeInRight(args){
-        let self = args.self;
-        args.selectedElement.style.transformOrigin = "right";
-        args.finalDisplayStyle = "block";
-        self.hinge(args);
-    }
-    hingeOutRight(args){
-        let self = args.self;
-        args.selectedElement.style.transformOrigin = "right";
-        args.finalDisplayStyle = "none";
-        self.hinge(args);
-    }
-    hingeInTop(args){
-        let self = args.self;
-        args.selectedElement.style.transformOrigin = "top";
-        args.finalDisplayStyle = "block";
-        self.hinge(args);
-    }
     hingeOutTop(args){
         let self = args.self;
-        args.selectedElement.style.transformOrigin = "top";
+        args.selectedPanel.style.transformOrigin = "top";
         args.finalDisplayStyle = "none";
         self.hinge(args);
     }
     menuInBottom(args){
         let self = args.self;
-        args.selectedElement.transform = "translateY(100%)";
+        args.selectedPanel.transform = "translateY(100%)";
         args.finishHandler = function(){
-            self.moveToTos(args,args.selectedElement);
-            args.selectedElement.style.display = "block";
-            args.selectedElement.style.transform = "translateY(50%)";
+            self.moveToTos(args.selectedPanel,self);
+            args.selectedPanel.style.display = "block";
+            args.selectedPanel.style.transform = "translateY(50%)";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -928,19 +975,19 @@ class SicTransit {
     menuOutBottom(args){
         let self = args.self;
         args.finishHandler = function(){
-            self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "";
+            self.moveToBos(args.selectedPanel,self);
+            args.selectedPanel.style.transform = "";
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     menuInLeft(args){
         let self = args.self;
-        args.selectedElement.transform = "translateX(-100%)";
-        self.moveToTos(args,args.selectedElement);
+        args.selectedPanel.transform = "translateX(-100%)";
+        self.moveToTos(args.selectedPanel,self);
         args.finishHandler = function(){
-            args.selectedElement.style.display= "block";
-            args.selectedElement.style.transform = "translateX(-50%)";
+            args.selectedPanel.style.display= "block";
+            args.selectedPanel.style.transform = "translateX(-50%)";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -948,18 +995,18 @@ class SicTransit {
     menuOutLeft(args){
         let self = args.self;
         args.finishHandler = function(){
-            self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "";
+            self.moveToBos(args.selectedPanel,self);
+            args.selectedPanel.style.transform = "";
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     menuInRight(args){
         let self = args.self;
-        args.selectedElement.transform = "translateX(100%)";
+        args.selectedPanel.transform = "translateX(100%)";
         args.finishHandler = function(){
-            args.selectedElement.style.display= "block";
-            args.selectedElement.style.transform = "translateX(50%)";
+            args.selectedPanel.style.display= "block";
+            args.selectedPanel.style.transform = "translateX(50%)";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -967,18 +1014,18 @@ class SicTransit {
     menuOutRight(args){
         let self = args.self;
         args.finishHandler = function(){
-            self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "";
+            self.moveToBos(args.selectedPanel,self);
+            args.selectedPanel.style.transform = "";
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     menuInTop(args){
         let self = args.self;
-        args.selectedElement.transform = "translateY(-100%)";
+        args.selectedPanel.transform = "translateY(-100%)";
         args.finishHandler = function(){
-            args.selectedElement.style.transform = "translateY(-50%)"
-            args.selectedElement.style.display= "block";
+            args.selectedPanel.style.transform = "translateY(-50%)"
+            args.selectedPanel.style.display= "block";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -986,8 +1033,8 @@ class SicTransit {
     menuOutTop(args){
         let self = args.self;
         args.finishHandler = function(){
-            self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "";
+            self.moveToBos(args.selectedPanel,self);
+            args.selectedPanel.style.transform = "";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -995,8 +1042,8 @@ class SicTransit {
     newspaperIn(args){
         let self = args.self;
         args.finishHandler = function(){
-            args.selectedElement.style.display = "block";
-            args.selectedElement.style.transform = "rotate(0deg) scale(1)";
+            args.selectedPanel.style.display = "block";
+            args.selectedPanel.style.transform = "rotate(0deg) scale(1)";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1004,34 +1051,34 @@ class SicTransit {
     newspaperOut(args){
         let self = args.self;
         args.finishHandler = function(){
-            self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.display = "none";
-            args.selectedElement.style.transform = "rotate(0deg) scale(1)";
+            self.moveToBos(args.selectedPanel,self);
+            args.selectedPanel.style.display = "none";
+            args.selectedPanel.style.transform = "rotate(0deg) scale(1)";
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     nullTransition(){
-
+        self.performCallback(args);
     }
     rotateStack(args){
         let self = args.self;
         let stackRotation = args.stackRotation;
-       // We don't do anything if number === 0, other than making sure element is visible (below).
+       // We don't do anything if number === 0, other than making sure panel is visible (below).
        if(stackRotation < 0){
             for(let i = 0; i > stackRotation; i--){
-               self.elementStack.unshift(self.elementStack.pop());
+               self.panelStack.unshift(self.panelStack.pop());
             }
         }
         else if(stackRotation > 0){
             for(let i = 0; i < stackRotation; i++){
-                self.elementStack.push(self.elementStack.shift())
+                self.panelStack.push(self.panelStack.shift())
             }
         }
-        self.normalizeStack(args);
-        let tosElement = self.getTos(args);
-        tosElement.style.display = "block";
-        tosElement.style.opacity = 1.0;
+        self.normalizeStack(self);
+        let tosPanel = self.getTos(args);
+        tosPanel.style.display = "block";
+        tosPanel.style.opacity = 1.0;
         self.performCallback(args);
     }
     unrotateStack(args){
@@ -1040,9 +1087,9 @@ class SicTransit {
     }
     slideInBottom(args){
         let self = args.self;
-        args.selectedElement.transform = "translateY(100%)";
+        args.selectedPanel.transform = "translateY(100%)";
         args.finishHandler = function(){
-            args.selectedElement.style.display= "block";
+            args.selectedPanel.style.display= "block";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1050,19 +1097,19 @@ class SicTransit {
     slideOutBottom(args){
         let self = args.self;
         args.finishHandler = function(){
-            self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "translateY(0%)";
+            self.moveToBos(args.selectedPanel,self);
+            args.selectedPanel.style.transform = "translateY(0%)";
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     slideInLeft(args){
         let self = args.self;
-        args.selectedElement.transform = "translateX(-100%)";
-        self.moveToTos(args,args.selectedElement);
+        args.selectedPanel.transform = "translateX(-100%)";
+        self.moveToTos(args.selectedPanel,self);
         args.finishHandler = function(){
-            args.selectedElement.style.display= "block";
-            args.selectedElement.transform = "translateX(0)";
+            args.selectedPanel.style.display= "block";
+            args.selectedPanel.transform = "translateX(0)";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1070,17 +1117,17 @@ class SicTransit {
     slideOutLeft(args){
         let self = args.self;
         args.finishHandler = function(){
-            self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "translateX(0%)";
+            self.moveToBos(args.selectedPanel,self);
+            args.selectedPanel.style.transform = "translateX(0%)";
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     slideInRight(args){
         let self = args.self;
-        args.selectedElement.transform = "translateX(100%)";
+        args.selectedPanel.transform = "translateX(100%)";
         args.finishHandler = function(){
-            args.selectedElement.style.display= "block";
+            args.selectedPanel.style.display= "block";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1088,17 +1135,17 @@ class SicTransit {
     slideOutRight(args){
         let self = args.self;
         args.finishHandler = function(){
-            self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "translateX(0%)";
+            self.moveToBos(args.selectedPanel,self);
+            args.selectedPanel.style.transform = "translateX(0%)";
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     slideInTop(args){
         let self = args.self;
-        args.selectedElement.transform = "translateY(100%)";
+        args.selectedPanel.transform = "translateY(100%)";
         args.finishHandler = function(){
-            args.selectedElement.style.display= "block";
+            args.selectedPanel.style.display= "block";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1106,8 +1153,8 @@ class SicTransit {
     slideOutTop(args){
         let self = args.self;
         args.finishHandler = function(){
-            self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.transform = "translateY(0%)";
+            self.moveToBos(args.selectedPanel,self);
+            args.selectedPanel.style.transform = "translateY(0%)";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1115,8 +1162,8 @@ class SicTransit {
     zoomIn(args){
         let self = args.self;
         args.finishHandler = function(){
-            args.selectedElement.style.display = "block";
-            args.selectedElement.style.transform = "scale(1)";
+            args.selectedPanel.style.display = "block";
+            args.selectedPanel.style.transform = "scale(1)";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1124,9 +1171,9 @@ class SicTransit {
     zoomOut(args){
         let self = args.self;
         args.finishHandler = function(){
-            self.moveToBos(args,args.selectedElement);
-            args.selectedElement.style.display = "none";
-            args.selectedElement.style.transform = "scale(1)";
+            self.moveToBos(args.selectedPanel,self);
+            args.selectedPanel.style.display = "none";
+            args.selectedPanel.style.transform = "scale(1)";
             self.performCallback(args);
         }
         self.performAnimation(args);
