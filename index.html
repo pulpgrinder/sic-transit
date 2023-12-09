@@ -12,23 +12,23 @@
     <title>Sic Transit</title>
   </head>
   <body>
-    <div id="demo-container" class="sic-container">
-        <div id="slide1" class="demo-panel sic-panel">
+    <div id="demo-container">
+        <div id="slide1" class="demo-panel">
             Slide 1
         </div>
-        <div id="slide2" class="demo-panel sic-panel">
+        <div id="slide2" class="demo-panel">
             Slide 2
         </div>
-        <div id="slide3" class="demo-panel sic-panel">
+        <div id="slide3" class="demo-panel">
             Slide 3
         </div>
-        <div id="slide4" class="demo-panel sic-panel">
+        <div id="slide4" class="demo-panel">
             Slide 4
         </div>
-        <div id="slide5" class="demo-panel sic-panel">
+        <div id="slide5" class="demo-panel">
             Slide 5
         </div>
-        <div id="slide6" class="demo-panel sic-panel">
+        <div id="slide6" class="demo-panel">
             Slide 6
         </div>
     </div>
@@ -36,8 +36,6 @@
     Element: <select title="elementSelector" id="elementSelector"></select>
     Transition: <select id="transitionSelector" title="transitionSelector"></select>
     Duration (ms): <input type="text" title="duration" id="duration" size="4" value="500" />
-    Rotations: <input type="text" title="rotations"  id="rotations" size="4" value="1" />
-    Direction: <input type="text" title = "direction" id="direction" size="4" value="1" />
     <button title="performTransition" id="performTransition">Perform Transition</button>
     </div>
     <div id="testAdd1">
@@ -52,14 +50,24 @@
   </body>
   <script type="text/javascript" src="sic-transit.js"></script>
   <script type="text/javascript">
- 
-    function callbackTest(args){
+
+// Initialize a new instance of SicTransit.
+ let transit = new SicTransit("#demo-container",".demo-panel");
+
+// Set up a callback to be called after every transition completes. In this case, it just prints some info.
+
+transit.setCallback(callbackDemo);
+
+// This is our callback function.
+    function callbackDemo(args){
         console.log("elementSelector: " + args.elementSelector);
         console.log("transitionName: " + args.transitionName);
         console.log("direction: " + args.direction);
         console.log("elapsed time: " + (args.endTime - args.startTime));
         transit.stackDump(args);
     }
+
+// Load the UI.
 function loadUI(){
     let transitions = Object.keys(transit.dispatchTable);
     let panels = transit.getPanelList();
@@ -69,8 +77,8 @@ function loadUI(){
     let element;
     for(let i = 0; i < panels.length; i++){
         element = document.createElement('option');
-        element.value = panels[i];
-        element.text = panels[i];
+        element.value = "#" + panels[i];
+        element.text = "#" + panels[i];
         elementSelector.appendChild(element);
     }
     for(let i = 0; i < transitions.length; i++){
@@ -81,8 +89,6 @@ function loadUI(){
     }
 }
 
-let transit = new SicTransit("#demo-container",".demo-panel");
-transit.setCallback(callbackTest);
 loadUI();
 
   </script>
