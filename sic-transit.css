@@ -57,8 +57,15 @@
     display:block;
     perspective: 500px;
     background-color:gray;
+    transform-style: preserve-3d;
 }
 
+.sic-transit-flipped-x{
+    transform:rotateX(180deg);
+}
+.sic-transit-flipped-y{
+    transform:rotateY(180deg);
+}
 .sic-container {
     /* Container needs to have a position in order for z-index to work
        on children. Anything other than static should work.

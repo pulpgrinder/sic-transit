@@ -33,10 +33,9 @@
         </div>
     </div>
     <div>
-    Element: <select title="elementSelector" id="elementSelector"></select>
+    Panel: <select title="panelSelector" id="panelSelector"></select>
     Transition: <select id="transitionSelector" title="transitionSelector"></select>
-    Duration (ms): <input type="text" title="duration" id="duration" size="4" value="500" />
-    <button title="performTransition" id="performTransition">Perform Transition</button>
+    <button title="performTransition" id="performTransition" onclick="runTransition()">Perform Transition</button>
     </div>
     <div id="testAdd1">
         testAdd1
@@ -56,13 +55,17 @@
 
 // Set up a callback to be called after every transition completes. In this case, it just prints some info.
 
+function runTransition(){
+    let panel = document.getElementById("panelSelector").value;
+    let transition = document.getElementById("transitionSelector").value;
+    transit.performTransition({panelSelector:panel,transitionName:transition});
+}
 transit.setCallback(callbackDemo);
 
 // This is our callback function.
     function callbackDemo(args){
         console.log("elementSelector: " + args.elementSelector);
         console.log("transitionName: " + args.transitionName);
-        console.log("direction: " + args.direction);
         console.log("elapsed time: " + (args.endTime - args.startTime));
         transit.stackDump(args);
     }
@@ -72,14 +75,14 @@ function loadUI(){
     let transitions = Object.keys(transit.dispatchTable);
     let panels = transit.getPanelList();
     let transitionSelector = document.getElementById("transitionSelector");
-    let elementSelector = document.getElementById("elementSelector");
+    let panelSelector = document.getElementById("panelSelector");
     let transition;
     let element;
     for(let i = 0; i < panels.length; i++){
         element = document.createElement('option');
         element.value = "#" + panels[i];
         element.text = "#" + panels[i];
-        elementSelector.appendChild(element);
+        panelSelector.appendChild(element);
     }
     for(let i = 0; i < transitions.length; i++){
         transition = document.createElement('option');

@@ -93,31 +93,7 @@ class SicTransit {
         let selectedPanel = this.selectPanel(panelSelector,self);
         return window.getComputedStyle(selectedPanel).getPropertyValue('z-index');
     }
-    // Put selected panel at a specified index in the stack.
-    // If index is zero or positive, the insert position is relative
-    // to bottom of stack.
-    // If index is negative, the insert position is relative to the top
-    // of the stack, e.g., -1 puts the panel one position below the top
-    // of the stack. If you want to put the panel on top of the stack, use
-    // addPanel(), above.
-    insertPanelAt(selector,index,self=this){
-        let panel = self.selectPanel(selector);
-        self.removeFromStack(panel, self);
-        panel.remove();
-        if(index < 0) {
-            index = (self.panelStack.length - 1) - index;
-        }
-        if(index >=  self.panelStack.length) {
-            throw new Error("SicTransit: insertPanelAt, insert index is greater than (panel stack length - 1).");
-        }
-        if(index < 0) {
-            throw new Error("SicTransit: insertPanelAt, insert index is less than zero.");
-        }
-        self.panelStack.splice(index, 0, panel);
-        panel.classList.add(self.panelClass,"sic-panel");
-        self.container.appendChild(panel);
-        self.normalizeStack(self);
-    }
+ 
     moveToBos(panelSelector,self=this){
         let selectedPanel = this.selectPanel(panelSelector);
         self.removeFromStack(selectedPanel,self);
@@ -135,14 +111,14 @@ class SicTransit {
             args.self = this;
         }
         let self = args.self;
-        args = self.loadDefaults(args);
+        args.selectedPanel =  self.selectPanel(args.panelSelector,self);
         args.startTime = new Date().getTime();
         if(self.dispatchTable[args.transitionName] === undefined){
             throw new Error("SicTransit: " + args.transitionName + " is not a recognized transition");
         }
         args.transitionFunction = self.dispatchTable[args.transitionName]["forwardTransition"];
-        // = self.dispatchTable[args.transitionName]["animation"];
-       // args.secondanimation = self.dispatchTable[args.transitionName]["secondanimation"];
+        args.firstanimation = self.dispatchTable[args.transitionName]["animation"];
+        args.secondanimation = self.dispatchTable[args.transitionName]["secondanimation"];
         args.transitionFunction(args);
     }
     /*  Removes the selected panel from the panel stack (but not the DOM), if it's there. Returns the panel if it was found, otherwise
@@ -203,7 +179,7 @@ class SicTransit {
                     return self.panelStack[panelSelector];
                 }
                 else{
-                    console.error("SicTransit selectPanel(): panel index " + panelSelector + " is outside the bounds of the panelStack.")
+                    console.error("SicTransit selectPanel(): panel index " + panelSelector + " is outside the bounds of the panelStack.");
                         return null;
                 }
             }
@@ -248,18 +224,18 @@ class SicTransit {
 
 // Sets the given parameter for the specified transition. If the transition isn't specified, or is set to '*' sets it for all transitions.
 
-setParameter(parametername, parametervalue,transitionname){
-    let transitionList;
-    if(transitionname === undefined) {
-        transitionList = this.getTransitionList(this);
+    setParameter(parametername, parametervalue,transitionname){
+        let transitionList;
+        if(transitionname === undefined) {
+            transitionList = this.getTransitionList(this);
+        }
+        else{
+            transitionList = [transitionname];
+        }
+        for(let i = 0; i < transitionList.length; i++){
+            this.dispatchTable[transitionList[i]][parametername] = parametervalue;
+        }
     }
-    else{
-        transitionList = [transitionname];
-    }
-    for(let i = 0; i < transitionList.length; i++){
-        this.dispatchTable[transitionList[i]][parametername] = parametervalue;
-    }
-}
 
 // Put selected panel in the panel container (if it isn't already there), move it to top of the panel stack, and display it.
     showPanel(selector,self=this){
@@ -299,6 +275,18 @@ setParameter(parametername, parametervalue,transitionname){
         } 
     }
 
+    // Exchanges the top two elements on top of the panel stack.
+    stackSwap(self=this){
+        if(self.panelStack.length < 2){
+            console.error("SicTransit stackSwap(): can't swap when length of panelStack is < 2.");
+            return;
+        }
+        let temp1 = self.panelStack.pop();
+        let temp2 = self.panelStack.pop();
+        self.panelStack.push(temp1);
+        self.panelStack.push(temp2);
+        self.normalizeStack(self)
+    }
     // Internal methods below. Not well-documented and not intended to be called
     // directly by user code. These may change at any time. Use at 
     // your own risk.
@@ -383,35 +371,35 @@ setParameter(parametername, parametervalue,transitionname){
         },
         "flipInX":{
             forwardTransition: this.flipInX,
-            firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(360deg)"}],
-            secondanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
+         //   firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(360deg)"}],
+            firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:1000
         },
         "flipOutX":{
             forwardTransition: this.flipOutX,
             firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
-            secondanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
+          //  firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:1000
         },
         "flipInY":{
             forwardTransition: this.flipInY,
-            firstanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(360deg)"}],
-            secondanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
+         //   firstanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(360deg)"}],
+            firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:1000
         },
         "flipOutY":{
             forwardTransition: this.flipOutY,
-            firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
-            secondanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
+          //  firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
+            firstanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(360deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:1000
         },
         "hingeInBottom":{
             forwardTransition: this.hingeInBottom,
@@ -469,35 +457,45 @@ setParameter(parametername, parametervalue,transitionname){
             easing:'ease-in-out',
             duration:500
         },
-        "irisInBlack":{
-            forwardTransition:this.irisInBlack,
+        "irisIn":{
+            forwardTransition:this.irisIn,
             easing:'ease-in-out',
-            duration:500
+            duration:1000
         },
-        "irisOutBlack":{
-            forwardTransition:this.irisOutBlack,
+        "irisOut":{
+            forwardTransition:this.irisOut,
             easing:'ease-in-out',
-            duration:500
+            duration:1000
         },
-        "irisInGray":{
-            forwardTransition:this.irisInGray,
+        "irisInFromBlack":{
+            forwardTransition:this.irisInFromBlack,
             easing:'ease-in-out',
-            duration:500
+            duration:1000
         },
-        "irisOutGray":{
-            forwardTransition:this.irisOutGray,
+        "irisOutToBlack":{
+            forwardTransition:this.irisOutToBlack,
             easing:'ease-in-out',
-            duration:500
+            duration:1000
         },
-        "irisInWhite":{
-            forwardTransition:this.irisInWhite,
+        "irisInFromGray":{
+            forwardTransition:this.irisInFromGray,
             easing:'ease-in-out',
-            duration:500
+            duration:1000
         },
-        "irisOutWhite":{
-            forwardTransition:this.irisOutWhite,
+        "irisOutToGray":{
+            forwardTransition:this.irisOutToGray,
             easing:'ease-in-out',
-            duration:500
+            duration:1000
+        },
+        "irisInFromWhite":{
+            forwardTransition:this.irisInFromWhite,
+            easing:'ease-in-out',
+            duration:1000
+        },
+        "irisOutToWhite":{
+            forwardTransition:this.irisOutToWhite,
+            easing:'ease-in-out',
+            duration:1000
         },
         "menuInBottom": {
             forwardTransition: this.menuInBottom,
@@ -650,43 +648,30 @@ setParameter(parametername, parametervalue,transitionname){
         }
     }
 
-    animateIris(args,startSize, endSize, color, duration) {
+    animateIris(args,panel,overlay,startSize, endSize, color, duration) {
         let self = args.self;
         const startTime = Date.now();
-        const irisOverlay = self.irispanel;
-        irisOverlay.style.background = "radial-gradient(circle, transparent 0%, transparent 0%, ${color} 0%)";
-        args.selectedPanel.style.display = "block";
-        self.moveToTos(args.selectedPanel,self);
-        self.moveToTos(self.irispanel,self);
+        overlay.style.background = "radial-gradient(circle, transparent 0%, transparent 0%, ${color} 0%)";
+        panel.style.display = "block";
+        self.moveToTos(panel,self);
+        self.moveToTos(overlay,self);
         function animate() {
             const currentTime = Date.now();
             const elapsedTime = currentTime - startTime;
             const progress = elapsedTime / duration;
             const currentSize = startSize + (endSize - startSize) * progress;
-            self.setIrisSize(args,currentSize,color);
+            self.setIrisSize(overlay,currentSize,color);
             if (progress < 1) {
                 requestAnimationFrame(animate);
+            }
+            else{
+                self.moveToBos(overlay,self);
+                self.performCallback(args);
             }
         }
         requestAnimationFrame(animate);
     }
-    loadDefaults(args){
-        let self = args.self;
-        let defaultArgs = {
-            panelSelector: "",
-            fadePanel: self.blackpanel,
-            finalDisplayStyle: 'none'
-        }
-        for (let key in defaultArgs) {
-            if (defaultArgs.hasOwnProperty(key)) {
-                if(args[key] === undefined){
-                    args[key] = defaultArgs[key];
-                }
-            }
-          }
-        args.selectedPanel =  self.selectPanel(args.panelSelector,self);
-        return args;
-    }
+
     loadStack(self=this){
         const panel_list = document.querySelectorAll(self.panelQuery);
         self.panelStack = [...panel_list];
@@ -717,15 +702,21 @@ setParameter(parametername, parametervalue,transitionname){
         self.removeFromStack(args.selectedPanel,self);
         self.flippanel.appendChild(args.selectedPanel);
         let tosItem = self.panelStack.pop();
-        self.flippanel.appendChild(tosItem);
         self.moveToTos(self.flippanel,self);
+        self.flippanel.appendChild(tosItem);
+       
         self.flippanel.style.display = "block";
-        const animation = args.selectedPanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+        self.flippanel.style.zIndex = 20;
+
+   //     tosItem.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+        const animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = function(){
+            
+           
+     //       self.flippanel.replaceChildren([]);
+            self.moveToBos(self.flippanel,self);
             args.selectedPanel.style.transform = "";
             tosItem.style.transform = "";
-            self.flippanel.replaceChildren([]);
-            self.moveToBos(self.flippanel,self);
             self.panelStack.push(tosItem);
             self.panelStack.push(args.selectedPanel);
             self.container.appendChild(tosItem);
@@ -733,8 +724,7 @@ setParameter(parametername, parametervalue,transitionname){
             self.normalizeStack(self);
             self.performCallback(args);
         }
-       
-       tosItem.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+     
     }
     performCallback(args){
         const self = args.self;
@@ -744,10 +734,9 @@ setParameter(parametername, parametervalue,transitionname){
         args.endTime = new Date().getTime();
         self.callback(args);
     }
-    setIrisSize(args,holeSize,color) {
-        self = args.self;
-        const irisOverlay = self.irispanel;
-        irisOverlay.style.background = `radial-gradient(circle, transparent ${holeSize}px, ${color} ${holeSize}px)`;
+    setIrisSize(overlay,holeSize,color) {
+        overlay.style.background = `radial-gradient(circle, transparent ${holeSize}px, ${color} ${holeSize}px)`;
+     //overlay.style.background = `radial-gradient(circle, transparent ${holeSize}px)`;
     }
 // Transition handling code. Not intended to be called directly from user code.
 // Use performTransition instead.
@@ -891,35 +880,105 @@ setParameter(parametername, parametervalue,transitionname){
     flipInX(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInX"];
-        args.firstanimation = dispatchEntry.firstanimation;
-        args.secondanimation = dispatchEntry.secondanimation;
-        self.moveToBos(args.selectedPanel,self);
-        args.selectedPanel.style.display = "block";
-        args.selectedPanel.style.transform = "rotateX(180deg)";
-        self.performFlip(args);
-    }
-    flipOutX(args){
-        let self = args.self;
-        self.moveToTos(args.selectedPanel,self);
-        args.selectedPanel.style.display = "block";
-        args.selectedPanel.style.transform = "rotateX(0deg)";
-        self.panelStack[self.panelStack.length - 2].style.transform = "rotateX(180deg)";
-        self.performFlip(args);
+        self.flippanel.replaceChildren([]);
+        self.flippanel.style.display = "none";
+        self.removeFromStack(args.selectedPanel,self);
+        self.flippanel.appendChild(args.selectedPanel);
+        args.selectedPanel.classList.add("sic-transit-flipped-x");
+        let tosItem = self.panelStack.pop();
+        self.flippanel.appendChild(tosItem);
+        self.flippanel.style.display = "block";
+        self.moveToTos(self.graypanel,self);
+        self.moveToTos(self.flippanel,self);
+        let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+        animation.onfinish = function(){
+            args.selectedPanel.classList.remove("sic-transit-flipped-x");
+            self.container.append(args.selectedPanel);
+            self.container.append(tosItem);
+            self.panelStack.push(tosItem);
+            self.panelStack.push(args.selectedPanel);
+            self.moveToBos(self.graypanel);
+            self.moveToBos(self.flippanel, self);
+
+        }
     }
     flipInY(args){
         let self = args.self;
-        self.moveToBos(args.selectedPanel,self);
-        args.selectedPanel.style.display = "block";
-        args.selectedPanel.style.transform = "rotateY(180deg)";
-        self.performFlip(args);
+        let dispatchEntry = self.dispatchTable["flipInY"];
+        self.flippanel.replaceChildren([]);
+        self.flippanel.style.display = "none";
+        self.removeFromStack(args.selectedPanel,self);
+        self.flippanel.appendChild(args.selectedPanel);
+        args.selectedPanel.classList.add("sic-transit-flipped-y");
+        let tosItem = self.panelStack.pop();
+        self.flippanel.appendChild(tosItem);
+        self.flippanel.style.display = "block";
+        self.moveToTos(self.graypanel,self);
+        self.moveToTos(self.flippanel,self);
+        let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+        animation.onfinish = function(){
+            args.selectedPanel.classList.remove("sic-transit-flipped-y");
+            self.container.append(args.selectedPanel);
+            self.container.append(tosItem);
+            self.panelStack.push(tosItem);
+            self.panelStack.push(args.selectedPanel);
+            self.moveToBos(self.graypanel);
+            self.moveToBos(self.flippanel, self);
+
+        }
     }
+    flipOutX(args){
+        let self = args.self;
+        let dispatchEntry = self.dispatchTable["flipOutX"];
+        self.flippanel.replaceChildren([]);
+        self.flippanel.style.display = "none";
+        self.removeFromStack(args.selectedPanel,self);
+        self.flippanel.appendChild(args.selectedPanel);
+        let tosItem = self.panelStack.pop();
+        tosItem.classList.add("sic-transit-flipped-x");
+        self.flippanel.appendChild(tosItem);
+        self.flippanel.style.display = "block";
+        self.moveToTos(self.graypanel,self);
+        self.moveToTos(self.flippanel,self);
+        let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+        animation.onfinish = function(){
+            tosItem.classList.remove("sic-transit-flipped-x");
+            self.container.append(args.selectedPanel);
+            self.container.append(tosItem);
+            self.panelStack.push(args.selectedPanel);
+            self.panelStack.push(tosItem);
+            self.moveToBos(self.graypanel);
+            self.moveToBos(self.flippanel, self);
+
+        }
+    }
+   
     flipOutY(args){
         let self = args.self;
-        self.moveToTos(args.selectedPanel,self);
-        args.selectedPanel.style.display = "block";
-        args.selectedPanel.style.transform = "rotateX(0deg)";
-        self.panelStack[self.panelStack.length - 2].style.transform = "rotateX(180deg)";
-        self.performFlip(args);
+        let dispatchEntry = self.dispatchTable["flipOutY"];
+        self.flippanel.replaceChildren([]);
+        self.flippanel.style.display = "none";
+        self.removeFromStack(args.selectedPanel,self);
+      
+        let tosItem = self.panelStack.pop();
+        self.moveToTos(self.graypanel,self);
+        tosItem.classList.add("sic-transit-flipped-y");
+        self.flippanel.appendChild(tosItem);
+        self.flippanel.appendChild(args.selectedPanel);
+        self.flippanel.style.display = "block";
+       
+        self.moveToTos(self.flippanel,self);
+        let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+        animation.onfinish = function(){
+            tosItem.classList.remove("sic-transit-flipped-y");
+            self.container.append(args.selectedPanel);
+            self.container.append(tosItem);
+            self.panelStack.push(args.selectedPanel);
+            self.panelStack.push(tosItem);
+            self.moveToBos(self.graypanel);
+            self.moveToBos(self.flippanel, self);
+
+        }
     }
  
     hinge(args){
@@ -999,40 +1058,75 @@ setParameter(parametername, parametervalue,transitionname){
         args.finalDisplayStyle = "none";
         self.hinge(args);
     }
-    irisInBlack(args){
+    getElementDiagonal(element){
+        let computedStyle = getComputedStyle(element);
+        let width =  parseInt(computedStyle.width);
+        let height = parseInt(computedStyle.height);
+        let diagonal = Math.ceil(Math.sqrt((width * width) + (height * height)));
+        return diagonal;
+    }
+    irisIn(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisInBlack"];
-        self.animateIris(args,0,175,"black",dispatchEntry.duration);
+        let dispatchEntry = self.dispatchTable["irisIn"];
+        let panel = args.selectedPanel;
+        let overlay = self.irispanel;
+        self.animateIris(args,panel,overlay,0,self.getElementDiagonal(args.selectedPanel),"rgba(255,255,255,0)",dispatchEntry.duration);
         self.performCallback(args);
     }
-    irisOutBlack(args){
+    irisOut(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisOutBlack"];
-        self.animateIris(args,175,0,"black",dispatchEntry.duration);
+        let dispatchEntry = self.dispatchTable["irisOut"];
+        let panel = args.selectedPanel;
+        let overlay = self.irispanel;
+        self.animateIris(args,panel,overlay,self.getElementDiagonal(args.selectedPanel),0,"rgba(255,255,255,0)",dispatchEntry.duration);
         self.performCallback(args);
     }
-    irisInGray(args){
+    irisInFromBlack(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisInGray"];
-        self.animateIris(args,0,175,"gray",dispatchEntry.duration);
+        let dispatchEntry = self.dispatchTable["irisInFromBlack"];
+        let panel = args.selectedPanel;
+        let overlay = self.irispanel;
+        self.animateIris(args,panel,overlay,0,self.getElementDiagonal(args.selectedPanel),"black",dispatchEntry.duration);
         self.performCallback(args);
     }
-    irisOutGray(args){
+    irisOutToBlack(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisOutGray"];
-        self.animateIris(args,175,0,"gray",dispatchEntry.duration);
+        let dispatchEntry = self.dispatchTable["irisOutToBlack"];
+        let panel = args.selectedPanel;
+        let overlay = self.irispanel;
+        self.animateIris(args,panel,overlay,self.getElementDiagonal(args.selectedPanel),0,"black",dispatchEntry.duration);
         self.performCallback(args);
     }
-    irisInWhite(args){
+    irisInFromGray(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisInWhite"];
-        self.animateIris(args,0,175,"white",dispatchEntry.duration);
+        let dispatchEntry = self.dispatchTable["irisInFromGray"];
+        let panel = args.selectedPanel;
+        let overlay = self.irispanel;
+        self.animateIris(args,panel,overlay,0,self.getElementDiagonal(args.selectedPanel),"gray",dispatchEntry.duration);
         self.performCallback(args);
     }
-    irisOutWhite(args){
+    irisOutToGray(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisOutWhite"];
-        self.animateIris(args,175,0,"white",dispatchEntry.duration);
+        let dispatchEntry = self.dispatchTable["irisOutToGray"];
+        let panel = args.selectedPanel;
+        let overlay = self.irispanel;
+        self.animateIris(args,panel,overlay,self.getElementDiagonal(args.selectedPanel),0,"gray",dispatchEntry.duration);
+        self.performCallback(args);
+    }
+    irisInFromWhite(args){
+        let self = args.self;
+        let dispatchEntry = self.dispatchTable["irisInFromWhite"];
+        let panel = args.selectedPanel;
+        let overlay = self.irispanel;
+        self.animateIris(args,panel,overlay,0,self.getElementDiagonal(args.selectedPanel),"white",dispatchEntry.duration);
+        self.performCallback(args);
+    }
+    irisOutToWhite(args){
+        let self = args.self;
+        let dispatchEntry = self.dispatchTable["irisOutToWhite"];
+        let panel = args.selectedPanel;
+        let overlay = self.irispanel;
+        self.animateIris(args,panel,overlay,self.getElementDiagonal(args.selectedPanel),0,"white",dispatchEntry.duration);
         self.performCallback(args);
     }
     menuInBottom(args){
