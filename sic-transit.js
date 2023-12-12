@@ -379,7 +379,7 @@ class SicTransit {
         },
         "flipOutX":{
             forwardTransition: this.flipOutX,
-            firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
+            firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
           //  firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -396,7 +396,7 @@ class SicTransit {
         "flipOutY":{
             forwardTransition: this.flipOutY,
           //  firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
-            firstanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(360deg)"}],
+            firstanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:1000
@@ -932,19 +932,21 @@ class SicTransit {
         let dispatchEntry = self.dispatchTable["flipOutX"];
         self.flippanel.replaceChildren([]);
         self.flippanel.style.display = "none";
-        self.removeFromStack(args.selectedPanel,self);
-        self.flippanel.appendChild(args.selectedPanel);
+        self.flippanel.style.transform = "rotateX(180deg)";
+        self.moveToTos(args.selectedPanel,self);
+        self.panelStack.pop();
         let tosItem = self.panelStack.pop();
-        tosItem.classList.add("sic-transit-flipped-x");
-        self.flippanel.appendChild(tosItem);
-        self.flippanel.style.display = "block";
         self.moveToTos(self.graypanel,self);
+        self.flippanel.appendChild(tosItem);
+        self.flippanel.appendChild(args.selectedPanel);
+        self.flippanel.style.display = "block";
+        args.selectedPanel.classList.add("sic-transit-flipped-x");
         self.moveToTos(self.flippanel,self);
         let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = function(){
-            tosItem.classList.remove("sic-transit-flipped-x");
-            self.container.append(args.selectedPanel);
+            args.selectedPanel.classList.remove("sic-transit-flipped-x");
             self.container.append(tosItem);
+            self.container.append(args.selectedPanel);
             self.panelStack.push(args.selectedPanel);
             self.panelStack.push(tosItem);
             self.moveToBos(self.graypanel);
@@ -958,21 +960,21 @@ class SicTransit {
         let dispatchEntry = self.dispatchTable["flipOutY"];
         self.flippanel.replaceChildren([]);
         self.flippanel.style.display = "none";
-        self.removeFromStack(args.selectedPanel,self);
-      
+        self.flippanel.style.transform = "rotateY(180deg)";
+        self.moveToTos(args.selectedPanel,self);
+        self.panelStack.pop();
         let tosItem = self.panelStack.pop();
         self.moveToTos(self.graypanel,self);
-        tosItem.classList.add("sic-transit-flipped-y");
         self.flippanel.appendChild(tosItem);
         self.flippanel.appendChild(args.selectedPanel);
         self.flippanel.style.display = "block";
-       
+        args.selectedPanel.classList.add("sic-transit-flipped-y");
         self.moveToTos(self.flippanel,self);
         let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = function(){
-            tosItem.classList.remove("sic-transit-flipped-y");
-            self.container.append(args.selectedPanel);
+            args.selectedPanel.classList.remove("sic-transit-flipped-y");
             self.container.append(tosItem);
+            self.container.append(args.selectedPanel);
             self.panelStack.push(args.selectedPanel);
             self.panelStack.push(tosItem);
             self.moveToBos(self.graypanel);
