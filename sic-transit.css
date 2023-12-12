@@ -21,28 +21,36 @@
 }
 
 
-.sic-transit-black-panel{
+.sic-transit-black-panel {
     position:absolute;
     width:100%;
     height:100%;
     display:block;
     background-color:black;
 }
-.sic-transit-iris-panel{
+.sic-transit-iris-panel {
     position:absolute;
     width:100%;
     height:100%;
     display:block;
     background: radial-gradient(circle, transparent 0%, transparent 0%, black 0%);
 }
-.sic-transit-white-panel{
+.sic-transit-white-panel {
     position:absolute;
     width:100%;
     height:100%;
     display:block;
     background-color:white;
 }
-.sic-transit-gray-panel{
+.sic-transit-gray-panel {
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    background-color:gray;
+}
+
+.sic-transit-flip-background-panel {
     position:absolute;
     width:100%;
     height:100%;
@@ -60,11 +68,11 @@
     transform-style: preserve-3d;
 }
 
-.sic-transit-flipped-x{
+.sic-transit-flipped-x {
     transform:rotateX(180deg);
 }
 
-.sic-transit-flipped-y{
+.sic-transit-flipped-y {
     transform:rotateY(180deg);
 }
 

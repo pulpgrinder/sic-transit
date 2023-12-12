@@ -15,6 +15,7 @@
     <div id="demo-container">
         <div id="slide1" class="demo-panel">
             Slide 1
+            <img title = "John Locke" src="johnlocke.jpg" height="100%"/>
         </div>
         <div id="slide2" class="demo-panel">
             Slide 2
@@ -37,29 +38,36 @@
     Transition: <select id="transitionSelector" title="transitionSelector"></select>
     <button title="performTransition" id="performTransition" onclick="runTransition()">Perform Transition</button>
     </div>
-    <div id="testAdd1">
-        testAdd1
+    <div>
+        You can click any of the divs below to add it as a new panel.
     </div>
-    <div id = "testAdd2">
-        testAdd2
+    <div id="testAdd1" onclick="addNewPanel(event)">
+        Add Test #1
     </div>
-    <div id="testAdd3" class="testAdd3">
-        testAdd3
+    <div id = "testAdd2" onclick="addNewPanel(event)">
+        Add Test #2
+    </div>
+    <div id="testAdd3" onclick="addNewPanel(event)">
+        Add Test #3
     </div>
   </body>
   <script type="text/javascript" src="sic-transit.js"></script>
   <script type="text/javascript">
 
+function addNewPanel(evt){
+        let element = evt.target;
+        transit.showPanel(element);
+}
 // Initialize a new instance of SicTransit.
  let transit = new SicTransit("#demo-container",".demo-panel");
-
-// Set up a callback to be called after every transition completes. In this case, it just prints some info.
 
 function runTransition(){
     let panel = document.getElementById("panelSelector").value;
     let transition = document.getElementById("transitionSelector").value;
     transit.performTransition({panelSelector:panel,transitionName:transition});
 }
+
+// Set up a callback to be called after every transition completes. In this case, it just prints some info.
 transit.setCallback(callbackDemo);
 
 // This is our callback function.

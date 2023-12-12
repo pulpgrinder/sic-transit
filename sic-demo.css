@@ -23,13 +23,16 @@
     color:darkblue;
  }
 
-#testAdd1{
+#testAdd1 {
    background-color: rebeccapurple;
+   color:white;
 }
-#testAdd2{
-   background-color:chocolate;
+#testAdd2 {
+   background-color:blue;
+   color:white;
 }
 
-#testAdd3{
-   background-color:darkorchid;
+#testAdd3 {
+   background-color:magenta;
+   color:white;
 }

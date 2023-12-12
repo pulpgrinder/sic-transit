@@ -42,6 +42,12 @@ class SicTransit {
       flippanel.classList.add(this.panelClass,'sic-panel','sic-transit-flip-panel');
       this.container.appendChild(flippanel);
       this.panelStack.unshift(flippanel);
+      let flipbackgroundpanel = document.createElement('div');
+      this.flipbackgroundpanel = flipbackgroundpanel;
+      flipbackgroundpanel.classList.add(this.panelClass,'sic-panel','sic-transit-flip-background-panel');
+      this.container.appendChild(flipbackgroundpanel);
+      this.panelStack.unshift(flipbackgroundpanel);
+     
       this.normalizeStack();
     }
 
@@ -459,11 +465,13 @@ class SicTransit {
         },
         "irisIn":{
             forwardTransition:this.irisIn,
+            firstanimation: [{display:"block", clipPath:"circle(0% at center"}, {display:"block",  clipPath:"circle(100% at center)"}],
             easing:'ease-in-out',
             duration:1000
         },
         "irisOut":{
             forwardTransition:this.irisOut,
+            firstanimation: [{display:"block", clipPath:"circle(100% at center"}, {display:"block",  clipPath:"circle(0% at center)"}],
             easing:'ease-in-out',
             duration:1000
         },
@@ -631,6 +639,10 @@ class SicTransit {
             easing: 'ease-in-out', 
             duration:500
         },
+        "swap": {
+            forwardTransition: this.swap,
+            firstanimation:[],
+        },
         "zoomIn": {
             forwardTransition: this.zoomIn,
             firstanimation: [{display:"block", transform: "scale(0)"}, {display:"block", transform: "scale(1)"}],
@@ -648,29 +660,7 @@ class SicTransit {
         }
     }
 
-    animateIris(args,panel,overlay,startSize, endSize, color, duration) {
-        let self = args.self;
-        const startTime = Date.now();
-        overlay.style.background = "radial-gradient(circle, transparent 0%, transparent 0%, ${color} 0%)";
-        panel.style.display = "block";
-        self.moveToTos(panel,self);
-        self.moveToTos(overlay,self);
-        function animate() {
-            const currentTime = Date.now();
-            const elapsedTime = currentTime - startTime;
-            const progress = elapsedTime / duration;
-            const currentSize = startSize + (endSize - startSize) * progress;
-            self.setIrisSize(overlay,currentSize,color);
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            }
-            else{
-                self.moveToBos(overlay,self);
-                self.performCallback(args);
-            }
-        }
-        requestAnimationFrame(animate);
-    }
+
 
     loadStack(self=this){
         const panel_list = document.querySelectorAll(self.panelQuery);
@@ -695,37 +685,6 @@ class SicTransit {
         const animation = args.selectedPanel.animate(args.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = args.finishHandler; 
     }
-    performFlip(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable[args["transitionName"]];
-        self.flippanel.replaceChildren([]);
-        self.removeFromStack(args.selectedPanel,self);
-        self.flippanel.appendChild(args.selectedPanel);
-        let tosItem = self.panelStack.pop();
-        self.moveToTos(self.flippanel,self);
-        self.flippanel.appendChild(tosItem);
-       
-        self.flippanel.style.display = "block";
-        self.flippanel.style.zIndex = 20;
-
-   //     tosItem.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
-        const animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
-        animation.onfinish = function(){
-            
-           
-     //       self.flippanel.replaceChildren([]);
-            self.moveToBos(self.flippanel,self);
-            args.selectedPanel.style.transform = "";
-            tosItem.style.transform = "";
-            self.panelStack.push(tosItem);
-            self.panelStack.push(args.selectedPanel);
-            self.container.appendChild(tosItem);
-            self.container.appendChild(args.selectedPanel);
-            self.normalizeStack(self);
-            self.performCallback(args);
-        }
-     
-    }
     performCallback(args){
         const self = args.self;
         if(self.callback === null){
@@ -734,10 +693,7 @@ class SicTransit {
         args.endTime = new Date().getTime();
         self.callback(args);
     }
-    setIrisSize(overlay,holeSize,color) {
-        overlay.style.background = `radial-gradient(circle, transparent ${holeSize}px, ${color} ${holeSize}px)`;
-     //overlay.style.background = `radial-gradient(circle, transparent ${holeSize}px)`;
-    }
+ 
 // Transition handling code. Not intended to be called directly from user code.
 // Use performTransition instead.
     cutIn(args){
@@ -888,7 +844,7 @@ class SicTransit {
         let tosItem = self.panelStack.pop();
         self.flippanel.appendChild(tosItem);
         self.flippanel.style.display = "block";
-        self.moveToTos(self.graypanel,self);
+        self.moveToTos(self.flipbackgroundpanel,self);
         self.moveToTos(self.flippanel,self);
         let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = function(){
@@ -897,7 +853,7 @@ class SicTransit {
             self.container.append(tosItem);
             self.panelStack.push(tosItem);
             self.panelStack.push(args.selectedPanel);
-            self.moveToBos(self.graypanel);
+            self.moveToBos(self.flipbackgroundpanel);
             self.moveToBos(self.flippanel, self);
 
         }
@@ -913,7 +869,7 @@ class SicTransit {
         let tosItem = self.panelStack.pop();
         self.flippanel.appendChild(tosItem);
         self.flippanel.style.display = "block";
-        self.moveToTos(self.graypanel,self);
+        self.moveToTos(self.flipbackgroundpanel,self);
         self.moveToTos(self.flippanel,self);
         let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = function(){
@@ -922,7 +878,7 @@ class SicTransit {
             self.container.append(tosItem);
             self.panelStack.push(tosItem);
             self.panelStack.push(args.selectedPanel);
-            self.moveToBos(self.graypanel);
+            self.moveToBos(self.flipbackgroundpanel);
             self.moveToBos(self.flippanel, self);
 
         }
@@ -936,7 +892,7 @@ class SicTransit {
         self.moveToTos(args.selectedPanel,self);
         self.panelStack.pop();
         let tosItem = self.panelStack.pop();
-        self.moveToTos(self.graypanel,self);
+        self.moveToTos(self.flipbackgroundpanel,self);
         self.flippanel.appendChild(tosItem);
         self.flippanel.appendChild(args.selectedPanel);
         self.flippanel.style.display = "block";
@@ -949,7 +905,7 @@ class SicTransit {
             self.container.append(args.selectedPanel);
             self.panelStack.push(args.selectedPanel);
             self.panelStack.push(tosItem);
-            self.moveToBos(self.graypanel);
+            self.moveToBos(self.flipbackgroundpanel);
             self.moveToBos(self.flippanel, self);
 
         }
@@ -964,7 +920,7 @@ class SicTransit {
         self.moveToTos(args.selectedPanel,self);
         self.panelStack.pop();
         let tosItem = self.panelStack.pop();
-        self.moveToTos(self.graypanel,self);
+        self.moveToTos(self.flipbackgroundpanel,self);
         self.flippanel.appendChild(tosItem);
         self.flippanel.appendChild(args.selectedPanel);
         self.flippanel.style.display = "block";
@@ -977,7 +933,7 @@ class SicTransit {
             self.container.append(args.selectedPanel);
             self.panelStack.push(args.selectedPanel);
             self.panelStack.push(tosItem);
-            self.moveToBos(self.graypanel);
+            self.moveToBos(self.flipbackgroundpanel);
             self.moveToBos(self.flippanel, self);
 
         }
@@ -1071,65 +1027,71 @@ class SicTransit {
         let self = args.self;
         let dispatchEntry = self.dispatchTable["irisIn"];
         let panel = args.selectedPanel;
-        let overlay = self.irispanel;
-        self.animateIris(args,panel,overlay,0,self.getElementDiagonal(args.selectedPanel),"rgba(255,255,255,0)",dispatchEntry.duration);
-        self.performCallback(args);
+        panel.style.display = "none";
+        self.moveToTos(panel,self);
+        args.firstanimation = dispatchEntry.firstanimation;
+        args.finishHandler = function(){
+            panel.style.display = "block";
+            args.selectedPanel.style.clipPath = "";
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
     }
     irisOut(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["irisOut"];
         let panel = args.selectedPanel;
-        let overlay = self.irispanel;
-        self.animateIris(args,panel,overlay,self.getElementDiagonal(args.selectedPanel),0,"rgba(255,255,255,0)",dispatchEntry.duration);
-        self.performCallback(args);
+        panel.style.clipPath = "circle(100% at center)"
+        self.moveToTos(panel,self);
+        args.firstanimation = dispatchEntry.firstanimation;
+        args.finishHandler = function(){
+            self.moveToBos(panel, self);
+            panel.style.clipPath = "";
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
     }
     irisInFromBlack(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisInFromBlack"];
-        let panel = args.selectedPanel;
-        let overlay = self.irispanel;
-        self.animateIris(args,panel,overlay,0,self.getElementDiagonal(args.selectedPanel),"black",dispatchEntry.duration);
-        self.performCallback(args);
+        self.moveToTos(self.blackpanel);
+        self.irisIn(args);
     }
     irisOutToBlack(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisOutToBlack"];
-        let panel = args.selectedPanel;
-        let overlay = self.irispanel;
-        self.animateIris(args,panel,overlay,self.getElementDiagonal(args.selectedPanel),0,"black",dispatchEntry.duration);
-        self.performCallback(args);
+        self.blackpanel.style.display = "none";
+        self.moveToTos(self.blackpanel, self);
+        self.stackSwap();
+        self.normalizeStack();
+        self.blackpanel.style.display = "block";
+        self.irisOut(args);
     }
     irisInFromGray(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisInFromGray"];
-        let panel = args.selectedPanel;
-        let overlay = self.irispanel;
-        self.animateIris(args,panel,overlay,0,self.getElementDiagonal(args.selectedPanel),"gray",dispatchEntry.duration);
-        self.performCallback(args);
+        self.moveToTos(self.graypanel);
+        self.irisIn(args);
     }
     irisOutToGray(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisOutToGray"];
-        let panel = args.selectedPanel;
-        let overlay = self.irispanel;
-        self.animateIris(args,panel,overlay,self.getElementDiagonal(args.selectedPanel),0,"gray",dispatchEntry.duration);
-        self.performCallback(args);
+        self.graypanel.style.display = "none";
+        self.moveToTos(self.graypanel, self);
+        self.stackSwap();
+        self.normalizeStack();
+        self.graypanel.style.display = "block";
+        self.irisOut(args);
     }
     irisInFromWhite(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisInFromWhite"];
-        let panel = args.selectedPanel;
-        let overlay = self.irispanel;
-        self.animateIris(args,panel,overlay,0,self.getElementDiagonal(args.selectedPanel),"white",dispatchEntry.duration);
-        self.performCallback(args);
+        self.moveToTos(self.whitepanel);
+        self.irisIn(args);
     }
     irisOutToWhite(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["irisOutToWhite"];
-        let panel = args.selectedPanel;
-        let overlay = self.irispanel;
-        self.animateIris(args,panel,overlay,self.getElementDiagonal(args.selectedPanel),0,"white",dispatchEntry.duration);
-        self.performCallback(args);
+        self.whitepanel.style.display = "none";
+        self.moveToTos(self.whitepanel, self);
+        self.stackSwap();
+        self.normalizeStack();
+        self.whitepanel.style.display = "block";
+        self.irisOut(args);
     }
     menuInBottom(args){
         let self = args.self;
@@ -1346,6 +1308,10 @@ class SicTransit {
             self.performCallback(args);
         }
         self.performAnimation(args);
+    }
+    swap(args){
+        let self = args.self;
+        self.stackSwap(self);
     }
     zoomIn(args){
         let self = args.self;
