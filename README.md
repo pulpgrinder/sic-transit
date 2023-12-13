@@ -5,7 +5,7 @@
 ## Features
 - Pure JavaScript and CSS with NO dependencies.
 - Numerous avalable transitions including cuts, dissolves, fades, flips, hinges, slides, irises, zooms, and more.
-- Easy addition and removal of screen panels.
+- Easy addition and removal of custom screen panels.
 - Customizable animation duration, easing, and more.
 
 ## Quick Start Example
@@ -86,48 +86,49 @@ Place all your initial panel `div`s within the container `div` you're planning t
 
 #### Selectors
 
-Many of the following public methods take a `selector` argument to specify a particular panel. A selector can be any of the following:
+Many of the public methods take a `selector` argument to specify a particular panel. The following examples use the `displayPanel()` method for simplicity.
 
 1) An explicit raw DOM element. Example:
 
 ```javascript
 let newpanel =  document.createElement('div');
 // newpanel is now a new raw DOM element.
-mySic.displayPanel(newpanel);
+mySic.showPanel({panelSelector:newpanel});
 ```
 
 Here we're creating a new DOM element, and passing it directly to `displayPanel()`.
 
-2) A query selector (with the same syntax as document.querySelector() and CSS).
+2) A query selector (with the same basic syntax as document.querySelector() and CSS).
 
 Examples:
 
 ```javascript
 let newpanel =  document.createElement('div');
 newpanel.id = 'myNewPanel';
-mySic.displayPanel('#myNewPanel'); // display it using the id as a selector.
+mySic.showPanel({panelSelector:'#myNewPanel'}); // display it using the id as a selector.
+
 
 let secondnewpanel = document.createElement('div');
 secondnewpanel.classList.add('secondclass'); // give it a custom class.
-mySic.displayPanel('.secondclass'); // display it using the custom class as a  selector.
+mySic.displayPanel({panelSelector:'.secondclass'}); // display it using the custom class as a  selector.
 ```
-3) A numeric index into the internal panel stack. A negative value or negative zero denotes an offset from the top of the stack, while a positive or positive zero value indicates an offset from the bottom of the stack.
+3) A numeric index into the internal panel stack. A negative value (or "negative zero") denotes an offset from the top of the stack, while a positive or positive zero value indicates an offset from the bottom of the stack.
 
 Examples:
 
 ```javascript
-mySic.displayPanel(-1) // move the panel one down from the top of the stack to the top of the stack and display it.
+mySic.displayPanel({panelSelector:-1}) // move the panel one down from the top of the stack to the top of the stack and display it.
 
-mySic.displayPanel(1) // move the panel one up from the bottom of the stack to the top of the stack and display it.
+mySic.displayPanel({panelSelector:1}) // move the panel one up from the bottom of the stack to the top of the stack and display it.
 
-mySic.displayPanel(0) // move the panel at the bottom of the stack to the top of the stack and display it.
+mySic.displayPanel({panelSelector:0}) // move the panel at the bottom of the stack to the top of the stack and display it.
 
-mySic.displayPanel(-0) // move the panel at the top of the stack to the top of the stack and display it. This obviously has no real effect with `displayPanel()`, but will with other methods.
+mySic.displayPanel({panelSelector:-0}) // move the panel at the top of the stack to the top of the stack and display it. This obviously has no real effect with `displayPanel()`, but will with some of the other methods.
 ```
 
-#### Methods
-`displayPanel(selector)`
-Move the DOM element with the given selector to the top of the stack and display it. If the DOM element is not already a panel, it will be removed from its current location in the DOM, , and added to the panel stack. The CSS classes required to make it function as a panel will be added automatically, if necessary.
+#### Public Methods
+`getBos()`
+Returns the panel currently at the bottom of the panel stack.
 
 `getContainerId()`
 Returns the user-specified ID for the panel container. See *Initialization*, above.
@@ -136,35 +137,29 @@ Returns the user-specified ID for the panel container. See *Initialization*, abo
 Returns the user-specified CSS class used to identify the panels that belong to this instance of SicTransit. See *Initialization*, above.
 
 `getTransitionList()`
-Returns an array of the names of all available transitions.
+Returns an array containing the names of all defined transitions.
 
 `getPanelList()`
-Returns an array of the ids of panels within the panel container. Note that this does not include the special internal panels used to implement certain effects, nor does it include any user-created panels which don't have ids.
-
-`getBos()`
-Returns the panel currently at the bottom of the panel stack as an DOM element.
+Returns an array of the ids of panels within the panel container. Note that this does **not** include the special internal panels used to implement certain effects, as those do not have ids, nor does it include user-created panels that likewises don't have ids (user-created panels with ids will be included);
 
 `getTos()`
-Returns the panel currently at the top of the panel stack as a DOM element.
+Returns the panel currently at the top of the panel stack.
 
 `performTransition(args)`
-The heart of Sic Transit. This is documented in detail in its own section below.
+The heart of Sic Transit. Each transition is documented in detail in the *Transitions* section below.
 
-`setCallback(function)`
-Sets a callback function to be called after each transition. The callback function is called with the args object for the transition as a parameter (again, see the `performTransition` section below).
+`setParameter(parametername, parametervalue,transitionname)`
+Sets the given parameter name to the given value for the given transition name. If the transition name is "\*", or not supplied, the parameter is set for *all* transitions.
+
+The following parameters are recognized:
+
+Examples:
+
+Change
+`showPanel(selector)`
+Move the DOM element with the given selector to the top of the stack and display it. If the DOM element is not already a panel, it will be removed from its current location in the DOM, added to the panel container, and added to the panel stack. The CSS classes required to make it function as a panel will be added automatically, if necessary. See the examples above.
 
 `stackDump()`
 Prints the current state of the panel stack to the console. This is handy if you are debugging a new transition.
 
 Transitions
-The library includes a variety of transitions such as cutIn, dissolveOut, fadeInFromBlack, flipOutY, hingeInLeft, newspaperOut, slideInRight, zoomIn, and more. Each transition can be invoked via performTransition() method.
-
-        let defaultArgs = {
-            direction: "forward",
-            easing: "linear",
-            duration: 500,
-            elementSelector: "",
-            firstanimation:() => {},
-            secondanimation: () => {},
-            finishHandler:  () => {},
-        }

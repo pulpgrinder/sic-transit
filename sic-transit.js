@@ -1,34 +1,18 @@
-/*  sic-transit.js Copyright 2023 by Anthony W. Hursh
+/*  sic-transit.js 
+ *  Copyright 2023 by Anthony W. Hursh
  *  MIT license.
  */
 
 class SicTransit {
-    createOverlayPanels(){
-        let overlaypanel;
-        let overlayPanels = [
-            "blackpanel",
-            "graypanel",
-            "whitepanel",
-            "irispanel",
-            "flippanel",
-            "flipbackgroundpanel"
-        ];
-        overlayPanels.forEach(element => {
-            overlaypanel = document.createElement('div');
-            this[element] = overlaypanel;
-            overlaypanel.classList.add(this.panelClass,'sic-transit-panel','sic-transit-' + element);
-            this.container.appendChild(overlaypanel);
-            this.panelStack.unshift(overlaypanel);
-        });
-        this.normalizeStack();
-    }
+/* Constructor takes two arguments, the id for the panel container,
+ * and the CSS class for the panels. 
+ */
     constructor(containerId, panelClass) {
     // Set up the user-suppplied container.
       this.containerId = containerId;
       this.container = document.querySelector(containerId);
       this.container.classList.add("sic-transit-container");
-      
- /* If the user-supplied panel class is (e.g.) .foobar, some things want it as the raw class 'foobar', while others want it in the CSS/Query format '.foobar'. Irritating. We'll store it both ways. */
+ /* If the user-supplied panel class is (e.g.) .foobar, some things want it as the raw class name 'foobar', while others want it in the CSS/querySelector format '.foobar'. Irritating. We'll store it both ways. */
       this.panelClass = panelClass.substring(1);
       this.panelQuery = panelClass;
 
@@ -36,16 +20,16 @@ class SicTransit {
       this.date = new Date();
       this.synchro = 0;
 
-      // Set up our panels.
-      this.panelStack = [];
-      // Load up the internal panel stack with any panels the user has already supplied in the given panel container.
-      this.loadStack();
+      // Load up the internal panel stack with any panels the user has already supplied -- i.e., elements with the given panel class that are inside the given container.
+      this.loadPanelStack();
 
       // Create our special internal overlay panels. These are things like solid black, solid white ,etc. Used to support various transitions.
       this.createOverlayPanels(); 
-    }
+    } // End of constructor.
+
 
 // Public methods.
+
     // Returns the element currently at the bottom of the stack, if there is
     // one. Otherwise throws an error.
     getBos(self=this){
@@ -54,15 +38,18 @@ class SicTransit {
         }
         throw new Error("Sic Transit getBos(): trying to get element at bottom of empty stack.");
     }
+
     // Return the container id for this instance of Sic Transit.
     getContainerId(self=this){
         return self.containerId;
     }
+
     // Return the panel class for this instance of Sic Transit in CSS query form.
     getPanelClass(self=this){
         return  self.panelQuery;
     }
-/* Returns an array of all panels in the panel container which have the specified panel class and  an id value. Does not return the internal special panels such as the black, white, and gray panels used in certain transitions. */
+
+/* Returns an array of all panels in the panel container which have the specified panel class and  an id value. Does *not* return the internal special panels such as the black, white, and gray panels used in certain transitions. */
     getPanelList(self=this){
         let panelList = [];
         let panels = document.querySelectorAll(self.containerId + " > " + this.panelQuery);
@@ -73,6 +60,7 @@ class SicTransit {
         }
         return panelList;
     }
+
 /* Returns the panel currently at the top of the panel stack, if there is one. Otherwise throws an error. */
     getTos(self=this){
         if(self.panelStack.length > 0){
@@ -80,6 +68,8 @@ class SicTransit {
         }
         throw new Error("Sic Transit getTos(): trying to get element at top of empty stack.");
     }
+
+    /* Returns an array of all transitions currently defined. */
     getTransitionList(self=this){
         let transitions = [];
         for (let key in self.dispatchTable) {
@@ -89,23 +79,44 @@ class SicTransit {
          }
          return transitions;
     }
+
+    // Returns the z-index of the panel corresponding to panelSelector.
     getZIndex(panelSelector,self=this){
         let selectedPanel = this.selectPanel(panelSelector,self);
         return window.getComputedStyle(selectedPanel).getPropertyValue('z-index');
     }
- 
+
+    // Moves the selected panel to the bottom of the stack.
     moveToBos(panelSelector,self=this){
         let selectedPanel = this.selectPanel(panelSelector);
         self.removeFromStack(selectedPanel,self);
         self.panelStack.unshift(selectedPanel);
         self.normalizeStack(self);
     }
+
+    // Moves the selected panel to the top of the stack.
     moveToTos(panelSelector,self=this){
         let selectedPanel = this.selectPanel(panelSelector);
         self.removeFromStack(selectedPanel,self);
         self.panelStack.push(selectedPanel);
         self.normalizeStack(self);
     }
+
+    /* This updates the zIndex of the panels in the panel stack, so that the top of stack panel has a zIndex of 0, the next one down has a zIndex of -1, etc. This should be called any time the panel stack changes. The given methods already call this as needed.
+*/
+    normalizeStack(self=this){
+        let panelStack = self.panelStack;
+        for(let index = 0; index < panelStack.length; index++){
+            let panel = panelStack[index];
+            panel.style.zIndex = (index - panelStack.length) + 1;
+        }
+    }
+
+/* Performs the specified transition. The following keys in args are recognized:
+    panelSelector: the selector for the panel to be transitioned. See selectPanel() for details.
+    transitionName: the name of the transition to be performed. See getTransitionList() for a list of currently defined transitions.
+    stackRotationNumber: the number of times to rotate the stack.  Only used by the rotateStack transition. Positive numbers move panels from the top of the stack to the bottom. Negative numbers move panels from the bottom of the stack to the top. Zero is a no-op. Default is 1.
+*/
     performTransition(args){
         if(args.self === undefined){
             args.self = this;
@@ -121,8 +132,10 @@ class SicTransit {
         args.secondanimation = self.dispatchTable[args.transitionName]["secondanimation"];
         args.transitionFunction(args);
     }
-    /*  Removes the selected panel from the panel stack (but not the DOM), if it's there. Returns the panel if it was found, otherwise
-    returns null. */
+
+/*  Removes the selected panel from the panel stack (but not the DOM), if it's there. Returns the panel if it was found, otherwise
+    returns null. 
+*/
     removeFromStack(panelSelector,self=this){
         let panel = self.selectPanel(panelSelector, self);
         let panelStack = self.panelStack;
@@ -134,37 +147,49 @@ class SicTransit {
         }
         return null;
     }
-    // Remove selected panel from the panel stack and the
-    // DOM. Returns the selected panel, in case you want to save it
-    // for adding back later or do something else with it.
+
+/* Remove selected panel from the panel stack and the
+    DOM. Returns the removed panel.
+    */
     removePanel(panelSelector,self=this){
         let panel = self.selectPanel(panelSelector);
         self.removeFromStack(panel, self);
         panel.remove();
         return panel;
     }
-    /*  rotateStack() with a positive argument transfers panels from the 
-    bottom of the stack to the top of the stack the specified number of 
-    times. A negative argument transfers elements from the top of the
-    stack to the bottom. Does nothing if the argument is zero, other than making sure the top of stack panel is visible (below). */
+
+/*  rotateStack() with a positive argument transfers panels from the 
+top of the stack to the bottom of the stack the specified number of 
+times. A negative argument transfers elements from the bottom of the
+stack to the top. Does nothing if the argument is zero, other than making sure the top of stack panel is visible (below). */
     rotateStack(args){
         let self = args.self;
-        let stackRotation = args.panelSelector;
-        if(stackRotation < 0){
-             for(let i = 0; i > stackRotation; i--){
+        let stackRotationNumber;
+        if(Number.isInteger(args.stackRotationNumber)){  
+            stackRotationNumber = args.stackRotationNumber; 
+        }
+        else{
+            stackRotationNumber = 1;
+        }
+
+        // stackRotationNumber === 0 is a no-op.
+        if(stackRotationNumber > 0){
+             for(let i = 0; i < stackRotationNumber; i++){
                 self.panelStack.unshift(self.panelStack.pop());
              }
          }
-         else if(stackRotation > 0){
-             for(let i = 0; i < stackRotation; i++){
+         else if(stackRotationNumber < 0){
+             for(let i = 0; i > stackRotationNumber; i--){
                  self.panelStack.push(self.panelStack.shift())
              }
          }
+        
          self.normalizeStack(self);
          self.showPanel(self.getTos(self),self);
      }
-/* Returns the panel corresponding to the given panelSelector, if it exists. Returns null if panelSelector is invalid. There are several possibilities for panelSelector. If it is blank, the panel at the current
-    top of the stack is returned. If panelSelector is already a DOM element, it gets returned as-is. If panelSelector is a string, it is treated as a query selector, and the first matching DOM element is returned (if one exists). If panelSelector is a positive integer, the element at that index in the panel stack is returned (if it exists). If panelSelector is a negative integer, the element at that index from the top of the stack is returned (if it exists). If panelSelector is 0, the element at the bottom of the stack is returned (same as getBos()). If panelSelector is -0, the element at the top of the stack is returned (same as getTos()). */
+
+/* Returns the panel corresponding to the given panelSelector, if it exists. If panelSelector is blank (i.e. "" or undefined), the panel at the current
+    top of the stack is returned. If panelSelector is already a DOM element, it is returned as-is. If panelSelector is a string, it is treated as a query selector, and the first matching DOM element is returned (if one exists). If panelSelector is a positive integer, the element at that index in the panel stack is returned (if it exists). If panelSelector is a negative integer, the element at that index from the top of the stack is returned (if it exists). If panelSelector is 0, the element at the bottom of the stack is returned (same as getBos()). If panelSelector is -0, the element at the top of the stack is returned (same as getTos()). */
     selectPanel(panelSelector,self=this){
         // No selector, return top of stack.
         if((panelSelector === undefined) || (panelSelector === "")){
@@ -174,7 +199,7 @@ class SicTransit {
             return panelSelector;
         }
         else if(Number.isInteger(panelSelector)){
-/*             // We're selecting the item by stack position
+             // We're selecting the item by stack position
             if(panelSelector > 0){
                 // Counting up from bottom of stack.
                 if(panelSelector < self.panelStack.length){
@@ -202,8 +227,7 @@ class SicTransit {
             }
             else{
                 return self.panelStack[0];
-            } */
-            return self.panelStack[0];
+            }
         }
         else if(typeof panelSelector === 'string'){
             // we assume strings are query selectors
@@ -222,7 +246,6 @@ class SicTransit {
     }
 
 // Sets the given parameter for the specified transition. If the transition isn't specified, or is set to '*', sets it for all transitions.
-
     setParameter(parametername, parametervalue,transitionname){
         let transitionList;
         if((transitionname === undefined) || (transitionname === "*")) {
@@ -236,7 +259,7 @@ class SicTransit {
         }
     }
 
-// Put selected panel in the panel container (if it isn't already there), move it to top of the panel stack, and display it.
+// Puts selected panel in the panel container (if it isn't already there), moves it to the top of the panel stack, and displays it.
     showPanel(selector,self=this){
         let selectedPanel = self.selectPanel(selector);
         if(selectedPanel === null){
@@ -260,7 +283,8 @@ class SicTransit {
         self.container.appendChild(selectedPanel);
         self.normalizeStack(self);
     }
-    // Dump the internal state of the panel stack to the Javascript console.
+
+    // Dump the internal state of the panel stack to the JavaScript console.
     // Handy when debugging a new transition.
     stackDump(args={self:this}){
         console.log("stackDump:");
@@ -274,7 +298,7 @@ class SicTransit {
         } 
     }
 
-    // Exchanges the top two elements on top of the panel stack.
+    // Exchanges the top two elements on the panel stack.
     stackSwap(self=this){
         if(self.panelStack.length < 2){
             console.error("SicTransit stackSwap(): can't swap when length of panelStack is < 2.");
@@ -286,11 +310,10 @@ class SicTransit {
         self.panelStack.push(temp2);
         self.normalizeStack(self)
     }
-    // Internal methods below. Not well-documented and not intended to be called
-    // directly by user code. These may change at any time. Use at 
-    // your own risk.
+    
+/* Internal methods below. Not well-documented and not intended to be called directly by user code. These may change at any time. Use at your own risk. :-) */
 
-/* Lookup table for transition parameters. You shouldn't mess with this directly unless you're defining a new transition or fixing a bug, etc.  */
+/* Lookup table for transition parameters. Shouldn't have to do anything with this unless you're defining a new transition or fixing a bug.  */
     dispatchTable =  {
         "cutIn": {
             forwardTransition: this.cutIn,
@@ -711,7 +734,31 @@ class SicTransit {
             callback:null
         }
     }
-    loadStack(self=this){
+    // These panels are used internally in various transitions (e.g., fadeInFromBlack). Not intended to be accessed directly from user code.
+    createOverlayPanels(){
+        this.specialtyPanels = {};
+        let overlaypanel;
+        let overlayPanels = [
+            "blackpanel",
+            "graypanel",
+            "whitepanel",
+            "flippanel",
+            "flipbackgroundpanel"
+        ];
+        overlayPanels.forEach(element => {
+            overlaypanel = document.createElement('div');
+            this.specialtyPanels[element] = overlaypanel;
+            overlaypanel.classList.add(this.panelClass,'sic-transit-panel','sic-transit-' + element);
+            this.container.appendChild(overlaypanel);
+            this.panelStack.unshift(overlaypanel);
+        });
+        this.normalizeStack();
+    }
+
+/* Creates the initial panel stack, using elements which have the user-specified panel class and are contained within te user-specified container.
+*/
+    loadPanelStack(self=this){
+        self.panelStack = [];
         const panel_list = document.querySelectorAll(self.panelQuery);
         self.panelStack = [...panel_list];
         for(let i = 0; i < self.panelStack.length; i++){
@@ -719,21 +766,17 @@ class SicTransit {
         }
         self.normalizeStack(self);
     }
-    normalizeStack(self=this){
-        let panelStack = self.panelStack;
-        for(let index = 0; index < panelStack.length; index++){
-            let panel = panelStack[index];
-            panel.style.zIndex = (index - panelStack.length) + 1;
-        }
-    }
+
+/* Actually performs the animation. This is called by most transition functions, though some transitions require custom manipulations. */
     performAnimation(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
-       // args.selectedPanel.style.display = "none";
         self.moveToTos(args.selectedPanel,self);
         const animation = args.selectedPanel.animate(args.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = args.finishHandler; 
     }
+
+/* Performs the callback function for the given transition, ,if one is specified. */
     performCallback(args){
         const self = args.self;
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
@@ -745,7 +788,7 @@ class SicTransit {
     }
  
 // Transition handling code. Not intended to be called directly from user code.
-// Use performTransition instead.
+// Use performTransition() instead.
     cutIn(args){
         let self = args.self;
         self.showPanel(args.selectedPanel, self);
@@ -764,7 +807,7 @@ class SicTransit {
         args.selectedPanel.style.display = "none";
         let topPanel = self.panelStack.pop();
         self.panelStack.push(topPanel);
-        self.moveToTos(self.blackpanel,self);
+        self.moveToTos(self.specialtyPanels.blackpanel,self);
         self.moveToTos(topPanel,self);
         self.normalizeStack(self);
         args.selectedPanel.style.opacity = 0;
@@ -845,118 +888,118 @@ class SicTransit {
         let self = args.self;
         let dispatchEntry = self.dispatchTable["fadeInFromBlack"];
         args.firstanimation = dispatchEntry.firstanimation;
-        args.fadePanel = self.blackpanel;
+        args.fadePanel = self.specialtyPanels.blackpanel;
         self.fadeIn(args);
     }
     fadeOutToBlack(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["fadeOutToBlack"];
         args.firstanimation = dispatchEntry.firstanimation;
-        args.fadePanel = self.blackpanel;
+        args.fadePanel = self.specialtyPanels.blackpanel;
         self.fadeOut(args);
     }
     fadeInFromGray(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["fadeInFromGray"];
         args.firstanimation = dispatchEntry.firstanimation;
-        args.fadePanel = self.graypanel;
+        args.fadePanel = self.specialtyPanels.graypanel;
         self.fadeIn(args);
     }
     fadeOutToGray(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["fadeOutToGray"];
         args.firstanimation = dispatchEntry.firstanimation;
-        args.fadePanel = self.graypanel;
+        args.fadePanel = self.specialtyPanels.graypanel;
         self.fadeOut(args);
     }
     fadeInFromWhite(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["fadeInFromWhite"];
         args.firstanimation = dispatchEntry.firstanimation;
-        args.fadePanel = self.whitepanel;
+        args.fadePanel = self.specialtyPanels.whitepanel;
         self.fadeIn(args);
     }
     fadeOutToWhite(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["fadeOutToWhite"];
         args.firstanimation = dispatchEntry.firstanimation;
-        args.fadePanel = self.whitepanel;
+        args.fadePanel = self.specialtyPanels.whitepanel;
         self.fadeOut(args);
     }
     flipInX(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInX"];
-        self.flippanel.replaceChildren([]);
-        self.flippanel.style.display = "none";
+        self.specialtyPanels.flippanel.replaceChildren([]);
+        self.specialtyPanels.flippanel.style.display = "none";
         self.removeFromStack(args.selectedPanel,self);
-        self.flippanel.appendChild(args.selectedPanel);
+        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
         args.selectedPanel.classList.add("sic-transit-flipped-x");
         let tosItem = self.panelStack.pop();
-        self.flippanel.appendChild(tosItem);
-        self.flippanel.style.display = "block";
-        self.moveToTos(self.flipbackgroundpanel,self);
-        self.moveToTos(self.flippanel,self);
-        let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+        self.specialtyPanels.flippanel.appendChild(tosItem);
+        self.specialtyPanels.flippanel.style.display = "block";
+        self.moveToTos(self.specialtyPanels.flipbackgroundpanelpanel,self);
+        self.moveToTos(self.specialtyPanels.flippanel,self);
+        let animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-x");
             self.container.append(args.selectedPanel);
             self.container.append(tosItem);
             self.panelStack.push(tosItem);
             self.panelStack.push(args.selectedPanel);
-            self.moveToBos(self.flipbackgroundpanel);
-            self.moveToBos(self.flippanel, self);
+            self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
+            self.moveToBos(self.specialtyPanels.flippanel, self);
 
         }
     }
     flipInY(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInY"];
-        self.flippanel.replaceChildren([]);
-        self.flippanel.style.display = "none";
+        self.specialtyPanels.flippanel.replaceChildren([]);
+        self.specialtyPanels.flippanel.style.display = "none";
         self.removeFromStack(args.selectedPanel,self);
-        self.flippanel.appendChild(args.selectedPanel);
+        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
         args.selectedPanel.classList.add("sic-transit-flipped-y");
         let tosItem = self.panelStack.pop();
-        self.flippanel.appendChild(tosItem);
-        self.flippanel.style.display = "block";
-        self.moveToTos(self.flipbackgroundpanel,self);
-        self.moveToTos(self.flippanel,self);
-        let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+        self.specialtyPanels.flippanel.appendChild(tosItem);
+        self.specialtyPanels.flippanel.style.display = "block";
+        self.moveToTos(self.specialtyPanels.flipbackgroundpanelpanel,self);
+        self.moveToTos(self.specialtyPanels.flippanel,self);
+        let animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-y");
             self.container.append(args.selectedPanel);
             self.container.append(tosItem);
             self.panelStack.push(tosItem);
             self.panelStack.push(args.selectedPanel);
-            self.moveToBos(self.flipbackgroundpanel);
-            self.moveToBos(self.flippanel, self);
+            self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
+            self.moveToBos(self.specialtyPanels.flippanel, self);
 
         }
     }
     flipOutX(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipOutX"];
-        self.flippanel.replaceChildren([]);
-        self.flippanel.style.display = "none";
-        self.flippanel.style.transform = "rotateX(180deg)";
+        self.specialtyPanels.flippanel.replaceChildren([]);
+        self.specialtyPanels.flippanel.style.display = "none";
+        self.specialtyPanels.flippanel.style.transform = "rotateX(180deg)";
         self.moveToTos(args.selectedPanel,self);
         self.panelStack.pop();
         let tosItem = self.panelStack.pop();
-        self.moveToTos(self.flipbackgroundpanel,self);
-        self.flippanel.appendChild(tosItem);
-        self.flippanel.appendChild(args.selectedPanel);
-        self.flippanel.style.display = "block";
+        self.moveToTos(self.specialtyPanels.flipbackgroundpanelpanel,self);
+        self.specialtyPanels.flippanel.appendChild(tosItem);
+        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
+        self.specialtyPanels.flippanel.style.display = "block";
         args.selectedPanel.classList.add("sic-transit-flipped-x");
-        self.moveToTos(self.flippanel,self);
-        let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+        self.moveToTos(self.specialtyPanels.flippanel,self);
+        let animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-x");
             self.container.append(tosItem);
             self.container.append(args.selectedPanel);
             self.panelStack.push(args.selectedPanel);
             self.panelStack.push(tosItem);
-            self.moveToBos(self.flipbackgroundpanel);
-            self.moveToBos(self.flippanel, self);
+            self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
+            self.moveToBos(self.specialtyPanels.flippanel, self);
 
         }
     }
@@ -964,31 +1007,29 @@ class SicTransit {
     flipOutY(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipOutY"];
-        self.flippanel.replaceChildren([]);
-        self.flippanel.style.display = "none";
-        self.flippanel.style.transform = "rotateY(180deg)";
+        self.specialtyPanels.flippanel.replaceChildren([]);
+        self.specialtyPanels.flippanel.style.display = "none";
+        self.specialtyPanels.flippanel.style.transform = "rotateY(180deg)";
         self.moveToTos(args.selectedPanel,self);
         self.panelStack.pop();
         let tosItem = self.panelStack.pop();
-        self.moveToTos(self.flipbackgroundpanel,self);
-        self.flippanel.appendChild(tosItem);
-        self.flippanel.appendChild(args.selectedPanel);
-        self.flippanel.style.display = "block";
+        self.moveToTos(self.specialtyPanels.flipbackgroundpanelpanel,self);
+        self.specialtyPanels.flippanel.appendChild(tosItem);
+        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
+        self.specialtyPanels.flippanel.style.display = "block";
         args.selectedPanel.classList.add("sic-transit-flipped-y");
-        self.moveToTos(self.flippanel,self);
-        let animation = self.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
+        self.moveToTos(self.specialtyPanels.flippanel,self);
+        let animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         animation.onfinish = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-y");
             self.container.append(tosItem);
             self.container.append(args.selectedPanel);
             self.panelStack.push(args.selectedPanel);
             self.panelStack.push(tosItem);
-            self.moveToBos(self.flipbackgroundpanel);
-            self.moveToBos(self.flippanel, self);
-
+            self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
+            self.moveToBos(self.specialtyPanels.flippanel, self);
         }
     }
- 
     hinge(args){
         let self = args.self;
         self.container.style.perspective =  "1000px";
@@ -1104,44 +1145,44 @@ class SicTransit {
     }
     irisInFromBlack(args){
         let self = args.self;
-        self.moveToTos(self.blackpanel);
+        self.moveToTos(self.specialtyPanels.blackpanel);
         self.irisIn(args);
     }
     irisOutToBlack(args){
         let self = args.self;
-        self.blackpanel.style.display = "none";
-        self.moveToTos(self.blackpanel, self);
+             self.specialtyPanels.blackpanel.style.display = "none";
+        self.moveToTos(self.specialtyPanels.blackpanel, self);
         self.stackSwap();
         self.normalizeStack();
-        self.blackpanel.style.display = "block";
+             self.specialtyPanels.blackpanel.style.display = "block";
         self.irisOut(args);
     }
     irisInFromGray(args){
         let self = args.self;
-        self.moveToTos(self.graypanel);
+        self.moveToTos(self.specialtyPanels.graypanel);
         self.irisIn(args);
     }
     irisOutToGray(args){
         let self = args.self;
-        self.graypanel.style.display = "none";
-        self.moveToTos(self.graypanel, self);
+        self.specialtyPanels.graypanel.style.display = "none";
+        self.moveToTos(self.specialtyPanels.graypanel, self);
         self.stackSwap();
         self.normalizeStack();
-        self.graypanel.style.display = "block";
+        self.specialtyPanels.graypanel.style.display = "block";
         self.irisOut(args);
     }
     irisInFromWhite(args){
         let self = args.self;
-        self.moveToTos(self.whitepanel);
+        self.moveToTos(self.specialtyPanels.whitepanel);
         self.irisIn(args);
     }
     irisOutToWhite(args){
         let self = args.self;
-        self.whitepanel.style.display = "none";
-        self.moveToTos(self.whitepanel, self);
+        self.specialtyPanels.whitepanel.style.display = "none";
+        self.moveToTos(self.specialtyPanels.whitepanel, self);
         self.stackSwap();
         self.normalizeStack();
-        self.whitepanel.style.display = "block";
+         self.specialtyPanels.whitepanel.style.display = "block";
         self.irisOut(args);
     }
     menuInBottom(args){
