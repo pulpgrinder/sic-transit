@@ -68,7 +68,7 @@ function runTransition(){
 }
 
 // Set up a callback to be called after every transition completes. In this case, it just prints some info.
-transit.setCallback(callbackDemo);
+transit.setParameter("callback",callbackDemo,"fadeOutToGray");
 
 // This is our callback function.
     function callbackDemo(args){

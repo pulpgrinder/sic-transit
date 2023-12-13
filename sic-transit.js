@@ -3,52 +3,46 @@
  */
 
 class SicTransit {
+    createOverlayPanels(){
+        let overlaypanel;
+        let overlayPanels = [
+            "blackpanel",
+            "graypanel",
+            "whitepanel",
+            "irispanel",
+            "flippanel",
+            "flipbackgroundpanel"
+        ];
+        overlayPanels.forEach(element => {
+            overlaypanel = document.createElement('div');
+            this[element] = overlaypanel;
+            overlaypanel.classList.add(this.panelClass,'sic-transit-panel','sic-transit-' + element);
+            this.container.appendChild(overlaypanel);
+            this.panelStack.unshift(overlaypanel);
+        });
+        this.normalizeStack();
+    }
     constructor(containerId, panelClass) {
+    // Set up the user-suppplied container.
       this.containerId = containerId;
       this.container = document.querySelector(containerId);
-      this.container.classList.add("sic-container");
+      this.container.classList.add("sic-transit-container");
+      
+ /* If the user-supplied panel class is (e.g.) .foobar, some things want it as the raw class 'foobar', while others want it in the CSS/Query format '.foobar'. Irritating. We'll store it both ways. */
       this.panelClass = panelClass.substring(1);
       this.panelQuery = panelClass;
+
+      // Used for timing and statistical purposes.
       this.date = new Date();
       this.synchro = 0;
+
+      // Set up our panels.
       this.panelStack = [];
-      // Load up the internal stack with any panels we already have in the panel container.
+      // Load up the internal panel stack with any panels the user has already supplied in the given panel container.
       this.loadStack();
-      this.callback = null;
-      // Create our special internal panels. These are used to
-      // support various transitions.
-      let blackpanel = document.createElement('div');
-      this.blackpanel = blackpanel;
-      blackpanel.classList.add(this.panelClass,'sic-panel','sic-transit-black-panel');
-      this.container.appendChild(blackpanel);
-      this.panelStack.unshift(blackpanel);
-      let graypanel = document.createElement('div');
-      this.graypanel = graypanel;
-      graypanel.classList.add(this.panelClass,'sic-panel','sic-transit-gray-panel');
-      this.container.appendChild(graypanel);
-      this.panelStack.unshift(graypanel);
-      let whitepanel = document.createElement('div');
-      this.whitepanel = whitepanel;
-      whitepanel.classList.add(this.panelClass,'sic-panel','sic-transit-white-panel');
-      this.container.appendChild(whitepanel);
-      this.panelStack.unshift(whitepanel);
-      let irispanel = document.createElement('div');
-      this.irispanel = irispanel;
-      irispanel.classList.add(this.panelClass,'sic-panel','sic-transit-iris-panel');
-      this.container.appendChild(irispanel);
-      this.panelStack.unshift(irispanel);
-      let flippanel = document.createElement('div');
-      this.flippanel = flippanel;
-      flippanel.classList.add(this.panelClass,'sic-panel','sic-transit-flip-panel');
-      this.container.appendChild(flippanel);
-      this.panelStack.unshift(flippanel);
-      let flipbackgroundpanel = document.createElement('div');
-      this.flipbackgroundpanel = flipbackgroundpanel;
-      flipbackgroundpanel.classList.add(this.panelClass,'sic-panel','sic-transit-flip-background-panel');
-      this.container.appendChild(flipbackgroundpanel);
-      this.panelStack.unshift(flipbackgroundpanel);
-     
-      this.normalizeStack();
+
+      // Create our special internal overlay panels. These are things like solid black, solid white ,etc. Used to support various transitions.
+      this.createOverlayPanels(); 
     }
 
 // Public methods.
@@ -153,7 +147,9 @@ class SicTransit {
     bottom of the stack to the top of the stack the specified number of 
     times. A negative argument transfers elements from the top of the
     stack to the bottom. Does nothing if the argument is zero, other than making sure the top of stack panel is visible (below). */
-    rotateStack(stackRotation, self = this){
+    rotateStack(args){
+        let self = args.self;
+        let stackRotation = args.panelSelector;
         if(stackRotation < 0){
              for(let i = 0; i > stackRotation; i--){
                 self.panelStack.unshift(self.panelStack.pop());
@@ -178,7 +174,7 @@ class SicTransit {
             return panelSelector;
         }
         else if(Number.isInteger(panelSelector)){
-            // We're selecting the item by stack position
+/*             // We're selecting the item by stack position
             if(panelSelector > 0){
                 // Counting up from bottom of stack.
                 if(panelSelector < self.panelStack.length){
@@ -198,7 +194,7 @@ class SicTransit {
                 else{
                     console.error("SicTransit selectPanel(): panelStack index " + panelIndex + " (" + panelSelector + " from top of stack) is outside the bounds of the panelStack.");
                     return null;
-                }
+                } 
             }
             // ES2015 lets us distinguish between +0 and -0.
             else if(Object.is(panelSelector,-0)){
@@ -206,7 +202,8 @@ class SicTransit {
             }
             else{
                 return self.panelStack[0];
-            }
+            } */
+            return self.panelStack[0];
         }
         else if(typeof panelSelector === 'string'){
             // we assume strings are query selectors
@@ -223,16 +220,12 @@ class SicTransit {
                 return null;
         }
     }
-// Sets the user-defined callback function that is called at the end of every transition.
-    setCallback(func){
-        this.callback = func;
-    }
 
-// Sets the given parameter for the specified transition. If the transition isn't specified, or is set to '*' sets it for all transitions.
+// Sets the given parameter for the specified transition. If the transition isn't specified, or is set to '*', sets it for all transitions.
 
     setParameter(parametername, parametervalue,transitionname){
         let transitionList;
-        if(transitionname === undefined) {
+        if((transitionname === undefined) || (transitionname === "*")) {
             transitionList = this.getTransitionList(this);
         }
         else{
@@ -255,7 +248,7 @@ class SicTransit {
         selectedPanel.remove(); 
         // Add the necessary classes to make it behave as a Sic Transit
         // panel.
-        selectedPanel.classList.add(self.panelClass,"sic-panel");
+        selectedPanel.classList.add(self.panelClass,"sic-transit-panel");
         // Reset display parameters (in case they were previously altered).
         selectedPanel.style.display = "block";
         selectedPanel.style.opacity = 1.0;
@@ -306,7 +299,8 @@ class SicTransit {
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             // cuts happen immediately, no timing parameters
             easing:"",
-            duration:0
+            duration:0,
+            callback:null
         },
         "cutOut": {
             forwardTransition: this.cutOut,
@@ -315,7 +309,8 @@ class SicTransit {
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             // cuts happen immediately, no timing parameters
             easing:"",
-            duration:0
+            duration:0,
+            callback:null
         },
         "dissolveIn": {
             forwardTransition: this.dissolveIn,
@@ -323,7 +318,8 @@ class SicTransit {
             secondanimation: [{display:"block", opacity:1}, {display:"block", opacity:0}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out',
-            duration:2000
+            duration:2000,
+            callback:null
         },
         "dissolveOut": {
             forwardTransition: this.dissolveOut,
@@ -331,49 +327,56 @@ class SicTransit {
             secondanimation: [{display:"block", opacity:0}, {display:"block", opacity:1}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
-            duration:2000
+            duration:2000,
+            callback:null
         },
         "fadeInFromBlack": {
             forwardTransition: this.fadeInFromBlack,
             firstanimation: [{ display:"block", opacity: 0}, {display:"block",opacity:1}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
-            duration:2000
+            duration:2000,
+            callback:null
         },
         "fadeOutToBlack": {
             forwardTransition: this.fadeOutToBlack,
             firstanimation: [{opacity:1}, {opacity:0}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
-            duration:2000
+            duration:2000,
+            callback:null
         },
         "fadeInFromGray": {
             forwardTransition: this.fadeInFromGray,
             firstanimation: [{ display:"block", opacity: 0}, {display:"block",opacity:1}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:2000
+            duration:2000,
+            callback:null
         },
         "fadeOutToGray": {
             forwardTransition: this.fadeOutToGray,
             firstanimation: [{opacity:1}, {opacity:0}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:2000
+            duration:2000,
+            callback:null
         },
         "fadeInFromWhite": {
             forwardTransition: this.fadeInFromWhite,
             firstanimation: [{ display:"block", opacity: 0}, {display:"block",opacity:1}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:2000
+            duration:2000,
+            callback:null
         },
         "fadeOutToWhite": {
             forwardTransition: this.fadeOutToWhite,
             firstanimation: [{opacity:1}, {opacity:0}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:2000
+            duration:2000,
+            callback:null
         },
         "flipInX":{
             forwardTransition: this.flipInX,
@@ -381,7 +384,8 @@ class SicTransit {
             firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "flipOutX":{
             forwardTransition: this.flipOutX,
@@ -389,7 +393,8 @@ class SicTransit {
           //  firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "flipInY":{
             forwardTransition: this.flipInY,
@@ -397,7 +402,8 @@ class SicTransit {
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "flipOutY":{
             forwardTransition: this.flipOutY,
@@ -405,105 +411,122 @@ class SicTransit {
             firstanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "hingeInBottom":{
             forwardTransition: this.hingeInBottom,
             firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "hingeOutBottom":{
             forwardTransition: this.hingeOutBottom,
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "hingeInLeft":{
             forwardTransition: this.hingeInLeft,
             firstanimation: [{display:"block", transform: "rotateY(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "hingeOutLeft":{
             forwardTransition: this.hingeOutLeft,
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "hingeInRight":{
             forwardTransition: this.hingeInRight,
             firstanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "hingeOutRight":{
             forwardTransition: this.hingeOutRight,
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "hingeInTop":{
             forwardTransition: this.hingeInTop,
             firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "hingeOutTop":{
             forwardTransition: this.hingeOutTop,
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "irisIn":{
             forwardTransition:this.irisIn,
             firstanimation: [{display:"block", clipPath:"circle(0% at center"}, {display:"block",  clipPath:"circle(100% at center)"}],
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "irisOut":{
             forwardTransition:this.irisOut,
             firstanimation: [{display:"block", clipPath:"circle(100% at center"}, {display:"block",  clipPath:"circle(0% at center)"}],
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "irisInFromBlack":{
             forwardTransition:this.irisInFromBlack,
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "irisOutToBlack":{
             forwardTransition:this.irisOutToBlack,
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "irisInFromGray":{
             forwardTransition:this.irisInFromGray,
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "irisOutToGray":{
             forwardTransition:this.irisOutToGray,
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "irisInFromWhite":{
             forwardTransition:this.irisInFromWhite,
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "irisOutToWhite":{
             forwardTransition:this.irisOutToWhite,
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
         },
         "menuInBottom": {
             forwardTransition: this.menuInBottom,
@@ -511,7 +534,8 @@ class SicTransit {
             boxShadow: "-10px -10px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:25
+            menuPercentage:25,
+            callback:null
         },
         "menuOutBottom": {
             forwardTransition: this.menuOutBottom,
@@ -519,7 +543,8 @@ class SicTransit {
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:25
+            menuPercentage:25,
+            callback:null
         },
         "menuInLeft": {
             forwardTransition: this.menuInLeft,
@@ -527,7 +552,8 @@ class SicTransit {
             boxShadow:  "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:25
+            menuPercentage:25,
+            callback:null
         },
         "menuOutLeft": {
             forwardTransition: this.menuOutLeft,
@@ -535,7 +561,8 @@ class SicTransit {
             boxShadow: "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:25
+            menuPercentage:25,
+            callback:null
         },
         "menuInRight": {
             forwardTransition: this.menuInRight,
@@ -543,7 +570,8 @@ class SicTransit {
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
            duration:500,
-           menuPercentage:25
+           menuPercentage:25,
+           callback:null
         },
         "menuOutRight": {
             forwardTransition: this.menuOutRight,
@@ -551,7 +579,8 @@ class SicTransit {
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             easing: 'ease-in-out',
             duration:500,
-            menuPercentage:25
+            menuPercentage:25,
+            callback:null
         },
         "menuInTop": {
             forwardTransition: this.menuInTop,
@@ -559,7 +588,8 @@ class SicTransit {
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:25
+            menuPercentage:25,
+            callback:null
         },
         "menuOutTop": {
             forwardTransition: this.menuOutTop,
@@ -567,88 +597,109 @@ class SicTransit {
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
             duration:500,
-            menuPercentage:25
+            menuPercentage:25,
+            callback:null
         },
         "newspaperIn": {
             forwardTransition: this.newspaperIn,
             firstanimation: [{display:"block", transform: "rotate(0deg)  scale(0)"}, {display:"block", transform: "rotate(720deg) scale(1)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
-           duration:1000
+           duration:1000,
+           callback:null
         },
         "newspaperOut":{
             forwardTransition: this.newspaperOut,
             firstanimation:[{display:"block", transform: "rotate(0deg)  scale(1)"}, {display:"block", transform: "rotate(-720deg) scale(0)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:1000
+            duration:1000,
+            callback:null
+        },
+        "rotateStack": {
+            forwardTransition: this.rotateStack,
+            firstanimation: [],
+            boxShadow: "",
+            easing:'',
+            duration:0,
+            callback:null
         },
         "slideInBottom": {
             forwardTransition: this.slideInBottom,
             firstanimation: [{display:"block", transform: "translateY(100%)"}, {display:"block",transform: "translateY(0%)"}],
             boxShadow: "-10px -10px 30px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
-           duration:500
+           duration:500,
+           callback:null
         },
         "slideOutBottom": {
             forwardTransition: this.slideOutBottom,
             firstanimation: [{transform: "translateY(0%)"}, {transform: "translateY(100%)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "slideInLeft": {
             forwardTransition: this.slideInLeft,
             firstanimation: [{display:"block", transform: "translateX(-100%)"}, {display:"block",transform: "translateX(0%)"}],
             boxShadow:  "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "slideOutLeft": {
             forwardTransition: this.slideOutLeft,
             firstanimation: [{display:"block", transform: "translateX(0%)"}, {display:"block",transform: "translateX(-120%)"}],
             boxShadow: "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "slideInRight": {
             forwardTransition: this.slideInRight,
             firstanimation: [{ display:"block", transform: "translateX(100%)"}, {display:"block",transform: "translateX(0%)"}],
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "slideOutRight": {
             forwardTransition: this.slideOutRight,
             firstanimation: [{transform: "translateX(0%)"}, {transform: "translateX(120%)"}],
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             easing: 'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "slideInTop": {
             forwardTransition: this.slideInTop,
             firstanimation: [{display:"block", transform: "translateY(-100%)"}, {display:"block",transform: "translateY(0%)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         },
         "slideOutTop": {
             forwardTransition: this.slideOutTop,
             firstanimation:[{transform: "translateY(0%)"}, {transform: "translateY(-100%)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
-            duration:500
+            duration:500,
+            callback:null
         },
         "swap": {
             forwardTransition: this.swap,
             firstanimation:[],
+            callback:null
         },
         "zoomIn": {
             forwardTransition: this.zoomIn,
             firstanimation: [{display:"block", transform: "scale(0)"}, {display:"block", transform: "scale(1)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
 
         },
         "zoomOut":{
@@ -656,17 +707,15 @@ class SicTransit {
             firstanimation: [{display:"block", transform: "scale(1)"}, {display:"block", transform: "scale(0)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500
+            duration:500,
+            callback:null
         }
     }
-
-
-
     loadStack(self=this){
         const panel_list = document.querySelectorAll(self.panelQuery);
         self.panelStack = [...panel_list];
         for(let i = 0; i < self.panelStack.length; i++){
-            self.panelStack[i].classList.add("sic-panel");
+            self.panelStack[i].classList.add("sic-transit-panel");
         }
         self.normalizeStack(self);
     }
@@ -687,11 +736,12 @@ class SicTransit {
     }
     performCallback(args){
         const self = args.self;
-        if(self.callback === null){
+        let dispatchEntry = self.dispatchTable[args["transitionName"]];
+        if(dispatchEntry.callback === null){
             return;
         }
         args.endTime = new Date().getTime();
-        self.callback(args);
+        dispatchEntry.callback(args);
     }
  
 // Transition handling code. Not intended to be called directly from user code.
@@ -1023,6 +1073,7 @@ class SicTransit {
         let diagonal = Math.ceil(Math.sqrt((width * width) + (height * height)));
         return diagonal;
     }
+
     irisIn(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["irisIn"];
@@ -1312,6 +1363,7 @@ class SicTransit {
     swap(args){
         let self = args.self;
         self.stackSwap(self);
+        self.performCallback(args);
     }
     zoomIn(args){
         let self = args.self;
