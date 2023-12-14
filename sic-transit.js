@@ -183,9 +183,9 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
                  self.panelStack.push(self.panelStack.shift())
              }
          }
-        
          self.normalizeStack(self);
          self.showPanel(self.getTos(self),self);
+         self.performCallback(args);
      }
 
 /* Returns the panel corresponding to the given panelSelector, if it exists. If panelSelector is blank (i.e. "" or undefined), the panel at the current
@@ -298,18 +298,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         } 
     }
 
-    // Exchanges the top two elements on the panel stack.
-    stackSwap(self=this){
-        if(self.panelStack.length < 2){
-            console.error("SicTransit stackSwap(): can't swap when length of panelStack is < 2.");
-            return;
-        }
-        let temp1 = self.panelStack.pop();
-        let temp2 = self.panelStack.pop();
-        self.panelStack.push(temp1);
-        self.panelStack.push(temp2);
-        self.normalizeStack(self)
-    }
+
     
 /* Internal methods below. Not well-documented and not intended to be called directly by user code. These may change at any time. Use at your own risk. :-) */
 
@@ -335,8 +324,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             duration:0,
             callback:null
         },
-        "dissolveIn": {
-            forwardTransition: this.dissolveIn,
+        "crossDissolveIn": {
+            forwardTransition: this.crossDissolveIn,
             firstanimation: [{ display:"block", opacity: 0}, {display:"block",opacity:1}],
             secondanimation: [{display:"block", opacity:1}, {display:"block", opacity:0}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
@@ -344,8 +333,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             duration:2000,
             callback:null
         },
-        "dissolveOut": {
-            forwardTransition: this.dissolveOut,
+        "crossDissolveOut": {
+            forwardTransition: this.crossDissolveOut,
             firstanimation: [{ display:"block", opacity: 1}, {display:"block",opacity:0}],
             secondanimation: [{display:"block", opacity:0}, {display:"block", opacity:1}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
@@ -786,8 +775,21 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         args.endTime = new Date().getTime();
         dispatchEntry.callback(args);
     }
- 
-// Transition handling code. Not intended to be called directly from user code.
+
+    // Exchanges the top two elements on the panel stack and updates display.
+    stackSwap(self=this){
+        if(self.panelStack.length < 2){
+            console.error("SicTransit stackSwap(): can't swap when length of panelStack is < 2.");
+            return;
+        }
+        let temp1 = self.panelStack.pop();
+        let temp2 = self.panelStack.pop();
+        self.panelStack.push(temp1);
+        self.panelStack.push(temp2);
+        self.normalizeStack(self)
+    }
+    
+    // Transition handling code. Not intended to be called directly from user code.
 // Use performTransition() instead.
     cutIn(args){
         let self = args.self;
@@ -799,7 +801,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         self.moveToBos(args.selectedPanel,self);
         self.performCallback(args);
     }
-    dissolveIn(args){
+    crossDissolveIn(args){
         let self = args.self;
         self.synchro = 0;
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
@@ -830,7 +832,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         const topAnimation = topPanel.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
         topAnimation.onfinish = args.finishHandler;
     }
-    dissolveOut(args){
+    crossDissolveOut(args){
         let self = args.self;
         self.synchro = 0;
         let dispatchEntry = self.dispatchTable[args["transitionName"]];

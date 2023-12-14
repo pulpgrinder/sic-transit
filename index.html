@@ -56,32 +56,33 @@
 
 function addNewPanel(evt){
         let element = evt.target;
-        transit.showPanel(element);
+        mySic.showPanel(element);
 }
 // Initialize a new instance of SicTransit.
- let transit = new SicTransit("#demo-container",".demo-panel");
+ let mySic = new SicTransit("#demo-container",".demo-panel");
 
 function runTransition(){
     let panel = document.getElementById("panelSelector").value;
     let transition = document.getElementById("transitionSelector").value;
-    transit.performTransition({panelSelector:panel,transitionName:transition});
+    mySic.performTransition({panelSelector:panel,transitionName:transition});
 }
 
-// Set up a callback to be called after every transition completes. In this case, it just prints some info.
-transit.setParameter("callback",callbackDemo,"fadeOutToGray");
+// Set up a callback to be called after every transition completes. In this case, it just prints some info. The '*' sets the callbackDemo function for the callback for all transitions.
+
+mySic.setParameter("callback",callbackDemo,"*");
 
 // This is our callback function.
     function callbackDemo(args){
         console.log("elementSelector: " + args.elementSelector);
         console.log("transitionName: " + args.transitionName);
         console.log("elapsed time: " + (args.endTime - args.startTime));
-        transit.stackDump(args);
+        mySic.stackDump(args);
     }
 
 // Load the UI.
 function loadUI(){
-    let transitions = Object.keys(transit.dispatchTable);
-    let panels = transit.getPanelList();
+    let transitions = Object.keys(mySic.dispatchTable);
+    let panels = mySic.getPanelList();
     let transitionSelector = document.getElementById("transitionSelector");
     let panelSelector = document.getElementById("panelSelector");
     let transition;
