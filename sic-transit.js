@@ -18,7 +18,6 @@ class SicTransit {
 
       // Used for timing and statistical purposes.
       this.date = new Date();
-      this.synchro = 0;
 
       // Load up the internal panel stack with any panels the user has already supplied -- i.e., elements with the given panel class that are inside the given container.
       this.loadPanelStack();
@@ -335,7 +334,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         },
         "crossDissolveOut": {
             forwardTransition: this.crossDissolveOut,
-            firstanimation: [{ display:"block", opacity: 1}, {display:"block",opacity:0}],
+            firstanimation: [{ display:"block", opacity:1}, {display:"block",opacity:0}],
             secondanimation: [{display:"block", opacity:0}, {display:"block", opacity:1}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
@@ -428,7 +427,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         },
         "hingeInBottom":{
             forwardTransition: this.hingeInBottom,
-            firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
+            firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
@@ -436,7 +435,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         },
         "hingeOutBottom":{
             forwardTransition: this.hingeOutBottom,
-            firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
+            firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
@@ -476,7 +475,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         },
         "hingeInTop":{
             forwardTransition: this.hingeInTop,
-            firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
+            firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
@@ -484,7 +483,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         },
         "hingeOutTop":{
             forwardTransition: this.hingeOutTop,
-            firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
+            firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
@@ -540,8 +539,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             duration:1000,
             callback:null
         },
-        "menuInBottom": {
-            forwardTransition: this.menuInBottom,
+        "menuInFromBottom": {
+            forwardTransition: this.menuInFromBottom,
             firstanimation: [{display:"block", transform: "translateY(100%)"}, {display:"block",transform: "translateY(%%%%)"}],
             boxShadow: "-10px -10px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -549,8 +548,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             menuPercentage:25,
             callback:null
         },
-        "menuOutBottom": {
-            forwardTransition: this.menuOutBottom,
+        "menuOutToBottom": {
+            forwardTransition: this.menuOutToBottom,
             firstanimation: [{transform: "translateY(%%%%)"}, {transform: "translateY(100%)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -558,8 +557,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             menuPercentage:25,
             callback:null
         },
-        "menuInLeft": {
-            forwardTransition: this.menuInLeft,
+        "menuInFromLeft": {
+            forwardTransition: this.menuInFromLeft,
             firstanimation: [{display:"block", transform: "translateX(-100%)"}, {display:"block",transform: "translateX(-%%%%)"}],
             boxShadow:  "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -567,8 +566,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             menuPercentage:25,
             callback:null
         },
-        "menuOutLeft": {
-            forwardTransition: this.menuOutLeft,
+        "menuOutToLeft": {
+            forwardTransition: this.menuOutToLeft,
             firstanimation: [{display:"block", transform: "translateX(-%%%%)"}, {display:"block",transform: "translateX(-100%)"}],
             boxShadow: "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -576,8 +575,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             menuPercentage:25,
             callback:null
         },
-        "menuInRight": {
-            forwardTransition: this.menuInRight,
+        "menuInFromRight": {
+            forwardTransition: this.menuInFromRight,
             firstanimation: [{ display:"block", transform: "translateX(100%)"}, {display:"block",transform: "translateX(%%%%)"}],
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
@@ -585,8 +584,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
            menuPercentage:25,
            callback:null
         },
-        "menuOutRight": {
-            forwardTransition: this.menuOutRight,
+        "menuOutToRight": {
+            forwardTransition: this.menuOutToRight,
             firstanimation: [{transform: "translateX(%%%%)"}, {transform: "translateX(100%)"}],
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             easing: 'ease-in-out',
@@ -594,8 +593,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             menuPercentage:25,
             callback:null
         },
-        "menuInTop": {
-            forwardTransition: this.menuInTop,
+        "menuInFromTop": {
+            forwardTransition: this.menuInFromTop,
             firstanimation: [{display:"block", transform: "translateY(-100%)"}, {display:"block",transform: "translateY(-%%%%)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -603,8 +602,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             menuPercentage:25,
             callback:null
         },
-        "menuOutTop": {
-            forwardTransition: this.menuOutTop,
+        "menuOutToTop": {
+            forwardTransition: this.menuOutToTop,
             firstanimation:[{transform: "translateY(-%%%%)"}, {transform: "translateY(-100%)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
@@ -614,7 +613,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         },
         "newspaperIn": {
             forwardTransition: this.newspaperIn,
-            firstanimation: [{display:"block", transform: "rotate(0deg)  scale(0)"}, {display:"block", transform: "rotate(720deg) scale(1)"}],
+            firstanimation: [{display:"block", transform: "rotate(0deg) scale(0)"}, {display:"block", transform: "rotate(720deg) scale(1)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
            duration:1000,
@@ -636,73 +635,73 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             duration:0,
             callback:null
         },
-        "slideInBottom": {
-            forwardTransition: this.slideInBottom,
+        "swap": {
+            forwardTransition: this.swap,
+            firstanimation:[],
+            callback:null
+        },
+        "wipeInFromBottom": {
+            forwardTransition: this.wipeInFromBottom,
             firstanimation: [{display:"block", transform: "translateY(100%)"}, {display:"block",transform: "translateY(0%)"}],
             boxShadow: "-10px -10px 30px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
            duration:500,
            callback:null
         },
-        "slideOutBottom": {
-            forwardTransition: this.slideOutBottom,
+        "wipeOutToBottom": {
+            forwardTransition: this.wipeOutToBottom,
             firstanimation: [{transform: "translateY(0%)"}, {transform: "translateY(100%)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "slideInLeft": {
-            forwardTransition: this.slideInLeft,
+        "wipeInFromLeft": {
+            forwardTransition: this.wipeInFromLeft,
             firstanimation: [{display:"block", transform: "translateX(-100%)"}, {display:"block",transform: "translateX(0%)"}],
             boxShadow:  "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "slideOutLeft": {
-            forwardTransition: this.slideOutLeft,
+        "wipeOutToLeft": {
+            forwardTransition: this.wipeOutToLeft,
             firstanimation: [{display:"block", transform: "translateX(0%)"}, {display:"block",transform: "translateX(-120%)"}],
             boxShadow: "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "slideInRight": {
-            forwardTransition: this.slideInRight,
+        "wipeInFromRight": {
+            forwardTransition: this.wipeInFromRight,
             firstanimation: [{ display:"block", transform: "translateX(100%)"}, {display:"block",transform: "translateX(0%)"}],
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "slideOutRight": {
-            forwardTransition: this.slideOutRight,
+        "wipeOutToRight": {
+            forwardTransition: this.wipeOutToRight,
             firstanimation: [{transform: "translateX(0%)"}, {transform: "translateX(120%)"}],
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             easing: 'ease-in-out',
             duration:500,
             callback:null
         },
-        "slideInTop": {
-            forwardTransition: this.slideInTop,
+        "wipeInFromTop": {
+            forwardTransition: this.wipeInFromTop,
             firstanimation: [{display:"block", transform: "translateY(-100%)"}, {display:"block",transform: "translateY(0%)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "slideOutTop": {
-            forwardTransition: this.slideOutTop,
+        "wipeOutToTop": {
+            forwardTransition: this.wipeOutToTop,
             firstanimation:[{transform: "translateY(0%)"}, {transform: "translateY(-100%)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
             duration:500,
-            callback:null
-        },
-        "swap": {
-            forwardTransition: this.swap,
-            firstanimation:[],
             callback:null
         },
         "zoomIn": {
@@ -744,6 +743,23 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         this.normalizeStack();
     }
 
+/* Reset panel position, etc. to a known state. In some situations,
+you may want to move the panel to the bottom of the stack before calling
+this (so the reset isn't visible on screen).*/
+
+resetPanel(panelSelector,self=this){
+    let panel = self.selectPanel(panelSelector,self);
+    panel.style.display = "block";
+    panel.style.opacity = 1.0;
+    //panel.style.transform = "rotateX(0deg) rotateY(0deg) translateX(0) translateY(0)scale(1)";
+    panel.style.removeProperty("transform");
+    panel.style.removeProperty("transformOrigin");
+    panel.style.removeProperty("clip-path");
+    panel.style.animationFillMode = "none";
+
+}
+
+
 /* Creates the initial panel stack, using elements which have the user-specified panel class and are contained within te user-specified container.
 */
     loadPanelStack(self=this){
@@ -757,12 +773,15 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
     }
 
 /* Actually performs the animation. This is called by most transition functions, though some transitions require custom manipulations. */
-    performAnimation(args){
+   async performAnimation(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
         self.moveToTos(args.selectedPanel,self);
-        const animation = args.selectedPanel.animate(args.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
-        animation.onfinish = args.finishHandler; 
+        const animation = args.selectedPanel.animate(args.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
+        await animation.finished;
+        animation.commitStyles();
+        animation.cancel();
+        args.finishHandler; 
     }
 
 /* Performs the callback function for the given transition, ,if one is specified. */
@@ -793,92 +812,85 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
 // Use performTransition() instead.
     cutIn(args){
         let self = args.self;
+        self.resetPanel(args.selectedPanel,self);
         self.showPanel(args.selectedPanel, self);
         self.performCallback(args);
     }
     cutOut(args){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
         self.performCallback(args);
     }
-    crossDissolveIn(args){
+   async crossDissolveIn(args){
         let self = args.self;
-        self.synchro = 0;
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
         self.moveToBos(args.selectedPanel,self);
-        args.selectedPanel.style.display = "none";
+        self.resetPanel(args.selectedPanel,self);
         let topPanel = self.panelStack.pop();
         self.panelStack.push(topPanel);
-        self.moveToTos(self.specialtyPanels.blackpanel,self);
-        self.moveToTos(topPanel,self);
+        self.resetPanel(topPanel,self);
         self.normalizeStack(self);
-        args.selectedPanel.style.opacity = 0;
-        self.moveToTos(args.selectedPanel,self);;
-        args.finishHandler = function(){
-            self.synchro++;
-            if(self.synchro < 2){
-                // Second animation is still running.
-                return;
-            }
-            args.selectedPanel.style.opacity = 1;
-            args.selectedPanel.style.display = "block";
-            topPanel.style.opacity = 1;
-            self.normalizeStack(self);
-            self.synchro = 0;
-            self.performCallback(args);
-        }
-        const animation = args.selectedPanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
-        animation.onfinish = args.finishHandler;
-        const topAnimation = topPanel.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
-        topAnimation.onfinish = args.finishHandler;
-    }
-    crossDissolveOut(args){
-        let self = args.self;
-        self.synchro = 0;
-        let dispatchEntry = self.dispatchTable[args["transitionName"]];
         self.moveToTos(args.selectedPanel,self);
-        let topPanel = self.panelStack[self.panelStack.length - 2];
-        self.normalizeStack(self);
-        args.selectedPanel.style.opacity = 1;
-        topPanel.style.opacity = 0;
         args.finishHandler = function(){
-            self.synchro++;
-            if(self.synchro < 2){
-                 // Second animation is still running.
-                return;
-            }
-            self.moveToBos(args.selectedPanel,self);
-            topPanel.style.opacity = 1;
-            args.selectedPanel.style.opacity = 1;
+            self.resetPanel(topPanel,self);
             self.normalizeStack(self);
-            self.synchro = 0;
             self.performCallback(args);
         }
-        const animation = args.selectedPanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration:dispatchEntry.duration});
-        animation.onfinish = args.finishHandler; 
-        const topanimation = topPanel.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
-        topanimation.onfinish = args.finishHandler;
+        const animation = args.selectedPanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration + 100,fill:"forwards"});
+        const topanimation = topPanel.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
+        await animation.finished;
+        await topanimation.finished
+        animation.commitStyles();
+        animation.cancel();
+        topanimation.commitStyles();
+        topanimation.cancel();
+        args.finishHandler; 
+        
+    }
+    async crossDissolveOut(args){
+        let self = args.self;
+        self.resetPanel(args.selectedPanel,self);
+        self.moveToTos(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable[args["transitionName"]];
+        let topPanel = self.panelStack[self.panelStack.length - 2];
+        args.finishHandler = function(){
+            self.moveToBos(args.selectedPanel,self);
+            self.normalizeStack(self);
+            self.performCallback(args);
+        }
+        const animation = args.selectedPanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration:dispatchEntry.duration,fill:"forwards"});
+        
+        const topanimation =  topPanel.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
+        await animation.finished;
+        await topanimation.finished
+        animation.commitStyles();
+        animation.cancel();
+        topanimation.commitStyles();
+        topanimation.cancel();
+        args.finishHandler; 
     }
     fadeIn(args){
         let self = args.self;
+        self.resetPanel(args.fadePanel,self);
         self.moveToTos(args.fadePanel,self);
+        self.resetPanel(args.selectedPanel,self);
         args.selectedPanel.style.opacity = 0;
-        args.selectedPanel.style.display = "block";
         self.moveToTos(args.selectedPanel,self);
         args.finishHandler = function(){
             self.moveToBos(args.fadePanel,self);
-            args.selectedPanel.style.display = "block";
-            args.selectedPanel.style.opacity = 1;
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     fadeOut(args){
         let self = args.self;
+        self.resetPanel(args.selectedPanel,self);
+        args.fadePanel.style.opacity = 0;
         self.moveToTos(args.fadePanel,self);
-        args.selectedPanel.style.opacity = 1;
-        args.selectedPanel.style.display = "block";
         self.moveToTos(args.selectedPanel,self);
+        self.stackSwap(self);
+        self.resetPanel(self.fadePanel,self);
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
             args.selectedPanel.style.opacity = 1;
@@ -928,7 +940,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         args.fadePanel = self.specialtyPanels.whitepanel;
         self.fadeOut(args);
     }
-    flipInX(args){
+    async flipInX(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInX"];
         self.specialtyPanels.flippanel.replaceChildren([]);
@@ -941,8 +953,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         self.specialtyPanels.flippanel.style.display = "block";
         self.moveToTos(self.specialtyPanels.flipbackgroundpanelpanel,self);
         self.moveToTos(self.specialtyPanels.flippanel,self);
-        let animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
-        animation.onfinish = function(){
+        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
+        args.finishHandler = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-x");
             self.container.append(args.selectedPanel);
             self.container.append(tosItem);
@@ -950,10 +962,13 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             self.panelStack.push(args.selectedPanel);
             self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
             self.moveToBos(self.specialtyPanels.flippanel, self);
-
         }
+        await animation.finished;
+        animation.commitStyles();
+        animation.cancel();
+        args.finishHandler();
     }
-    flipInY(args){
+    async flipInY(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInY"];
         self.specialtyPanels.flippanel.replaceChildren([]);
@@ -966,8 +981,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         self.specialtyPanels.flippanel.style.display = "block";
         self.moveToTos(self.specialtyPanels.flipbackgroundpanelpanel,self);
         self.moveToTos(self.specialtyPanels.flippanel,self);
-        let animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
-        animation.onfinish = function(){
+        args.finishHandler = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-y");
             self.container.append(args.selectedPanel);
             self.container.append(tosItem);
@@ -975,10 +989,15 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             self.panelStack.push(args.selectedPanel);
             self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
             self.moveToBos(self.specialtyPanels.flippanel, self);
-
         }
+        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
+        await animation.finished;
+        animation.commitStyles();
+        animation.cancel();
+        args.finishHandler();
+        
     }
-    flipOutX(args){
+    async flipOutX(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipOutX"];
         self.specialtyPanels.flippanel.replaceChildren([]);
@@ -993,8 +1012,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         self.specialtyPanels.flippanel.style.display = "block";
         args.selectedPanel.classList.add("sic-transit-flipped-x");
         self.moveToTos(self.specialtyPanels.flippanel,self);
-        let animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
-        animation.onfinish = function(){
+        args.finishHandler = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-x");
             self.container.append(tosItem);
             self.container.append(args.selectedPanel);
@@ -1004,9 +1022,14 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             self.moveToBos(self.specialtyPanels.flippanel, self);
 
         }
+        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});    
+        await animation.finished;
+        animation.commitStyles();
+        animation.cancel();
+        args.finishHandler();
     }
    
-    flipOutY(args){
+    async flipOutY(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipOutY"];
         self.specialtyPanels.flippanel.replaceChildren([]);
@@ -1021,8 +1044,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         self.specialtyPanels.flippanel.style.display = "block";
         args.selectedPanel.classList.add("sic-transit-flipped-y");
         self.moveToTos(self.specialtyPanels.flippanel,self);
-        let animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration});
-        animation.onfinish = function(){
+        args.finishHandler = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-y");
             self.container.append(tosItem);
             self.container.append(args.selectedPanel);
@@ -1031,16 +1053,20 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
             self.moveToBos(self.specialtyPanels.flippanel, self);
         }
+        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
+        await animation.finished;
+        animation.commitStyles();
+        animation.cancel();
+        args.finishHandler();
+       
     }
     hinge(args){
         let self = args.self;
         self.container.style.perspective =  "1000px";
         self.container.style.perspectiveOrigin = "left";
         args.finishHandler = function(){
-            args.selectedPanel.style.display= args.finalDisplayStyle;
-            args.selectedPanel.style.transformOrigin = "";
-            self.container.style.perspective =  "";
-            self.container.style.perspectiveOrigin = "";
+            self.container.style.removeProperty("perspective");
+            self.container.style.removePorperty("perspectiveOrigin")
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1058,7 +1084,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         let dispatchEntry = self.dispatchTable["hingeOutBottom"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "bottom";
-        args.finalDisplayStyle = "none";
+       // args.finalDisplayStyle = "none";
         self.hinge(args);
     }
     hingeInLeft(args){
@@ -1074,7 +1100,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         let dispatchEntry = self.dispatchTable["hingeOutLeft"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "left";
-        args.finalDisplayStyle = "none";
+       // args.finalDisplayStyle = "none";
         self.hinge(args);
     }
     hingeInRight(args){
@@ -1090,7 +1116,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         let dispatchEntry = self.dispatchTable["hingeOutRight"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "right";
-        args.finalDisplayStyle = "none";
+       // args.finalDisplayStyle = "none";
         self.hinge(args);
     }
     hingeInTop(args){
@@ -1103,10 +1129,10 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
     }
     hingeOutTop(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["hingeOutBottom"];
+        let dispatchEntry = self.dispatchTable["hingeOutTop"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "top";
-        args.finalDisplayStyle = "none";
+        //args.finalDisplayStyle = "none";
         self.hinge(args);
     }
     getElementDiagonal(element){
@@ -1121,12 +1147,14 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         let self = args.self;
         let dispatchEntry = self.dispatchTable["irisIn"];
         let panel = args.selectedPanel;
-        panel.style.display = "none";
+        self.resetPanel(panel,self);
+        panel.style.clipPath = "circle(0% at center)";
+        panel.style.display="block";
         self.moveToTos(panel,self);
         args.firstanimation = dispatchEntry.firstanimation;
         args.finishHandler = function(){
             panel.style.display = "block";
-            args.selectedPanel.style.clipPath = "";
+            panel.style.clipPath = "none";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1135,12 +1163,14 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         let self = args.self;
         let dispatchEntry = self.dispatchTable["irisOut"];
         let panel = args.selectedPanel;
-        panel.style.clipPath = "circle(100% at center)"
+        self.resetPanel(panel,self);
+        panel.style.clipPath = "circle(100% at center)";
+        panel.style.display="block";
         self.moveToTos(panel,self);
         args.firstanimation = dispatchEntry.firstanimation;
         args.finishHandler = function(){
             self.moveToBos(panel, self);
-            panel.style.clipPath = "";
+            panel.style.clipPath = "none";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1187,11 +1217,14 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
          self.specialtyPanels.whitepanel.style.display = "block";
         self.irisOut(args);
     }
-    menuInBottom(args){
+    menuInFromBottom(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["menuInBottom"];
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["menuInFromBottom"];
         let menuPercentage =  100 - dispatchEntry.menuPercentage;
         args.selectedPanel.transform = "translateY(100%)";
+        self.moveToTos(args.selectedPanel,self);
         args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
         args.finishHandler = function(){
             self.moveToTos(args.selectedPanel,self);
@@ -1201,21 +1234,24 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         }
         self.performAnimation(args);
     }
-    menuOutBottom(args){
+    menuOutToBottom(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["menuOutBottom"];
+        self.moveToTos(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["menuOutToBottom"];
         let menuPercentage = 100 - dispatchEntry.menuPercentage;
         args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
-            args.selectedPanel.style.transform = "";
+            self.resetPanel(args.selectedPanel,self);
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
-    menuInLeft(args){
+    menuInFromLeft(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["menuInLeft"];
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["menuInFromLeft"];
         let menuPercentage = 100 - dispatchEntry.menuPercentage;
         args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%", menuPercentage));
         args.selectedPanel.style.transform = "translateX(-100%)";
@@ -1227,24 +1263,27 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         }
         self.performAnimation(args);
     }
-    menuOutLeft(args){
+    menuOutToLeft(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["menuOutLeft"];
+        let dispatchEntry = self.dispatchTable["menuOutToLeft"];
         let menuPercentage = 100 - dispatchEntry.menuPercentage;
         args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
-            args.selectedPanel.style.transform = "";
+            self.resetPanel(args.selectedPanel,self);
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
-    menuInRight(args){
+    menuInFromRight(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["menuInRight"];
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["menuInFromRight"];
         let menuPercentage = 100 - dispatchEntry.menuPercentage;
         args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
         args.selectedPanel.transform = "translateX(100%)";
+        self.moveToTos(args.selectedPanel,self);
         args.finishHandler = function(){
             args.selectedPanel.style.display= "block";
             args.selectedPanel.style.transform = "translateX(" + menuPercentage + "%)";
@@ -1252,24 +1291,27 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         }
         self.performAnimation(args);
     }
-    menuOutRight(args){
+    menuOutToRight(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["menuOutRight"];
+        let dispatchEntry = self.dispatchTable["menuOutToRight"];
         let menuPercentage = 100 - dispatchEntry.menuPercentage;
         args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%", menuPercentage));
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
-            args.selectedPanel.style.transform = "";
+            self.resetPanel(args.selectedPanel,self);
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
-    menuInTop(args){
+    menuInFromTop(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["menuInTop"];
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["menuInFromTop"];
         let menuPercentage = 100 - dispatchEntry.menuPercentage;
         args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
         args.selectedPanel.transform = "translateY(-100%)";
+        self.moveToTos(args.selectedPanel,self);
         args.finishHandler = function(){
             args.selectedPanel.style.transform = "translateY(-" + menuPercentage + "%)"
             args.selectedPanel.style.display= "block";
@@ -1277,128 +1319,40 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         }
         self.performAnimation(args);
     }
-    menuOutTop(args){
+    menuOutToTop(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["menuOutTop"];
+        let dispatchEntry = self.dispatchTable["menuOutToTop"];
         let menuPercentage = 100 - dispatchEntry.menuPercentage;
         args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
-            args.selectedPanel.style.transform = "";
+            self.resetPanel(args.selectedPanel,self);
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     newspaperIn(args){
         let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.style.transform = "scale(0)";
+        self.moveToTos(args.selectedPanel,self);
         let dispatchEntry = self.dispatchTable["newspaperIn"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.finishHandler = function(){
-            args.selectedPanel.style.display = "block";
-            args.selectedPanel.style.transform = "rotate(0deg) scale(1)";
+            self.resetPanel(args.selectedPanel,self);
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     newspaperOut(args){
         let self = args.self;
+        self.resetPanel(args.selectedPanel,self);
         let dispatchEntry = self.dispatchTable["newspaperOut"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
-            args.selectedPanel.style.display = "none";
-            args.selectedPanel.style.transform = "rotate(0deg) scale(1)";
-            self.performCallback(args);
-        }
-        self.performAnimation(args);
-    }
-    slideInBottom(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["slideInBottom"];
-        args.firstanimation = dispatchEntry["firstanimation"];
-        args.selectedPanel.transform = "translateY(100%)";
-        args.finishHandler = function(){
-            args.selectedPanel.style.display= "block";
-            self.performCallback(args);
-        }
-        self.performAnimation(args);
-    }
-    slideOutBottom(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["slideOutBottom"];
-        args.firstanimation = dispatchEntry["firstanimation"];
-        args.finishHandler = function(){
-            self.moveToBos(args.selectedPanel,self);
-            args.selectedPanel.style.transform = "translateY(0%)";
-            self.performCallback(args);
-        }
-        self.performAnimation(args);
-    }
-    slideInLeft(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["slideInLeft"];
-        args.firstanimation = dispatchEntry["firstanimation"];
-        args.selectedPanel.transform = "translateX(-100%)";
-        self.moveToTos(args.selectedPanel,self);
-        args.selectedPanel.style.display = "block";
-        args.finishHandler = function(){
-            args.selectedPanel.style.display= "block";
-            args.selectedPanel.transform = "translateX(0)";
-            self.performCallback(args);
-        }
-        self.performAnimation(args);
-    }
-    slideOutLeft(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["slideOutLeft"];
-        args.firstanimation = dispatchEntry["firstanimation"];
-        args.finishHandler = function(){
-            self.moveToBos(args.selectedPanel,self);
-            args.selectedPanel.style.transform = "translateX(0%)";
-            self.performCallback(args);
-        }
-        self.performAnimation(args);
-    }
-    slideInRight(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["slideInRight"];
-        args.firstanimation = dispatchEntry["firstanimation"];
-        args.selectedPanel.transform = "translateX(100%)";
-        args.finishHandler = function(){
-            args.selectedPanel.style.display= "block";
-            self.performCallback(args);
-        }
-        self.performAnimation(args);
-    }
-    slideOutRight(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["slideOutRight"];
-        args.firstanimation = dispatchEntry["firstanimation"];
-        args.finishHandler = function(){
-            self.moveToBos(args.selectedPanel,self);
-            args.selectedPanel.style.transform = "translateX(0%)";
-            self.performCallback(args);
-        }
-        self.performAnimation(args);
-    }
-    slideInTop(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["slideInTop"];
-        args.firstanimation = dispatchEntry["firstanimation"];
-        args.selectedPanel.transform = "translateY(100%)";
-        args.finishHandler = function(){
-            args.selectedPanel.style.display= "block";
-            self.performCallback(args);
-        }
-        self.performAnimation(args);
-    }
-    slideOutTop(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["slideOutTop"];
-        args.firstanimation = dispatchEntry["firstanimation"];
-        args.finishHandler = function(){
-            self.moveToBos(args.selectedPanel,self);
-            args.selectedPanel.style.transform = "translateY(0%)";
+            self.resetPanel(args.selectedPanel,self);
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1408,25 +1362,138 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         self.stackSwap(self);
         self.performCallback(args);
     }
+    wipeInFromBottom(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["wipeInFromBottom"];
+        args.firstanimation = dispatchEntry["firstanimation"];
+        args.selectedPanel.transform = "translateY(100%)";
+        self.moveToTos(args.selectedPanel,self);
+        args.finishHandler = function(){
+            self.resetPanel(args.selectedPanel,self);
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
+    }
+    wipeOutToBottom(args){
+        let self = args.self;
+        self.resetPanel(args.selectedPanel,self);
+        self.moveToTos(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["wipeOutToBottom"];
+        args.firstanimation = dispatchEntry["firstanimation"];
+        args.finishHandler = function(){
+            self.moveToBos(args.selectedPanel,self);
+            self.resetPanel(args.selectedPanel,self);
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
+    }
+    wipeInFromLeft(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["wipeInFromLeft"];
+        args.firstanimation = dispatchEntry["firstanimation"];
+        args.selectedPanel.transform = "translateX(-100%)";
+        self.moveToTos(args.selectedPanel,self);
+        args.selectedPanel.style.display = "block";
+        args.finishHandler = function(){
+            self.resetPanel(args.selectedPanel,self);
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
+    }
+    wipeOutToLeft(args){
+        let self = args.self;
+        self.resetPanel(args.selectedPanel,self);
+        self.moveToTos(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["wipeOutToLeft"];
+        args.firstanimation = dispatchEntry["firstanimation"];
+        args.finishHandler = function(){
+            self.moveToBos(args.selectedPanel,self);
+            self.resetPanel(args.selectedPanel,self);
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
+    }
+    wipeInFromRight(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["wipeInFromRight"];
+        args.firstanimation = dispatchEntry["firstanimation"];
+        args.selectedPanel.transform = "translateX(100%)";
+        self.moveToTos(args.selectedPanel,self);
+        args.finishHandler = function(){
+            args.selectedPanel.style.display= "block";
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
+    }
+    wipeOutToRight(args){
+        let self = args.self;
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["wipeOutToRight"];
+        args.firstanimation = dispatchEntry["firstanimation"];
+        args.finishHandler = function(){
+            self.moveToBos(args.selectedPanel,self);
+            self.resetPanel(args.selectedPanel,self);
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
+    }
+    wipeInFromTop(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["wipeInFromTop"];
+        args.firstanimation = dispatchEntry["firstanimation"];
+        args.selectedPanel.transform = "translateY(100%)";
+        self.moveToTos(args.selectedPanel,self);
+        args.finishHandler = function(){
+            self.resetPanel(args.selectedPanel,self);
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
+    }
+    wipeOutToTop(args){
+        let self = args.self;
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["wipeOutToTop"];
+        args.firstanimation = dispatchEntry["firstanimation"];
+        args.finishHandler = function(){
+            self.moveToBos(args.selectedPanel,self);
+            self.resetPanel(args.selectedPanel,self);
+            args.selectedPanel.style.transform = "translateY(0%)";
+            self.performCallback(args);
+        }
+        self.performAnimation(args);
+    }
+ 
     zoomIn(args){
         let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.transform = "scale(0)";
+        self.moveToTos(args.selectedPanel,self);
         let dispatchEntry = self.dispatchTable["zoomIn"];
         args.firstanimation = dispatchEntry["firstanimation"];
         args.finishHandler = function(){
-            args.selectedPanel.style.display = "block";
-            args.selectedPanel.style.transform = "scale(1)";
+            self.resetPanel(args.selectedPanel,self);
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
     zoomOut(args){
         let self = args.self;
+        self.resetPanel(args.selectedPanel,self);
+        self.moveToTos(args.selectedPanel,self);
         let dispatchEntry = self.dispatchTable["zoomOut"];
         args.firstanimation = dispatchEntry["firstanimation"];
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
-            args.selectedPanel.style.display = "none";
-            args.selectedPanel.style.transform = "scale(1)";
+            self.resetPanel(args.selectedPanel,self);
             self.performCallback(args);
         }
         self.performAnimation(args);
