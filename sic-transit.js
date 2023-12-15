@@ -183,7 +183,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
              }
          }
          self.normalizeStack(self);
-         self.showPanel(self.getTos(self),self);
+       //  self.showPanel(self.getTos(self),self);
          self.performCallback(args);
      }
 
@@ -943,25 +943,29 @@ resetPanel(panelSelector,self=this){
     async flipInX(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInX"];
+        self.resetPanel(self.specialtyPanels.flippanel,self);
         self.specialtyPanels.flippanel.replaceChildren([]);
         self.specialtyPanels.flippanel.style.display = "none";
         self.removeFromStack(args.selectedPanel,self);
-        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
+        self.resetPanel(args.selectedPanel,self);
         args.selectedPanel.classList.add("sic-transit-flipped-x");
+        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
         let tosItem = self.panelStack.pop();
+        self.resetPanel(tosItem,self);
         self.specialtyPanels.flippanel.appendChild(tosItem);
         self.specialtyPanels.flippanel.style.display = "block";
-        self.moveToTos(self.specialtyPanels.flipbackgroundpanelpanel,self);
+        self.moveToTos(self.specialtyPanels.flipbackgroundpanel,self);
         self.moveToTos(self.specialtyPanels.flippanel,self);
         const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
         args.finishHandler = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-x");
-            self.container.append(args.selectedPanel);
+            self.specialtyPanels.flippanel.replaceChildren([]);
             self.container.append(tosItem);
+            self.container.append(args.selectedPanel);
+            self.resetPanel(args.selectedPanel,self);
             self.panelStack.push(tosItem);
             self.panelStack.push(args.selectedPanel);
-            self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
-            self.moveToBos(self.specialtyPanels.flippanel, self);
+            self.normalizeStack(self);
         }
         await animation.finished;
         animation.commitStyles();
@@ -971,26 +975,30 @@ resetPanel(panelSelector,self=this){
     async flipInY(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInY"];
+        self.resetPanel(self.specialtyPanels.flippanel,self);
         self.specialtyPanels.flippanel.replaceChildren([]);
         self.specialtyPanels.flippanel.style.display = "none";
         self.removeFromStack(args.selectedPanel,self);
-        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
+        self.resetPanel(args.selectedPanel,self);
         args.selectedPanel.classList.add("sic-transit-flipped-y");
+        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
         let tosItem = self.panelStack.pop();
+        self.resetPanel(tosItem,self);
         self.specialtyPanels.flippanel.appendChild(tosItem);
         self.specialtyPanels.flippanel.style.display = "block";
-        self.moveToTos(self.specialtyPanels.flipbackgroundpanelpanel,self);
+        self.moveToTos(self.specialtyPanels.flipbackgroundpanel,self);
         self.moveToTos(self.specialtyPanels.flippanel,self);
+        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
         args.finishHandler = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-y");
-            self.container.append(args.selectedPanel);
+            self.specialtyPanels.flippanel.replaceChildren([]);
             self.container.append(tosItem);
+            self.container.append(args.selectedPanel);
+            self.resetPanel(args.selectedPanel,self);
             self.panelStack.push(tosItem);
             self.panelStack.push(args.selectedPanel);
-            self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
-            self.moveToBos(self.specialtyPanels.flippanel, self);
+            self.normalizeStack(self);
         }
-        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
         await animation.finished;
         animation.commitStyles();
         animation.cancel();
@@ -1006,7 +1014,7 @@ resetPanel(panelSelector,self=this){
         self.moveToTos(args.selectedPanel,self);
         self.panelStack.pop();
         let tosItem = self.panelStack.pop();
-        self.moveToTos(self.specialtyPanels.flipbackgroundpanelpanel,self);
+        self.moveToTos(self.specialtyPanels.flipbackgroundpanel,self);
         self.specialtyPanels.flippanel.appendChild(tosItem);
         self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
         self.specialtyPanels.flippanel.style.display = "block";
@@ -1014,12 +1022,11 @@ resetPanel(panelSelector,self=this){
         self.moveToTos(self.specialtyPanels.flippanel,self);
         args.finishHandler = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-x");
-            self.container.append(tosItem);
             self.container.append(args.selectedPanel);
+            self.container.append(tosItem);
             self.panelStack.push(args.selectedPanel);
             self.panelStack.push(tosItem);
-            self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
-            self.moveToBos(self.specialtyPanels.flippanel, self);
+            self.normalizeStack(self);
 
         }
         const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});    
@@ -1038,7 +1045,7 @@ resetPanel(panelSelector,self=this){
         self.moveToTos(args.selectedPanel,self);
         self.panelStack.pop();
         let tosItem = self.panelStack.pop();
-        self.moveToTos(self.specialtyPanels.flipbackgroundpanelpanel,self);
+        self.moveToTos(self.specialtyPanels.flipbackgroundpanel,self);
         self.specialtyPanels.flippanel.appendChild(tosItem);
         self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
         self.specialtyPanels.flippanel.style.display = "block";
@@ -1046,14 +1053,15 @@ resetPanel(panelSelector,self=this){
         self.moveToTos(self.specialtyPanels.flippanel,self);
         args.finishHandler = function(){
             args.selectedPanel.classList.remove("sic-transit-flipped-y");
-            self.container.append(tosItem);
             self.container.append(args.selectedPanel);
+            self.container.append(tosItem);
             self.panelStack.push(args.selectedPanel);
             self.panelStack.push(tosItem);
-            self.moveToBos(self.specialtyPanels.flipbackgroundpanelpanel);
-            self.moveToBos(self.specialtyPanels.flippanel, self);
+            self.normalizeStack(self);
+         
+
         }
-        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
+        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});    
         await animation.finished;
         animation.commitStyles();
         animation.cancel();
@@ -1062,6 +1070,7 @@ resetPanel(panelSelector,self=this){
     }
     hinge(args){
         let self = args.self;
+        self.resetPanel(args.selectedPanel,self);
         self.container.style.perspective =  "1000px";
         self.container.style.perspectiveOrigin = "left";
         args.finishHandler = function(){
@@ -1170,7 +1179,7 @@ resetPanel(panelSelector,self=this){
         args.firstanimation = dispatchEntry.firstanimation;
         args.finishHandler = function(){
             self.moveToBos(panel, self);
-            panel.style.clipPath = "none";
+            panel.style.removeProperty("clip-path");
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1360,6 +1369,7 @@ resetPanel(panelSelector,self=this){
     swap(args){
         let self = args.self;
         self.stackSwap(self);
+        self.normalizeStack()
         self.performCallback(args);
     }
     wipeInFromBottom(args){
