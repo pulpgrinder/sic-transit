@@ -274,8 +274,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         // Reset display parameters (in case they were previously altered).
         selectedPanel.style.display = "block";
         selectedPanel.style.opacity = 1.0;
-        selectedPanel.style.transform = "";
-        selectedPanel.style.transformOrigin = "";
+        selectedPanel.style.removeProperty("transform");
+        selectedPanel.style.removeProperty("transformOrigin");
         // Put it on top of stack.
         self.panelStack.push(selectedPanel);
         // Put it back in DOM, but now inside the container (in case it wasn't there before)
@@ -425,64 +425,64 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             duration:1000,
             callback:null
         },
-        "hingeInBottom":{
-            forwardTransition: this.hingeInBottom,
-            firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
+        "hingeInFromBottom":{
+            forwardTransition: this.hingeInFromBottom,
+            firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "hingeOutBottom":{
-            forwardTransition: this.hingeOutBottom,
-            firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
+        "HingeOutToBottom":{
+            forwardTransition: this.HingeOutToBottom,
+            firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "hingeInLeft":{
-            forwardTransition: this.hingeInLeft,
+        "hingeInFromLeft":{
+            forwardTransition: this.hingeInFromLeft,
             firstanimation: [{display:"block", transform: "rotateY(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "hingeOutLeft":{
-            forwardTransition: this.hingeOutLeft,
+        "HingeOutToLeft":{
+            forwardTransition: this.HingeOutToLeft,
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "hingeInRight":{
-            forwardTransition: this.hingeInRight,
+        "hingeInFromRight":{
+            forwardTransition: this.hingeInFromRight,
             firstanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "hingeOutRight":{
-            forwardTransition: this.hingeOutRight,
+        "HingeOutToRight":{
+            forwardTransition: this.HingeOutToRight,
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "hingeInTop":{
-            forwardTransition: this.hingeInTop,
-            firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
+        "hingeInFromTop":{
+            forwardTransition: this.hingeInFromTop,
+            firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
             callback:null
         },
-        "hingeOutTop":{
-            forwardTransition: this.hingeOutTop,
+        "HingeOutToTop":{
+            forwardTransition: this.HingeOutToTop,
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -1068,80 +1068,71 @@ resetPanel(panelSelector,self=this){
         args.finishHandler();
        
     }
-    hinge(args){
+    async hinge(args){
         let self = args.self;
         self.resetPanel(args.selectedPanel,self);
         self.container.style.perspective =  "1000px";
         self.container.style.perspectiveOrigin = "left";
         args.finishHandler = function(){
-            self.container.style.removeProperty("perspective");
-            self.container.style.removePorperty("perspectiveOrigin")
+            args.selectedPanel.style.transformOrigin = "50% 50% 0";
             self.performCallback(args);
         }
         self.performAnimation(args);
     }
-    hingeInBottom(args){
+    hingeInFromBottom(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["hingeInBottom"];
+        let dispatchEntry = self.dispatchTable["hingeInFromBottom"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "bottom";
-        args.finalDisplayStyle = "block";
         self.hinge(args);
     }
-    hingeOutBottom(args){
+    HingeOutToBottom(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["hingeOutBottom"];
+        let dispatchEntry = self.dispatchTable["HingeOutToBottom"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "bottom";
-       // args.finalDisplayStyle = "none";
         self.hinge(args);
     }
-    hingeInLeft(args){
+    hingeInFromLeft(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["hingeInLeft"];
+        let dispatchEntry = self.dispatchTable["hingeInFromLeft"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "left";
-        args.finalDisplayStyle = "block";
         self.hinge(args);
     }
-    hingeOutLeft(args){
+    HingeOutToLeft(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["hingeOutLeft"];
+        let dispatchEntry = self.dispatchTable["HingeOutToLeft"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "left";
-       // args.finalDisplayStyle = "none";
         self.hinge(args);
     }
-    hingeInRight(args){
+    hingeInFromRight(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["hingeInRight"];
+        let dispatchEntry = self.dispatchTable["hingeInFromRight"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "right";
-        args.finalDisplayStyle = "block";
         self.hinge(args);
     }
-    hingeOutRight(args){
+    HingeOutToToRight(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["hingeOutRight"];
+        let dispatchEntry = self.dispatchTable["HingeOutToRight"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "right";
-       // args.finalDisplayStyle = "none";
         self.hinge(args);
     }
-    hingeInTop(args){
+    hingeInFromTop(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["hingeInTop"];
+        let dispatchEntry = self.dispatchTable["hingeInFromTop"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "top";
-        args.finalDisplayStyle = "block";
         self.hinge(args);
     }
-    hingeOutTop(args){
+    HingeOutToTop(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["hingeOutTop"];
+        let dispatchEntry = self.dispatchTable["HingeOutToTop"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "top";
-        //args.finalDisplayStyle = "none";
         self.hinge(args);
     }
     getElementDiagonal(element){

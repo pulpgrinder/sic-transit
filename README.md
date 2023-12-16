@@ -41,7 +41,7 @@ The line:
 const mySic = new SicTransit("#mycontainer",".mypanelclass");
 ```
 
-creates a new instance of SicTransit and makes it ready for use.The elements with class `.mypanelclass` inside the div `#mycontainer` will be set up as SicTransit panels. The last one in the container (in this case `#panel4`) will be placed at the top of the internal stack and made visible.
+creates a new instance of SicTransit and makes it ready for use.The elements with class `.mypanelclass` inside the div `#mycontainer` will be set up as SicTransit panels. The last one in the container (in this case `#panel4`) will be placed at the top of the internal panel stack and made visible.
 
 Now you can use JavaScript to control the panels. Open a JavaScript console and enter:
 
@@ -54,20 +54,20 @@ The transition should run, with Slide 2 sliding in from the left.
 Now try: 
 
 ```javascript
-mySic.performTransition({panelSelector:"#slide2",transitionName:"wipeOutToToLeft"})
+mySic.performTransition({panelSelector:"#slide2",transitionName:"wipeOutToLeft"})
 ```
 
-As you might expect, the `wipeOutToToLeft` transition does the opposite of the `wipeInFromLeft` transition, effectively undoing the previous transition.
+As you might expect, the `wipeOutToLeft` transition does the opposite of the `wipeInFromLeft` transition, effectively undoing the previous transition.
 
-All of the available transitions are fully described below. There are other parameters you can use in `performTransition()` as well. Those are also described below.
+All of the available transitions are fully described in the Transitions section below. Some transitions need additional parameters for `performTransition()`. Those are described below as well.
 
 ## Mode of Operation
-SicTransit relies on a user-specified container `div` that contains other `div`s which function as movable "panels". SicTransit uses an internal stack to manipulate and display panels by setting their z-index values and other CSS parameters. SicTransit transitions manipulate the panel stack in different ways, causing panels to appear, disappear, move, and so on. 
+SicTransit relies on a user-specified container `div` that contains other user-created `div`s which function as movable "panels". SicTransit uses an internal stack to keep track of the panels and their relative position. In general, only the panel on top of the stack after the transition is complete will be visible. SicTransit transitions manipulate the panel stack in different ways, while simultaneously manpulating the CSS values for the panels (such as the z-index) to make the panels appear, disappear, move, and so on. 
 
 ## Initialization
 
 ```javascript
-const variablename = new SicTransit(containerId, elementClass);
+const mySic = new SicTransit(containerId, elementClass);
 ```
 `containerId`: The ID of the container div that holds the panels.
 
@@ -78,46 +78,48 @@ Place all your initial panel `div`s within the container `div` you're planning t
 
 ### Selectors
 
-Many of the public methods take a `selector` argument to specify a particular panel. The following examples use the `displayPanel()` method for ease of understanding.
+Many of the public methods take a `selector` argument to specify a particular panel. The following examples use the `showPanel()` method in conjunction with a selector, because `showPanel()` is straightforward and is thus useful as an example.
 
 A selector can be any of the following:
-1) An explicit raw DOM element. Example:
-
-```javascript
-let newpanel =  document.createElement('div');
-// newpanel is now a new raw DOM element.
-mySic.showPanel({panelSelector:newpanel});
-```
-
-Here we're creating a new DOM element, and passing it directly to `displayPanel()`.
-
-2) A query selector (with the same basic syntax as document.querySelector() and CSS).
-
-Examples:
+1) A query selector (with the same basic syntax as `document.querySelector()` and CSS). This is the most common type. Examples:
 
 ```javascript
 let newpanel =  document.createElement('div');
 newpanel.id = 'myNewPanel';
+newPanel.innerText = "Hey, I'm new!";
 mySic.showPanel({panelSelector:'#myNewPanel'}); // display it using the id as a selector.
-
 
 let secondnewpanel = document.createElement('div');
 secondnewpanel.classList.add('secondclass'); // give it a custom class.
-mySic.displayPanel({panelSelector:'.secondclass'}); // display it using the custom class as a  selector.
+newPanel.innerText = "I'm new, too!";
+mySic.showPanel({panelSelector:'.secondclass'}); // display it using the custom class as a  selector.
 ```
-3) A numeric index into the internal panel stack. A negative value (or "negative zero") denotes an offset from the top of the stack, while a positive or positive zero value indicates an offset from the bottom of the stack.
+
+
+2) A numeric index into the internal panel stack. A negative value (or "negative zero") denotes an offset from the top of the stack, while a positive or positive zero value indicates an offset from the bottom of the stack.
 
 Examples:
 
 ```javascript
-mySic.displayPanel({panelSelector:-1}) // move the panel one down from the top of the stack to the top of the stack and display it.
+mySic.showPanel({panelSelector:-1}) // move the panel one down from the top of the stack to the top of the stack and display it.
 
-mySic.displayPanel({panelSelector:1}) // move the panel one up from the bottom of the stack to the top of the stack and display it.
+mySic.showPanel({panelSelector:1}) // move the panel one up from the bottom of the stack to the top of the stack and display it.
 
-mySic.displayPanel({panelSelector:0}) // move the panel at the bottom of the stack to the top of the stack and display it.
+mySic.showPanel({panelSelector:0}) // move the panel at the bottom of the stack to the top of the stack and display it.
 
-mySic.displayPanel({panelSelector:-0}) // move the panel at the top of the stack to the top of the stack and display it. This obviously has no real effect with `displayPanel()`, but will with some of the other methods.
+mySic.showPanel({panelSelector:-0}) // move the panel at the top of the stack to the top of the stack and display it. This obviously has no essential effect with `showPanel()`, but will with some of the other methods (for instance, those that animate the element).
 ```
+
+2) An explicit HTML element. This form is mostly only used for internal SicTransit operations, but it's there if you need it. Example:
+
+```javascript
+// Create a new div element.
+let newpanel =  document.createElement('div');
+newPanel.innerText = "Hi, there!";
+mySic.showPanel({panelSelector:newpanel});
+```
+Here we're creating a new HTML element, and passing it directly to `showPanel()`.
+
 
 ### `getBos()`
 Returns the panel currently at the bottom of the panel stack.
@@ -141,47 +143,48 @@ Returns the panel currently at the top of the panel stack.
 The heart of Sic Transit. Each transition is documented in detail in the *Transitions* section below.
 
 ### `setParameter(parametername, parametervalue,transitionname)`
-Sets the given parameter name to the given value for the given transition name. If the transition name is "\*" (in quotes), or not supplied, the specified parameter is set to the supplied value for *all* transitions.
+Sets the given parameter name to the given value for the given transition name. If the transition name is "\*" (in quotes), or not supplied, the specified parameter is set for *all* transitions.
 
 Some commonly used parameters include:
 
-`duration` -- set the duration of the transition in milliseconds.
+`duration` -- set the duration of the transition in milliseconds. Default value varies, depending on the transition (some transitions look better slower, others faster).
 
 `callback` -- sets a user-written function that is called when the transition is complete. Default is null.
 
-`menuPercentage` -- controls the percentage of the screen covered by menus. Only really relevant for the "menu-" transitions (see below).
+`menuPercentage` -- controls the percentage of the panel container that gets covered by a menu. Only relevant for the "menu-" transitions (see below), though it will not cause an error if you set it for other transitions. It will simply have no effect. Default is 25%.
 
-There are several other parameters that might be of interest to advanced users (or those defining their own custom transtitions). See the `dispatchTable` object in `sic-transit.js` to learn more.
+There are other parameters that might be of interest to advanced users, in particular those defining their own custom transtitions. See the `dispatchTable` object in `sic-transit.js` to learn more.
 
 Examples:
 
-Set the duration for the `wipeInFromLeft` transition to 3 seconds (3000 ms), rather than the default 500 ms:
-
 ```javascript
+// Set the duration for the `wipeInFromLeft` transition to 3 seconds (3000 ms), rather than the default 500 ms:
+
 mySic.setParameter("duration",3000,"wipeInFromLeft");
 ```
 
-Set the menu percentage (i.e., the proportion of the screen covered by a menu) to 50% for the `wipeInFromTop` and `wipeOutToTop` transitions:
-
 ```javascript
+
+Set the menu percentage (i.e., the proportion of the screen covered by a menu) to 50% for the `menuInFromTop` and `menuOutToTop` transitions:
 mySic.setParameter("menuPercentage",50,"menuInFromTop");
 mySic.setParameter("menuPercentage",50,"menuOutToTop");
 
 ```
 
-Notes: While menuPercentage can be set for any transition, it only has any real effect for the menu transitions. Also, in general, you're going to want to use the same menuPercentage for `menuInFrom` and `menuOutTo` pairs. Unexpected behavior may occur if the two values aren't the same.
+In general, you will want to use the same menuPercentage for `menuInFrom` and `menuOutTo` pairs. Unexpected behavior may occur if the two values aren't the same.
 
 #### Callbacks
 
-The `setParameter` method can be used to set a callback method that will be called when a transition is complete.
+The `setParameter` method can be used to set a callback method that will be called whenever a transition is complete.
 
 Examples:
 
-Set a callback function for the `wipeInFromLeft` transition:
+
 
 ```javascript
+// Set a callback function for the `wipeInFromLeft` transition.
 
-// Our callback function
+// Define our callback function.
 function myCallBackFunc(args){
     alert("Hello from wipeInFromLeft");
 }
@@ -189,14 +192,15 @@ function myCallBackFunc(args){
 mySic.setParameter("callback",myCallbackFunc,"wipeInFromLeft");
 ```
 
-Set a callback function for **all** transitions:
-
 ```javascript
+// Set a callback function for **all** transitions.
+
+// Define the callback function.
 function anotherCallBackFunc(args){
     alert("Hello from " + args.transitionName);
 }
 
-// Note that we're using "*" here. That specifies that myCallbackFunc should be called for all transitions.
+// Set up the callback. Note that we're using "*" for the selector here. That specifies that myCallbackFunc should be set as the callback for all transitions.
 mySic.setParameter("callback",anotherCallbackFunc,"*");
 ```
 Note the use of args.transitionName. The args object passed to a callback has the following data available for use:
@@ -210,10 +214,10 @@ Note the use of args.transitionName. The args object passed to a callback has th
 
 Future transitions may define other key/value pairs on the args object.
     
-Most of these are self-explanatory. The difference between `panelSelector` and `selectedPanel` is that the first is the selector provided by the user and the second is the panel that was actually selected using that selector. `panelSelector` will be generally a string, an integer, or undefined (for the few transtions that don't use it). `selectedPanel` will be a DOM object.
+Most of these are self-explanatory. The difference between `panelSelector` and `selectedPanel` is that the first is the selector provided by the user and the second is the panel that was actually selected using that selector.
 
 ### `showPanel(selector)`
-Move the DOM element with the given selector to the top of the stack and display it. If the DOM element is not already a panel, it will be removed from its current location in the DOM, added to the panel container, and added to the panel stack. The CSS classes required to make it function as a panel will be added automatically, if necessary. See the examples above.
+Move the DOM element with the given selector to the top of the stack and display it. If the DOM element is not already a panel, it will be removed from its current location in the DOM, added to the panel container, and added to the panel stack. The CSS classes required to make it function as a panel will be added automatically, if necessary.
 
 ### `stackDump()`
 Prints the current state of the panel stack to the console. This is handy if you are debugging a new transition.
@@ -222,7 +226,7 @@ Prints the current state of the panel stack to the console. This is handy if you
 
 #### `cutIn/cutOut` 
 
-These transitions make the change immediately, without any animation effects.
+These transitions make the change immediately, without any animation effects (like a movie cut).
 
 ```javascript
 // Move "#slide2" to the top of the stack and display it immediately.
@@ -249,9 +253,9 @@ mySic.performTransition({panelSelector:"#slide2",transitionName:"crossDissolveIn
 mySic.performTransition({panelSelector:"#slide2",transitionName:"crossDissolveOut"})
 ```
 
-#### fadeInFrom/fadeOutTo
+#### `fadeInFrom/fadeOutTo`
 
-There are six of these, a fadeIn and a fadeOut each for white, black, and gray. 
+There are six of these, a `fadeInFrom` and a `fadeOutTo` each for white, black, and gray. 
 
 ```javascript
 // Move "#slide2" to the top of the stack and gradually fade it in from a solid black background panel.
@@ -265,7 +269,7 @@ mySic.performTransition({panelSelector:"#slide2",transitionName:"fadeOutToBlack"
 
 `fadeInFromWhite`, `fadeOutToWhite`, `fadeInFromGray`, and `fadeOutToGray` are exactly the same, except that they use white and gray panels respectively, rather than black.
 
-#### irisIn, irisInFrom/irisOut,irisOutTo
+#### irisIn/irisOut, irisInFrom/irisOutTo
 
 These transitions involve a growing or shrinking circle through which the panel in question is visible (similar to a "camera iris" effect). `irisIn` and `irisOut` work with whatever elements are currently on the stack, while `irisInFromWhite`,`irisOutToWhite`,`irisInFromBlack`,`irisOutToBlack`,`irisInFromGray`, and `irisOutToGray` use panels of the specified color for the iris surround.
 
@@ -286,7 +290,7 @@ mySic.performTransition({panelSelector:"#slide2",transitionName:"irisOutToGray"}
 
 #### menuInFromBottom, menuOutToBottom,menuInFromLeft, menuOutToLeft,menuInFromRight, menuOutToRight,menuInFromTop, menuOutToTop
 
-The `menuInFrom/menuOutTo` transitions do a "partial wipe" (see "wipe", below), sliding the specified panel in/out from/to the specified direction only partially. This is useful for making sliding menus. Valid directions are Left, Right, Top, and Bottom. The default menu coverage is 25%. This can be changed with `setParameter()`. See the examples below.
+The `menuInFrom/menuOutTo` transitions do a "partial wipe" (see "wipe", below), sliding the specified panel in/out from/to the specified direction only partially. This is useful for making menus. Valid directions are Left, Right, Top, and Bottom. The default menu coverage is 25%. This can be changed with `setParameter()` (see above). Examples: 
 
 ```javascript
 // Display "#slide2" as a menu on the left side of the area.
@@ -295,13 +299,13 @@ mySic.performTransition({panelSelector:"#slide2",transitionName:"menuInFromLeft"
 // Hide the previous "#slide2" menu.
 mySic.performTransition({panelSelector:"#slide2",transitionName:"menuOutToLeft"});
 
-// Set the menu coverage for the menuInFromLeft transition to 30% (rather than the default 25%).
-mySic.setParameter("menuPercentage",30,"menuInFromLeft");
+// Set the menu coverage for the menuInFromLeft transition to 33% (rather than the default 25%).
+mySic.setParameter("menuPercentage",33,"menuInFromLeft");
 
 // Do the same for the menuOutToLeft transition (unexpected effects may occur if the in and out transitions have different coverage percentages).
-mySic.setParameter("menuPercentage",30,"menuOutToLeft");
+mySic.setParameter("menuPercentage",33,"menuOutToLeft");
 
-// Now show a menu from the left, which will use the new 30% menu coverage.
+// Now show a menu from the left, which will use the new 33% menu coverage.
 mySic.performTransition({panelSelector:"#slide2",transitionName:"menuInFromLeft"});
 
 // Set the menu coverage percentage to 50% for all transitions (will have no effect on non-menu transitions).
@@ -349,11 +353,21 @@ mySic.performTransition({transitionName:"rotateStack",stackRotationNumber:3});
 
 ```
 
+#### `swap`
+
+The `swap` transition reverses the top two entries on the panel stack. For example, if `#slide4` is on top of the stack and `#slide1` is immediately underneath it, after a `swap` transition is executed `#slide1` will be on top with `#slide4` underneath it. This transition does not take any parameters other than the transition name. Example:
 
 
-#### wipeInFromBottom, wipeOutToBottom,wipeInFromLeft, wipeOutToLeft,wipeInFromRight, wipeOutToRight,wipeInFromTop, wipeOutToTop
+```javascript
+// Reverse the order of the top two elements on the panel stack.
+mySic.performTransition({transitionName:"swap"})
+```
 
-Wipe transitions are similar to the menu transitions described above, except that they always provide 100% coverage. This is probably the most commonly used transition. The specified panel will appear or disappear from the specified edge of the container element, and will slide (or "wipe") across until it is fully visible (for `wipeIn`) or fully offscreen (for `wipeOut`).
+
+
+#### `wipeInFromBottom, wipeOutToBottom,wipeInFromLeft, wipeOutToLeft,wipeInFromRight, wipeOutToRight,wipeInFromTop, wipeOutToTop`
+
+Wipe transitions are similar to the menu transitions described above, except that they always provide 100% coverage. This is probably the most commonly used transition. The specified panel will appear (`wipeIn`) or disappear (`wipeOut`) from the specified edge of the container element, and will slide (or "wipe") across until it is fully visible (for `wipeIn`) or fully offscreen (for `wipeOut`).
 
 
 
