@@ -781,7 +781,7 @@ resetPanel(panelSelector,self=this){
         await animation.finished;
         animation.commitStyles();
         animation.cancel();
-        args.finishHandler; 
+        args.finishHandler(); 
     }
 
 /* Performs the callback function for the given transition, ,if one is specified. */
@@ -822,7 +822,7 @@ resetPanel(panelSelector,self=this){
         self.resetPanel(args.selectedPanel,self);
         self.performCallback(args);
     }
-   async crossDissolveIn(args){
+    async crossDissolveIn(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
         self.moveToBos(args.selectedPanel,self);
@@ -1068,13 +1068,13 @@ resetPanel(panelSelector,self=this){
         args.finishHandler();
        
     }
-    async hinge(args){
+     hinge(args){
         let self = args.self;
         self.resetPanel(args.selectedPanel,self);
         self.container.style.perspective =  "1000px";
         self.container.style.perspectiveOrigin = "left";
         args.finishHandler = function(){
-            args.selectedPanel.style.transformOrigin = "50% 50% 0";
+            args.selectedPanel.style.transformOrigin = "center";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1114,7 +1114,7 @@ resetPanel(panelSelector,self=this){
         args.selectedPanel.style.transformOrigin = "right";
         self.hinge(args);
     }
-    hingeOutToToRight(args){
+    hingeOutToRight(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["hingeOutToRight"];
         args.firstanimation = dispatchEntry.firstanimation;
