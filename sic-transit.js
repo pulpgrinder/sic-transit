@@ -430,7 +430,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500,
+            duration:1000,
             callback:null
         },
         "hingeOutToBottom":{
@@ -438,7 +438,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500,
+            duration:1000,
             callback:null
         },
         "hingeInFromLeft":{
@@ -446,7 +446,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             firstanimation: [{display:"block", transform: "rotateY(-180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500,
+            duration:1000,
             callback:null
         },
         "hingeOutToLeft":{
@@ -454,7 +454,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500,
+            duration:1000,
             callback:null
         },
         "hingeInFromRight":{
@@ -462,7 +462,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             firstanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500,
+            duration:1000,
             callback:null
         },
         "hingeOutToRight":{
@@ -470,7 +470,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500,
+            duration:1000,
             callback:null
         },
         "hingeInFromTop":{
@@ -478,15 +478,15 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500,
+            duration:1000,
             callback:null
         },
         "hingeOutToTop":{
             forwardTransition: this.hingeOutToTop,
-            firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
+            firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
-            duration:500,
+            duration:1000,
             callback:null
         },
         "irisIn":{
@@ -828,12 +828,15 @@ resetPanel(panelSelector,self=this){
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
         let topPanel = self.panelStack.pop();
+        // Add a gray panel as a background, so lower layers don't show through.
+        self.panelStack.push(self.specialtyPanels.graypanel);
         self.panelStack.push(topPanel);
         self.resetPanel(topPanel,self);
         self.normalizeStack(self);
         self.moveToTos(args.selectedPanel,self);
         args.finishHandler = function(){
             self.resetPanel(topPanel,self);
+            self.moveToBos(self.specialtyPanels.graypanel);
             self.normalizeStack(self);
             self.performCallback(args);
         }
@@ -845,30 +848,34 @@ resetPanel(panelSelector,self=this){
         animation.cancel();
         topanimation.commitStyles();
         topanimation.cancel();
-        args.finishHandler; 
+        args.finishHandler(); 
         
     }
     async crossDissolveOut(args){
         let self = args.self;
-        self.resetPanel(args.selectedPanel,self);
-        self.moveToTos(args.selectedPanel,self);
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
-        let topPanel = self.panelStack[self.panelStack.length - 2];
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let topPanel =  self.panelStack.pop();
+        self.panelStack.push(self.specialtyPanels.graypanel);
+        self.panelStack.push(args.selectedPanel);
+        self.resetPanel(topPanel,self);
+        self.moveToTos(topPanel,self);
         args.finishHandler = function(){
+            self.moveToBos(self.specialtyPanels.graypanel,self);
             self.moveToBos(args.selectedPanel,self);
-            self.normalizeStack(self);
             self.performCallback(args);
         }
+      
         const animation = args.selectedPanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration:dispatchEntry.duration,fill:"forwards"});
-        
         const topanimation =  topPanel.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
         await animation.finished;
-        await topanimation.finished
+        await topanimation.finished;
         animation.commitStyles();
         animation.cancel();
         topanimation.commitStyles();
         topanimation.cancel();
-        args.finishHandler; 
+        args.finishHandler(); 
     }
     fadeIn(args){
         let self = args.self;
