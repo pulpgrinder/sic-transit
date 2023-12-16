@@ -76,7 +76,7 @@ const mySic = new SicTransit(containerId, elementClass);
 Place all your initial panel `div`s within the container `div` you're planning to use (don't worry, you can add or remove panels later -- see below).
 ## Public Methods
 
-### Selectors
+#### Selectors
 
 Many of the public methods take a `selector` argument to specify a particular panel. The following examples use the `showPanel()` method in conjunction with a selector, because `showPanel()` is straightforward and is thus useful as an example.
 
@@ -135,28 +135,28 @@ mySic.showPanel({panelSelector:newpanel});
 Here we're creating a new HTML element, and passing it directly to `showPanel()`.
 
 
-### `getBos()`
+#### `getBos()`
 Returns the panel currently at the bottom of the panel stack.
 
-### `getContainerId()`
+#### `getContainerId()`
 Returns the user-specified ID for the panel container. See *Initialization*, above.
 
-### `getPanelClass()`
+#### `getPanelClass()`
 Returns the user-specified CSS class used to identify the panels that belong to this instance of SicTransit. See *Initialization*, above.
 
-### `getTransitionList()`
+#### `getTransitionList()`
 Returns an array containing the names of all defined transitions.
 
-### `getPanelList()`
+#### `getPanelList()`
 Returns an array of the ids of panels within the panel container. Note that this does **not** include the special internal panels used to implement certain effects, as those do not have ids, nor does it include user-created panels that likewise don't have ids (user-created panels with ids will be included);
 
-### `getTos()`
+#### `getTos()`
 Returns the panel currently at the top of the panel stack.
 
-### `performTransition(args)`
+#### `performTransition(args)`
 The heart of Sic Transit. Each transition is documented in detail in the *Transitions* section below.
 
-### `setParameter(parametername, parametervalue,transitionname)`
+#### `setParameter(parametername, parametervalue,transitionname)`
 Sets the given parameter name to the given value for the given transition name. If the transition name is "\*" (in quotes), or not supplied, the specified parameter is set for *all* transitions.
 
 Some commonly used parameters include:
@@ -211,7 +211,7 @@ mySic.setParameter("callback",myCallbackFunc,"wipeInFromLeft");
 ```
 
 ```javascript
-// Set a callback function for **all** 
+// Set a callback function for all
 // transitions.
 
 // Define the callback function.
@@ -237,13 +237,13 @@ Future transitions may define other key/value pairs on the args object.
     
 Most of these are self-explanatory. The difference between `panelSelector` and `selectedPanel` is that the first is the selector provided by the user and the second is the panel that was actually selected using that selector.
 
-### `showPanel(selector)`
+#### `showPanel(selector)`
 Move the DOM element with the given selector to the top of the stack and display it. If the DOM element is not already a panel, it will be removed from its current location in the DOM, added to the panel container, and added to the panel stack. The CSS classes required to make it function as a panel will be added automatically, if necessary.
 
-### `stackDump()`
+#### `stackDump()`
 Prints the current state of the panel stack to the console. This is handy if you are debugging a new transition.
 
-### Available Transitions
+### Transitions
 
 #### `cutIn/cutOut` 
 
