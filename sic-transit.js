@@ -433,8 +433,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             duration:500,
             callback:null
         },
-        "HingeOutToBottom":{
-            forwardTransition: this.HingeOutToBottom,
+        "hingeOutToBottom":{
+            forwardTransition: this.hingeOutToBottom,
             firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(-180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -449,8 +449,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             duration:500,
             callback:null
         },
-        "HingeOutToLeft":{
-            forwardTransition: this.HingeOutToLeft,
+        "hingeOutToLeft":{
+            forwardTransition: this.hingeOutToLeft,
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(-180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -465,8 +465,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             duration:500,
             callback:null
         },
-        "HingeOutToRight":{
-            forwardTransition: this.HingeOutToRight,
+        "hingeOutToRight":{
+            forwardTransition: this.hingeOutToRight,
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -481,8 +481,8 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             duration:500,
             callback:null
         },
-        "HingeOutToTop":{
-            forwardTransition: this.HingeOutToTop,
+        "hingeOutToTop":{
+            forwardTransition: this.hingeOutToTop,
             firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -1086,9 +1086,9 @@ resetPanel(panelSelector,self=this){
         args.selectedPanel.style.transformOrigin = "bottom";
         self.hinge(args);
     }
-    HingeOutToBottom(args){
+    hingeOutToBottom(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["HingeOutToBottom"];
+        let dispatchEntry = self.dispatchTable["hingeOutToBottom"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "bottom";
         self.hinge(args);
@@ -1100,9 +1100,9 @@ resetPanel(panelSelector,self=this){
         args.selectedPanel.style.transformOrigin = "left";
         self.hinge(args);
     }
-    HingeOutToLeft(args){
+    hingeOutToLeft(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["HingeOutToLeft"];
+        let dispatchEntry = self.dispatchTable["hingeOutToLeft"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "left";
         self.hinge(args);
@@ -1114,9 +1114,9 @@ resetPanel(panelSelector,self=this){
         args.selectedPanel.style.transformOrigin = "right";
         self.hinge(args);
     }
-    HingeOutToToRight(args){
+    hingeOutToToRight(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["HingeOutToRight"];
+        let dispatchEntry = self.dispatchTable["hingeOutToRight"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "right";
         self.hinge(args);
@@ -1128,9 +1128,9 @@ resetPanel(panelSelector,self=this){
         args.selectedPanel.style.transformOrigin = "top";
         self.hinge(args);
     }
-    HingeOutToTop(args){
+    hingeOutToTop(args){
         let self = args.self;
-        let dispatchEntry = self.dispatchTable["HingeOutToTop"];
+        let dispatchEntry = self.dispatchTable["hingeOutToTop"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.selectedPanel.style.transformOrigin = "top";
         self.hinge(args);
