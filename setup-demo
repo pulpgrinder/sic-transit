@@ -1,0 +1,7 @@
+#! /bin/sh
+# Copy the demo files to the PulpgrinderWebsite directory
+# for upload to the web server.
+cp index.html ../PulpgrinderWebsite/sictransit
+cp sic-transit.css ../PulpgrinderWebsite/sictransit
+cp sic-demo.css ../PulpgrinderWebsite/sictransit
+cp sic-transit.js ../PulpgrinderWebsite/sictransit

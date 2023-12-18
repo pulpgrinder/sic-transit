@@ -1,6 +1,25 @@
-/*  Stylesheet for Sic Transit, copyright 2023 by
+/*  Base stylesheet for Sic Transit, copyright 2023 by
  *  Anthony W. Hursh. MIT license.
  */
+
+ .sic-transit-container {
+    /* Container needs to have a position in order for z-index to work
+       on children. Anything other than static should work.
+    */
+    position:relative;
+    padding:0;
+    width:300px;
+    height:450px;
+
+    /*  Don't display portions of children that lie outside the boundary. 
+     *  Might want to use scroll in some situations, or the overflow-x
+     *  and/or overflow-y properties.
+     */
+    overflow: hidden;
+    /*  Optionally, make the container resizable. */
+    resize:both;
+}
+
 .sic-transit-panel {
    position:absolute;
    left:0;
@@ -11,10 +30,18 @@
    width:100%;
    height:100%;
    margin:0;
-   /*  We want any borders to show up. */
+    padding:0.5em;
+   /*  The border is optional. */
+   /*  We want the border to show up, even though the panel is filling the whole container. */
    box-sizing: border-box;
+   border: 5px lightgray ridge;
    display:block;
+
+   /*  set the z-index to something that (hopefully) will 
+   have it hidden at the bottom of the stack. */
    z-index:-3000;
+
+   /*  Need this for flip transitions. */
    backface-visibility: hidden;
    transform-style: preserve-3d;
  
@@ -76,19 +103,3 @@
     transform:rotateY(180deg);
 }
 
-.sic-transit-container {
-    /* Container needs to have a position in order for z-index to work
-       on children. Anything other than static should work.
-    */
-    position:relative;
-    padding:0;
-    width:250px;
-    height:250px;
-    /*  Don't display portions of children that lie outside the boundary. 
-     *  Might want to use scroll in some situations, or the overflow-x
-     *  and/or overflow-y properties.
-     */
-    overflow: hidden;
-    /*  Optionally, make the container resizable. */
-    resize:both;
-}

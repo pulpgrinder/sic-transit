@@ -9,99 +9,36 @@
     <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="sic-transit.css">
     <link rel="stylesheet" href="sic-demo.css">
-    <title>Sic Transit</title>
+    <script type="text/javascript" src="sic-transit.js"></script>
+    <title>Sic Transit Demo</title>
   </head>
   <body>
-    <div id="demo-container">
-        <div id="slide1" class="demo-panel">
-            Slide 1
-            <img title = "John Locke" src="johnlocke.jpg" height="100%"/>
+    <div id='mycontainer'>
+        <div id='mypanel1' class='mypanel'>
+        Panel 1 says "Hi!" <br/>
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam. Quisquam, voluptatum quae.
         </div>
-        <div id="slide2" class="demo-panel">
-            Slide 2
+        <div id='mypanel2' class='mypanel'>
+        Panel 2 says "Bonjour!" <br/>
+        Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam. Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit.
         </div>
-        <div id="slide3" class="demo-panel">
-            Slide 3
+        <div id='mypanel3' class='mypanel'>
+        Panel 3 says "Guten Tag!"    Hola! <br/>
+        Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam.
         </div>
-        <div id="slide4" class="demo-panel">
-            Slide 4
-        </div>
-        <div id="slide5" class="demo-panel">
-            Slide 5
-        </div>
-        <div id="slide6" class="demo-panel">
-            Slide 6
+        <div id='mypanel4' class='mypanel'>
+        Panel 4 says "Hola!"  <br/>
+            Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam.
         </div>
     </div>
     <div>
-    Panel: <select title="panelSelector" id="panelSelector"></select>
-    Transition: <select id="transitionSelector" title="transitionSelector"></select>
-    <button title="performTransition" id="performTransition" onclick="runTransition()">Perform Transition</button>
+      <label for="userinput">Enter command</label>  <input type="text" size="80" id="userinput" value="mySic.performTransition({panelSelector:'#mypanel2',transitionName:'wipeInFromLeft'})"/> <button id="goButton">Go</button>
     </div>
-    <div>
-        You can click any of the divs below to add it as a new panel.
-    </div>
-    <div id="testAdd1" onclick="addNewPanel(event)">
-        Add Test #1
-    </div>
-    <div id = "testAdd2" onclick="addNewPanel(event)">
-        Add Test #2
-    </div>
-    <div id="testAdd3" onclick="addNewPanel(event)">
-        Add Test #3.
-    </div>
+    <script type="text/javascript">
+        const mySic = new SicTransit("#mycontainer",".mypanel");
+        document.getElementById("goButton").addEventListener("click", function() {
+            eval(document.getElementById("userinput").value);
+        })
+    </script>
   </body>
-  <script type="text/javascript" src="sic-transit.js"></script>
-  <script type="text/javascript">
-
-function addNewPanel(evt){
-        let element = evt.target;
-        mySic.showPanel(element);
-}
-// Initialize a new instance of SicTransit.
- let mySic = new SicTransit("#demo-container",".demo-panel");
-
-function runTransition(){
-    let panel = document.getElementById("panelSelector").value;
-    let transition = document.getElementById("transitionSelector").value;
-    mySic.performTransition({panelSelector:panel,transitionName:transition});
-}
-
-// Set up a callback to be called after every transition completes. In this case, it just prints some info. The '*' sets the callbackDemo function for the callback for all transitions.
-
-mySic.setParameter("callback",callbackDemo,"*");
-
-// This is our callback function.
-    function callbackDemo(args){
-        console.log("elementSelector: " + args.elementSelector);
-        console.log("transitionName: " + args.transitionName);
-        console.log("elapsed time: " + (args.endTime - args.startTime));
-        mySic.stackDump(args);
-    }
-
-// Load the UI.
-function loadUI(){
-    let transitions = Object.keys(mySic.dispatchTable);
-    let panels = mySic.getPanelList();
-    let transitionSelector = document.getElementById("transitionSelector");
-    let panelSelector = document.getElementById("panelSelector");
-    let transition;
-    let element;
-    for(let i = 0; i < panels.length; i++){
-        element = document.createElement('option');
-        element.value = "#" + panels[i];
-        element.text = "#" + panels[i];
-        panelSelector.appendChild(element);
-    }
-    for(let i = 0; i < transitions.length; i++){
-        transition = document.createElement('option');
-        transition.value = transitions[i];
-        transition.text = transitions[i];
-        transitionSelector.appendChild(transition);
-    }
-}
-
-loadUI();
-
-  </script>
  </html>

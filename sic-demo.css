@@ -1,38 +1,26 @@
-#slide1 {
-    background-color:paleturquoise;
-    color:darkblue;
- }
- #slide2 {
-    background-color:orange;
-    color:darkblue;
- }
- #slide3 {
-    background-color:darkgreen;
-    color:white;
- }
- #slide4 {
-    background-color: yellow;
-    color:darkblue;
- }
- #slide5 {
-    background-color: red;
-    color:palegoldenrod;
- }
- #slide6 {
-    background-color: lavender;
-    color:darkblue;
- }
+/* CSS specific to demo. */
 
-#testAdd1 {
-   background-color: rebeccapurple;
-   color:white;
-}
-#testAdd2 {
-   background-color:blue;
-   color:white;
-}
-
-#testAdd3 {
-   background-color:magenta;
-   color:white;
-}
+#mypanel1 {
+   background-color: red;
+   color: yellow;
+ }
+ #mypanel2 {
+   background-color: green;
+   color: yellow;
+ }
+ #mypanel3 {
+   background-color: blue;
+   color: white;
+ }
+ #mypanel4 {
+   background-color: violet;
+   color: darkblue;
+ }
+ #mypanel5 {
+   background-color: yellow;
+   color: black;
+ }
+ #mypanel6 {
+   background-color: cyan;
+   color: darkblue;
+ }
