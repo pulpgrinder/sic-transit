@@ -13,29 +13,49 @@
     <title>Sic Transit Demo</title>
   </head>
   <body>
-    <div id='mycontainer'>
-        <div id='mypanel1' class='mypanel'>
-        Panel 1 says "Hi!" <br/>
+    <div id='firstcontainer'>
+        <div id='firstpanel1' class='mypanel'>
+        Panel 1 says "Hello!" <br/>
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam. Quisquam, voluptatum quae.
         </div>
-        <div id='mypanel2' class='mypanel'>
+        <div id='firstpanel2' class='mypanel'>
         Panel 2 says "Bonjour!" <br/>
         Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam. Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit.
         </div>
-        <div id='mypanel3' class='mypanel'>
+        <div id='firstpanel3' class='mypanel'>
         Panel 3 says "Guten Tag!"    Hola! <br/>
         Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam.
         </div>
-        <div id='mypanel4' class='mypanel'>
+        <div id='firstpanel4' class='mypanel'>
         Panel 4 says "Hola!"  <br/>
             Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam.
         </div>
     </div>
+    <div id='secondcontainer'>
+      <div id='secondpanel1' class='mypanel'>
+        Second Panel 1 says "Namaste!" <br/>
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam. Quisquam, voluptatum quae.
+        </div>
+        <div id='secondpanel2' class='mypanel'>
+       Second Panel 2 says "Nǐ hǎo!" <br/>
+        Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam. Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+        </div>
+        <div id='secondpanel3' class='mypanel'>
+        Second Panel 3 says "Salve!"    Hola! <br/>
+        Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam.
+        </div>
+        <div id='secondpanel4' class='mypanel'>
+        Second Panel 4 says "Γεια!"  <br/>
+            Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam.
+        </div>
+    
+    </div>
     <div>
-      <label for="userinput">Enter command</label>  <input type="text" size="80" id="userinput" value="mySic.performTransition({panelSelector:'#mypanel2',transitionName:'wipeInFromLeft'})"/> <button id="goButton">Go</button>
+      <label for="userinput">Enter command</label>  <input type="text" size="80" id="userinput" value="firstSic.performTransition({panelSelector:'#mypanel2',transitionName:'wipeInFromLeft'})"/> <button id="goButton">Go</button>
     </div>
     <script type="text/javascript">
-        const mySic = new SicTransit("#mycontainer",".mypanel");
+        const firstSic = new SicTransit("#firstcontainer",".mypanel");
+        const secondSic = new SicTransit("#secondcontainer",".mypanel");
         document.getElementById("goButton").addEventListener("click", function() {
             eval(document.getElementById("userinput").value);
         })

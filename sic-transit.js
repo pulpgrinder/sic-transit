@@ -3,10 +3,13 @@
  *  MIT license.
  */
 
+"use strict";
+
 class SicTransit {
 /* Constructor takes two arguments, the id for the panel container,
  * and the CSS class for the panels. 
  */
+    static allInstances = [];
     constructor(containerId, panelClass) {
     // Set up the user-suppplied container.
       this.containerId = containerId;
@@ -24,6 +27,7 @@ class SicTransit {
 
       // Create our special internal overlay panels. These are things like solid black, solid white ,etc. Used to support various transitions.
       this.createOverlayPanels(); 
+      SicTransit.allInstances.push(this);
     } // End of constructor.
 
 
@@ -101,7 +105,7 @@ class SicTransit {
         self.normalizeStack(self);
     }
 
-    /* This updates the zIndex of the panels in the panel stack, so that the top of stack panel has a zIndex of 0, the next one down has a zIndex of -1, etc. This should be called any time the panel stack changes. The given methods already call this as needed.
+    /* This updates the zIndex of the panels in the panel stack, so that the top of stack panel has a zIndex of 0, the next one down has a zIndex of -1, etc. This should be called any time the panel stack changes. Most public methods methods already call this as needed.
 */
     normalizeStack(self=this){
         let panelStack = self.panelStack;
@@ -132,8 +136,9 @@ class SicTransit {
         args.transitionFunction(args);
     }
 
-/*  Removes the selected panel from the panel stack (but not the DOM), if it's there. Returns the panel if it was found, otherwise
-    returns null. 
+/*  Removes the selected panel from the panel stack for the current
+    instance, if it's there, but not the DOM. Returns the panel if
+    it was found, otherwise returns null. 
 */
     removeFromStack(panelSelector,self=this){
         let panel = self.selectPanel(panelSelector, self);
@@ -147,13 +152,24 @@ class SicTransit {
         return null;
     }
 
-/* Remove selected panel from the panel stack and the
-    DOM. Returns the removed panel.
-    */
+/* Removes the selected panel from the panel stacks for all
+   instances. Does not remove from DOM. 
+*/
+    removeFromAllStacks(panelSelector){
+        for(let i = 0; i < SicTransit.allInstances.length; i++){
+            SicTransit.allInstances[i].removeFromStack(panelSelector,SicTransit.allInstances[i]);
+        }
+    }
+
+/* Remove selected panel from the panel stack for all instances and the
+    DOM as well. Returns the removed panel.
+*/
     removePanel(panelSelector,self=this){
         let panel = self.selectPanel(panelSelector);
-        self.removeFromStack(panel, self);
-        panel.remove();
+        if(panel !== null){
+            self.removeFromAllStacks(panel);
+            panel.remove();
+        }
         return panel;
     }
 
@@ -183,7 +199,6 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
              }
          }
          self.normalizeStack(self);
-       //  self.showPanel(self.getTos(self),self);
          self.performCallback(args);
      }
 
@@ -264,10 +279,9 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         if(selectedPanel === null){
             return;
         }
-        // Remove from stack (if it's already there).
-        self.removeFromStack(selectedPanel, self); 
-        // Remove from wherever it is in the DOM. 
-        selectedPanel.remove(); 
+        // Remove from the panel stack for all instances, if it's there,
+        // and remove from DOM.
+        self.removePanel(selectedPanel,this); 
         // Add the necessary classes to make it behave as a Sic Transit
         // panel.
         selectedPanel.classList.add(self.panelClass,"sic-transit-panel");
@@ -297,6 +311,17 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         } 
     }
 
+    /* Transfer a panel from one instance of Sic Transit to another. The panel is removed from the panel stack for the source instance, and added to the panel stack for the destination instance. The panel is also removed from the container for the source instance, and added to the container for the destination instance. Call the method on the source instance,
+        with a panel selector and the destination instance as parameters.*/
+    transferPanel(selector,destinationSic,self=this){
+            let selectedPanel = self.selectPanel(selector,self);
+            if(selectedPanel === null){
+                console.log("SicTransit transferPanel(): panelSelector " + panelSelector + " is invalid.");
+                return;
+            }
+            self.removeFromAllStacks(selector,self);
+            destinationSic.showPanel(selector,destinationSic);
+    }
 
     
 /* Internal methods below. Not well-documented and not intended to be called directly by user code. These may change at any time. Use at your own risk. :-) */
@@ -751,7 +776,6 @@ resetPanel(panelSelector,self=this){
     let panel = self.selectPanel(panelSelector,self);
     panel.style.display = "block";
     panel.style.opacity = 1.0;
-    //panel.style.transform = "rotateX(0deg) rotateY(0deg) translateX(0) translateY(0)scale(1)";
     panel.style.removeProperty("transform");
     panel.style.removeProperty("transformOrigin");
     panel.style.removeProperty("clip-path");
@@ -764,7 +788,7 @@ resetPanel(panelSelector,self=this){
 */
     loadPanelStack(self=this){
         self.panelStack = [];
-        const panel_list = document.querySelectorAll(self.panelQuery);
+        const panel_list = document.querySelectorAll(self.containerId + " > " + self.panelQuery);
         self.panelStack = [...panel_list];
         for(let i = 0; i < self.panelStack.length; i++){
             self.panelStack[i].classList.add("sic-transit-panel");

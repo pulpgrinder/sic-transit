@@ -1,26 +1,7 @@
-/* CSS specific to demo. */
-
-#mypanel1 {
-   background-color: red;
-   color: yellow;
- }
- #mypanel2 {
-   background-color: green;
-   color: yellow;
- }
- #mypanel3 {
-   background-color: blue;
-   color: white;
- }
- #mypanel4 {
-   background-color: violet;
-   color: darkblue;
- }
- #mypanel5 {
-   background-color: yellow;
-   color: black;
- }
- #mypanel6 {
-   background-color: cyan;
-   color: darkblue;
+ .sic-transit-panel{
+  
+ /*     Add a border to make the demo visually more clear. 
+        Not required for functionality. 
+*/
+    border: 5px lightgray ridge;
  }
