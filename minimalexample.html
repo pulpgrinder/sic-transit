@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Sic Transit Demo. Copyright 2023 by Anthony W. Hursh. MIT license -->
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store,must-revalidate,max-age=-1">
+    <meta http-equiv="Pragma" content="no-store">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="sic-transit.css">
+    <link rel="stylesheet" href="sic-demo.css">
+    <script type="text/javascript" src="sic-transit.js"></script>
+    <title>Sic Transit Demo</title>
+  </head>
+  <body>
+    <div id="minimalcontainer">
+        <div id="panel2" class="demopanel">
+            This is #panel2.
+         </div>
+        <!-- The last panel in this HTML (in this case, #panel1) will be displayed on startup by default -->
+        <div id="panel1" class="demopanel">
+            This is #panel1.
+        </div>
+    </div>
+    <div>
+        <button onclick="demoTransition()">Click to transition to #panel2</button> 
+    </div>
+    <div>
+        <p>Simple example of Sic Transit in action. View source to have a look at the HTML and JavaScript.</p>
+    </div>
+</body>
+    <script type="text/javascript">
+
+        // Set up a new instance of Sic Transit, using the container and panels specified in the HTML above.
+        let sic = new SicTransit("#minimalcontainer",".demopanel");
+
+        // When the button is clicked, transition to #panel2 using a swipe transition.
+        function demoTransition(){
+            sic.performTransition({panelSelector:"#panel2",transitionName:"swipeInFromLeft"});
+        }
+    </script>
+</html>

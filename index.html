@@ -10,55 +10,104 @@
     <link rel="stylesheet" href="sic-transit.css">
     <link rel="stylesheet" href="sic-demo.css">
     <script type="text/javascript" src="sic-transit.js"></script>
+    <script type="text/javascript" src="markdown-it.min.js"></script>
     <title>Sic Transit Demo</title>
   </head>
   <body>
-    <div id='firstcontainer'>
-        <div id='firstpanel1' class='mypanel'>
-        Panel 1 says "Hello!" <br/>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam. Quisquam, voluptatum quae.
-        </div>
-        <div id='firstpanel2' class='mypanel'>
-        Panel 2 says "Bonjour!" <br/>
-        Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam. Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-        </div>
-        <div id='firstpanel3' class='mypanel'>
-        Panel 3 says "Guten Tag!"    Hola! <br/>
-        Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam.
-        </div>
-        <div id='firstpanel4' class='mypanel'>
-        Panel 4 says "Hola!"  <br/>
-            Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam.
-        </div>
-    </div>
-    <div id='secondcontainer'>
-      <div id='secondpanel1' class='mypanel'>
-        Second Panel 1 says "Namaste!" <br/>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam. Quisquam, voluptatum quae.
-        </div>
-        <div id='secondpanel2' class='mypanel'>
-       Second Panel 2 says "Nǐ hǎo!" <br/>
-        Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam. Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-        </div>
-        <div id='secondpanel3' class='mypanel'>
-        Second Panel 3 says "Salve!"    Hola! <br/>
-        Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam.
-        </div>
-        <div id='secondpanel4' class='mypanel'>
-        Second Panel 4 says "Γεια!"  <br/>
-            Quisquam, voluptatum quae. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis velit explicabo dolore architecto ex error quae dolorem, quisquam excepturi, reiciendis, impedit animi facere tenetur tempore rem magnam.
-        </div>
-    
-    </div>
     <div>
-      <label for="userinput">Enter command</label>  <input type="text" size="80" id="userinput" value="firstSic.performTransition({panelSelector:'#mypanel2',transitionName:'wipeInFromLeft'})"/> <button id="goButton">Go</button>
+      <div id="docs">
+      </div>
+      <div id="demodiv">
+        <div id='firstcontainer'>
+          <div id='panel1' class='demopanel'>
+          <h4>#panel1 says "Hello!"</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus luctus urna sed urna ultricies ac tempor dui sagittis. In condimentum facilisis porta.
+          </div>
+          <div id='panel2' class='demopanel'>
+          <h4>#panel2 says "Bonjour!"</h4>
+          Sed leo enim, condimentum et vehicula vel, facilisis sit amet leo. Nam non dui nec nulla suscipit suscipit in id urna. Praesent dapibus neque id cursus faucibus.
+          </div>
+          <div id='panel3' class='demopanel'>
+          <h4>#panel3 says "Guten Tag!"</h4>
+          Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae. Fusce id purus turpis, vitae venenatis urna. Nullam quis ante et metus fringilla malesuada.
+          </div>
+          <div id='panel4' class='demopanel'>
+          <h4>#panel4 says "Hola!"</h4>
+          Aliquam erat volutpat. Nulla facilisi. Suspendisse potenti. Morbi in sem quis dui placerat ornare. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu. Cras consequat.
+          </div>
+        </div>
+        <div id='secondcontainer'>
+          <div id='panel5' class='demopanel'>
+          <h4>#panel5 says "Namaste!"</h4>
+          Cras sed felis eget velit aliquet sagittis id consectetur purus. Ut commodo suscipit neque, ac fermentum orci pellentesque id. Aliquam erat volutpat.
+          </div>
+          <div id='panel6' class='demopanel'>
+            <h4>#panel6 says "Nǐ hǎo!</h4>
+            In eget sapien vitae massa rhoncus lacinia. Nullam at leo nec metus aliquam semper. Phasellus elit dolor, porttitor id consectetur sit amet, posuere id magna.
+          </div>
+          <div id='panel7' class='demopanel'>
+          <h4>#panel7 says "Salve!"</h4>
+          Donec consectetur libero faucibus ornare iaculis. Quisque auctor placerat orci ut mattis. Cras nisi nunc, consequat nec egestas nec, lacinia sed nisl.
+          </div>
+          <div id='panel8' class='demopanel'>
+          <h4>#panel8 says "Γεια!"</h4>
+          Sed nunc est, mollis non facilisis ac, cursus non elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae. Nullam ultrices, orci ut convallis placerat, nisi nisi lacinia erat, eu consequat erat ipsum a velit.
+          </div>
+        </div>
+        <div id="ondeck">
+        <div id="panel9" style="padding:0.5em;border:1px solid black;">
+          <h4>This is #panel9</h4>
+          We're going to transfer it to one of the above containers later in the tutorial. 
+
+          Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.
+        </div>
+      </div>
     </div>
+    </div>
+  
     <script type="text/javascript">
-        const firstSic = new SicTransit("#firstcontainer",".mypanel");
-        const secondSic = new SicTransit("#secondcontainer",".mypanel");
-        document.getElementById("goButton").addEventListener("click", function() {
-            eval(document.getElementById("userinput").value);
+        let logger;
+        let oldLog = console.log;
+        const firstSic = new SicTransit("#firstcontainer",".demopanel");
+        const secondSic = new SicTransit("#secondcontainer",".demopanel");
+        async function loadDocs(){
+          const response = await fetch("documentation.md");
+          let doctext = await response.text();
+        let demoinstance = 0;
+        doctext = doctext.replace(/```javascript/g,function() {
+        demoinstance++;
+        return "<div class='codedemo'><pre><code id='demoinstance-" + demoinstance + "''>"
+        });
+        demoinstance = 0;
+        doctext = doctext.replace(/```/g,function() {
+          demoinstance++;
+         return "</code></pre></div>" + "<div><div class='demoresult' id='demoresult-" + demoinstance + "'></div><div><button onclick='runDemo(" + demoinstance + ")'>Run</button></div>";
         })
+        let md = window.markdownit({
+              html: true
+        });
+        let html = md.render(doctext);
+        document.getElementById("docs").innerHTML = html;
+      }
+      loadDocs();
+      function runDemo(index){
+          // Yes, I know. We actually want to allow the execution of random code here. IN THIS CASE, it's safe. There are no credentials or cross-site issues involved.
+          logger= document.getElementById("demoresult-" + index);
+          let codeResult = eval(document.getElementById("demoinstance-" + index).innerText);
+          if(codeResult=== undefined){
+            codeResult = "OK";
+          }
+          document.getElementById("demoresult-" + index).innerText = codeResult;
+        }
+
+        console.log = function(message) {
+        if (typeof message == 'object') {
+            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+        } else {
+            logger.innerHTML += message + '<br />';
+        }
+        oldLog.apply(console, arguments);
+      }
     </script>
-  </body>
+  </script>
  </html>

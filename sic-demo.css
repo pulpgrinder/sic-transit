@@ -1,7 +1,117 @@
- .sic-transit-panel{
-  
- /*     Add a border to make the demo visually more clear. 
-        Not required for functionality. 
-*/
-    border: 5px lightgray ridge;
+body{
+    display:grid;
+    grid-template-rows:500px 1fr;
+}
+
+#docs{
+    padding:0.5em;
+    overflow-y:scroll;
+    overflow-x:hidden;
+    max-height:400px;
+}
+#demodiv{
+    border-top:5px solid darkslategrey;
+}
+.codedemo{
+    border: 1px solid darkgray;
+    padding: 0.5em;
+    padding-top:0;
+    margin:0.5em;
+    margin-bottom: 0;
+    background-color:black;
+    color:ivory;
+}
+
+.demoresult{
+    font-style:italic;
+    padding:0.5em;
+    margin:0.5em;
+    margin-top:0;
+    background-color:gray;
+    color:black;
+    word-wrap:break-word;
+}
+#firstcontainer, #secondcontainer {
+    width:300px;
+    height:450px;
+    display:inline-block;
+    padding:0;
+    overflow: scroll;
  }
+ .demopanel{
+    margin:0;
+    padding:0.5em;
+    font-family:sans-serif;
+    text-align:justify;
+    border: 1px solid black;
+ }
+
+ #panel1 {
+    color: #555;
+    background-color: #a2d5c6;
+}
+
+#panel2 {
+    color: #555;
+    background-color: #fce5cd;
+}
+
+#panel3 {
+    color: #555;
+    background-color: #fff2cc;
+}
+
+#panel4 {
+    color: #555;
+    background-color: #d9ead3;
+}
+
+#panel5 {
+    color: #555;
+    background-color: #cfe2f3;
+}
+
+#panel6 {
+    color: #555;
+    background-color: #d9d2e9;
+}
+
+#panel7 {
+    color: #555;
+    background-color: #ead1dc;
+}
+
+#panel8 {
+    color: #555;
+    background-color: #f4cccc;
+}
+
+#panel9 {
+    color: #555;
+    background-color: #b4a7d6;
+}
+
+#panel10 {
+    color: #555;
+    background-color: #a4c2f4;
+}
+
+#panel11 {
+    color: #555;
+    background-color: #f9cb9c
+}
+
+#panel12 {
+    color: #555;
+    background-color: #ea9999;
+}
+
+#panel13 {
+    color: #555;
+    background-color: #b6d7a8;
+}
+
+#panel14 {
+    color: #555;
+    background-color: #c9daf8;
+}
