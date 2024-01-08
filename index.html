@@ -14,7 +14,7 @@
     <title>Sic Transit Demo</title>
   </head>
   <body>
-    <div>
+   <div>
       <div id="docs">
       </div>
       <div id="demodiv">
@@ -55,45 +55,41 @@
           </div>
         </div>
         <div id="ondeck">
-        <div id="panel9" style="padding:0.5em;border:1px solid black;">
+        <div id="panel9"">
           <h4>This is #panel9</h4>
-          We're going to transfer it to one of the above containers later in the tutorial. 
-
+          It's outside of the containers to start with, but we'll move it into one of them in one of the examples in the docs.
           Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.
         </div>
       </div>
-    </div>
+      </div>
     </div>
   
     <script type="text/javascript">
-        let logger;
+        let logger = null;
         let oldLog = console.log;
-        const firstSic = new SicTransit("#firstcontainer",".demopanel");
-        const secondSic = new SicTransit("#secondcontainer",".demopanel");
+        let firstSic = new SicTransit("#firstcontainer",".demopanel");
+        let secondSic = new SicTransit("#secondcontainer",".demopanel");
         async function loadDocs(){
           const response = await fetch("documentation.md");
           let doctext = await response.text();
-        let demoinstance = 0;
-        doctext = doctext.replace(/```javascript/g,function() {
-        demoinstance++;
-        return "<div class='codedemo'><pre><code id='demoinstance-" + demoinstance + "''>"
-        });
-        demoinstance = 0;
-        doctext = doctext.replace(/```/g,function() {
-          demoinstance++;
-         return "</code></pre></div>" + "<div><div class='demoresult' id='demoresult-" + demoinstance + "'></div><div><button onclick='runDemo(" + demoinstance + ")'>Run</button></div>";
-        })
+          let demoinstance = 0;
+          doctext = doctext.replace(/```javascript[\s\S]*?```/g,function(match) {
+                      demoinstance++;
+                      return match + "\n<div class='demoresult' id='demoresult-" + demoinstance + "'></div>\n<div><button onclick='runDemo(" + demoinstance + ")'>Run</button></div>";
+                    });
         let md = window.markdownit({
               html: true
         });
         let html = md.render(doctext);
         document.getElementById("docs").innerHTML = html;
-      }
+      } 
       loadDocs();
       function runDemo(index){
           // Yes, I know. We actually want to allow the execution of random code here. IN THIS CASE, it's safe. There are no credentials or cross-site issues involved.
-          logger= document.getElementById("demoresult-" + index);
-          let codeResult = eval(document.getElementById("demoinstance-" + index).innerText);
+          logger = document.getElementById("demoresult-" + index);
+          let code = document.getElementById("demoresult-" + index).previousElementSibling.innerText;
+          console.log(code)
+          let codeResult = eval(code);
           if(codeResult=== undefined){
             codeResult = "OK";
           }
@@ -101,11 +97,14 @@
         }
 
         console.log = function(message) {
-        if (typeof message == 'object') {
-            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
-        } else {
+          if(logger !== null){
+             if(typeof message == 'object') {
+                logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+              }
+              else {
             logger.innerHTML += message + '<br />';
-        }
+           }
+          }
         oldLog.apply(console, arguments);
       }
     </script>

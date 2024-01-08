@@ -14,13 +14,13 @@ Setting up a new instance of Sic Transit requires only two parameters:
 
 `elementClass`: The user-specified class for the panels. Panels are  `div`s with the given element class, which are nested within the div with id `containerID`. 
 
-Place all your initial panel `div`s within the container `div` you're planning to use and make sure each one has the given `elmentClass` (don't worry, you can add or remove panels later -- see below).
+Place all your initial panel `div`s within the container `div` you're planning to use and make sure each one has the given `elementClass` (don't worry, you can add or remove panels later -- see below).
 
 You can have more than one instance of `SicTransit` on a given page. Just initialize the extra(s) with a new name and a different containerID. If you use the same elementClass you'll be to transfer panels between instances using the `transferPanel()` method. Here is the initialization code for the demo below:
 
 ```javascript
-    const firstSic = new SicTransit("#firstcontainer", ".demopanel");
-    const secondSic = new SicTransit("#secondcontainer", ".demopanel");
+    let firstSic = new SicTransit("#firstcontainer", ".demopanel");
+    let secondSic = new SicTransit("#secondcontainer", ".demopanel");
 ```
 
 
@@ -28,14 +28,14 @@ After running this code, the two containers will be set up set up to work with S
 `#panel1` through `#panel4` and `#panel5` through `#panel8` respectively.
 
  Note that Sic Transit does not have (or need) "tear down" or "destroy" methods -- instances of Sic 
- Transit are removed by the normal JavaScript garbage collection process. This also means that you 
- can run the above code multiple times without causing any problems. In fact, the above code is run automatically on page load, but running it again does no harm.
+ Transit are removed by the normal JavaScript garbage collection process when the last reference to them disappears.  In other words,  you 
+ can run the above code multiple times without causing any problems. In fact, the above code is run automatically on page load, but running it again does no harm. However, if you're not planning to reassign instances, you should use `const` rather than `let`.
 
 
 ## Public Methods
 
-#### `performTransition(args)`
-The heart of Sic Transit.
+### `performTransition(args)`
+Transitions are the heart of Sic Transit.
 ### Transitions
 
 #### `cutIn/cutOut` 
@@ -107,12 +107,13 @@ These transitions provide a "flip card" effect. `flipInX` and `flipOutX` rotate 
 // about the X axis
 
 firstSic.performTransition({panelSelector:"#panel1",transitionName:"flipInX"});
+```
 
+```javascript
 // Hide #panel1 by using the inverse flipcard
 // effect about the X axis. The previous panel will be restored.
 
 firstSic.performTransition({panelSelector:"#panel1",transitionName:"flipOutX"});
-
 ```
 
 #### `irisIn/irisOut, irisInFrom/irisOutTo`
@@ -200,6 +201,18 @@ You can also set the menu percentage for all menu transitions by using "*" for t
 firstSic.setParameter("menuPercentage",50,"*");
 ```
 
+```javascript
+// Now show a menu from the right, which will use
+// the new 50% menu coverage.
+
+firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuInFromRight"});
+```
+
+```javascript
+// Close the menu.
+
+firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuOutToRight"});
+```
 #### newspaperIn, newspaperOut
 
 These transitions provide a "spinning newspaper" effect, as seen in many old movies. 
@@ -251,16 +264,17 @@ swipes are probably the most commonly used transition. They are similar to the m
 
 ```javascript
 
-// panel #panel4 in from the right, and make it the
+// Swipe #panel4 in from the right, and make it the
 // current visible panel.
 firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeInFromRight"});
+```
 
-
-// panel #panel4 out to the right, revealing the previous panel.
+```javascript
+// Swipe #panel4 out to the right, revealing the previous panel.
 firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeOutToRight"});
 
 ```
-
+The transitions `swipeInLeft`,`swipeOutLeft`,`swipeInTop`,`swipeOutTop`,`swipeInBottom`, and `swipeOutBottom` are the same, other than the direction from which the swiped panel appears or disappears. Swiping in from one direction and swiping out to another is supported.
 #### `zoomIn/zoomOut`
 
 These transitions provide a "zoom lens" effect. `zoomIn` causes the selected panel to grow from the center of the container until it reaches full size, while `zoomOut` causes the selected panel to shrink to the center until it disappears.
@@ -268,8 +282,9 @@ These transitions provide a "zoom lens" effect. `zoomIn` causes the selected pan
 ```javascript
 // Use a zoom transition to display #panel4
 firstSic.performTransition({panelSelector:"#panel4",transitionName:"zoomIn"});
+```
 
-
+```javascript
 // Use a zoom transition to hide #panel4
 firstSic.performTransition({panelSelector:"#panel4",transitionName:"zoomOut"});
 

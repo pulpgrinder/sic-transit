@@ -109,6 +109,8 @@ class SicTransit {
         let selectedPanel = this.selectPanel(panelSelector);
         self.removeFromStack(selectedPanel,self);
         self.panelStack.push(selectedPanel);
+        selectedPanel.remove();
+        self.container.appendChild(selectedPanel);
         self.normalizeStack(self);
     }
 
@@ -116,9 +118,11 @@ class SicTransit {
 */
     normalizeStack(self=this){
         let panelStack = self.panelStack;
-        for(let index = 0; index < panelStack.length; index++){
+        let zindex = 0;
+        for(let index = panelStack.length - 1; index >= 0; index--){
             let panel = panelStack[index];
-            panel.style.zIndex = (index - panelStack.length) + 1;
+            panel.style.zIndex = zindex;
+            zindex= zindex - 1;
         }
     }
 
@@ -1229,8 +1233,9 @@ resetPanel(panelSelector,self=this){
     }
     irisInFromBlack(args){
         let self = args.self;
+        self.container.append(self.specialtyPanels.blackpanel);
         self.moveToTos(self.specialtyPanels.blackpanel);
-        self.container.append(self.specialtyPanels .blackpanel);
+        
         self.irisIn(args);
     }
     irisOutToBlack(args){
