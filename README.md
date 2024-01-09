@@ -13,5 +13,5 @@
 ## Mode of Operation
 SicTransit relies on a user-specified container `div` that contains other user-created `div`s which function as movable "panels". SicTransit uses an internal stack to keep track of the panels and their relative position. In general, only the panel on top of the stack after the transition is complete will be visible. SicTransit transitions manipulate the panel stack in different ways, while simultaneously manpulating the CSS values for the panels (such as the z-index) to make the panels appear, disappear, move, and so on.
 
-See the [documentation](http://runefish.com/sic-transit/documentation.html) for details.
+See the [documentation](https://pulpgrinder.github.io/sic-transit/) for details.
 
