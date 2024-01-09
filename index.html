@@ -70,6 +70,7 @@
     <script type="text/javascript">
         let logger = null;
         let oldLog = console.log;
+        let oldError = console.error;
         let firstSic = new SicTransit("#firstcontainer",".demopanel");
         let secondSic = new SicTransit("#secondcontainer",".demopanel");
         async function loadDocs(){
@@ -106,14 +107,32 @@
           // Yes, I know. We actually want to allow the execution of random code here. IN THIS CASE, it's safe. There are no credentials or cross-site issues involved.
           logger = document.getElementById("demoresult-" + index);
           let code = document.getElementById("demoresult-" + index).previousElementSibling.innerText;
-          let codeResult = eval(code);
-          if(codeResult=== undefined){
-            codeResult = "OK";
+          try {
+            let codeResult = eval(code);
+            if(codeResult !== undefined){
+              codeResult = JSON.stringify(codeResult);
+            }
+            else{
+              codeResult = "Done.";
+            }
+            document.getElementById("demoresult-" + index).innerText = codeResult;
+          } catch (e) {
+            logger.innerText = e.message
           }
-          document.getElementById("demoresult-" + index).innerText = codeResult;
+          
         }
-
         console.log = function(message) {
+          if(logger !== null){
+             if(typeof message == 'object') {
+                logger.innerHTML = (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+              }
+              else {
+            logger.innerHTML = message + '<br />';
+           }
+          }
+        oldLog.apply(console, arguments);
+      }
+      console.error = function(message) {
           if(logger !== null){
              if(typeof message == 'object') {
                 logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
@@ -122,7 +141,7 @@
             logger.innerHTML += message + '<br />';
            }
           }
-        oldLog.apply(console, arguments);
+        oldError.apply(console, arguments);
       }
 
     </script>
