@@ -1,5 +1,7 @@
 # Sic Transit Documentation and Tutorial
 
+Checking something out.
+
 This is the full documentation for the Sic Transit library. It has live examples for all the public methods that can be run directly from this documentation, the effect of which can be seen in the demo area below.
 
 If you're looking for a basic example just to get started, have a look at the [minimal example](minimalexample.html).
