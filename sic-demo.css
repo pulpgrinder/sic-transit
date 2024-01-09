@@ -22,7 +22,7 @@ code {
 .language-javascript{
     width:60em;
     font-size:125%;
-    margin:0;
+    margin:auto;
     background-color: black;
     color:lightgreen;
     display:block;
@@ -39,7 +39,7 @@ code {
     height:auto;
     padding:1em;
     word-wrap:break-word;
-    width:60em;
+    width:62em;
     margin:auto;
     margin-top:0;
     margin-bottom:0;
@@ -58,12 +58,13 @@ code {
 .demoresult{
     font-style:italic;
     padding:0.5em;
-    margin:auto;
+    margin-left:0.5em;
     margin-top:0;
     margin-bottom:0.25em;
-    background-color:gray;
-    color:black;
+    background-color:lightgray;
+    color:darkgreen;
     width:60em;
+    min-height:1em;
     word-wrap:break-word;
 }
 #firstcontainer, #secondcontainer {

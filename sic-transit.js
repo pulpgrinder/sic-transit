@@ -46,7 +46,9 @@ class SicTransit {
         if(self.panelStack.length > 0){
             return self.panelStack[0];
         }
-        throw new Error("Sic Transit getBos(): trying to get element at bottom of empty stack.");
+        else {
+            throw new Error("Sic Transit getBos(): trying to get element at bottom of empty stack.");
+        }
     }
 
     // Return the container id for this instance of Sic Transit.
@@ -76,7 +78,9 @@ class SicTransit {
         if(self.panelStack.length > 0){
             return self.panelStack[self.panelStack.length - 1];
         }
+        else {
         throw new Error("Sic Transit getTos(): trying to get element at top of empty stack.");
+        }
     }
 
     /* Returns an array of all transitions currently defined. */

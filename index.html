@@ -110,12 +110,12 @@
           try {
             let codeResult = eval(code);
             if(codeResult !== undefined){
-              codeResult = JSON.stringify(codeResult);
+              console.log(codeResult);
             }
             else{
-              codeResult = "Done.";
+              console.log("(no errors)");
             }
-            document.getElementById("demoresult-" + index).innerText = codeResult;
+
           } catch (e) {
             logger.innerText = e.message
           }
@@ -123,24 +123,30 @@
         }
         console.log = function(message) {
           if(logger !== null){
-             if(typeof message == 'object') {
-                logger.innerHTML = (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+            if(message instanceof HTMLElement) {
+                logger.innerHTML = "[HTMLElement]";
+              }
+             else if(typeof message == 'object') {
+                logger.innerHTML = JSON.stringify(message);
               }
               else {
-            logger.innerHTML = message + '<br />';
-           }
+                logger.innerHTML += message;
+              }
           }
         oldLog.apply(console, arguments);
       }
       console.error = function(message) {
-          if(logger !== null){
-             if(typeof message == 'object') {
-                logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+        if(logger !== null){
+            if(message instanceof HTMLElement) {
+                logger.innerHTML = "[HTMLElement]";
+              }
+             else if(typeof message == 'object') {
+                logger.innerHTML = JSON.stringify(message);
               }
               else {
-            logger.innerHTML += message + '<br />';
-           }
-          }
+                logger.innerHTML += message;
+              }
+        }
         oldError.apply(console, arguments);
       }
 

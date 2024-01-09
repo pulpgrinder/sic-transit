@@ -1,6 +1,6 @@
 # Sic Transit Documentation and Tutorial
 
-This is the full documentation for the Sic Transit library. It has live examples for all the public methods that can be run directly from this documentation, the effect of which can be seen in the demo area below.
+This is the full documentation for the Sic Transit library. It has live examples for all the public methods that can be run directly from this documentation, the effect of which can be seen in the demo area below. Sic Transit is [available on GitHub](https://github.com/pulpgrinder/sic-transit).
 
 If you're looking for a basic example just to get started, have a look at the [minimal example](minimalexample.html).
 
@@ -175,7 +175,7 @@ firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisOutToBla
 
 #### menuInFromBottom, menuOutToBottom,menuInFromLeft, menuOutToLeft,menuInFromRight, menuOutToRight,menuInFromTop, menuOutToTop
 
-The `menuInFrom/menuOutTo` transitions do a "partial swipe (see "swipe", below), sliding the specified panel in/out from/to the specified direction only partially. This is useful for making sliding menus. Valid directions are Left, Right, Top, and Bottom. The default menu coverage is 25%. This can be changed with `setParameter()` (see below). Examples: 
+The `menuInFrom/menuOutTo` transitions do a "partial swipe (see "swipe", above), sliding the specified panel in/out from/to the specified direction only partially. This is useful for making sliding menus. Valid directions are Left, Right, Top, and Bottom. The default menu coverage is 25%. This can be changed with `setParameter()` (see below). Examples: 
 
 ```javascript
 // Display "#panel1" as a menu on the right 
@@ -232,7 +232,7 @@ firstSic.performTransition({panelSelector:"#panel4",transitionName:"newspaperOut
 
 #### rotateStack
 
-The `rotateStack` transition takes an integer parameter, denoted by `stackRotationNumber` and either pulls panels from the top of the stack and puts them on the bottom (positive integers) or pulls panels from the bottom of the stack and puts them on top (negative integers). `rotateStack` does *not* use a `panelSelector` parameter. If a `panelSelector` argument is supplied, it will be ignored. If the `stackRotationNumber` is not supplied, it is assumed to be 1. 
+The `rotateStack` transition takes an integer parameter, denoted by `stackRotationNumber`, and either pulls panels from the top of the stack and puts them on the bottom (positive integers) or pulls panels from the bottom of the stack and puts them on top (negative integers). `rotateStack` does *not* use a `panelSelector` parameter. If a `panelSelector` argument is supplied, it will be ignored. If the `stackRotationNumber` is not supplied, it is assumed to be 1. 
 
 This is handy if you want to remove several elements from the stack at once, in the reverse order of how they were added. For example, suppose you display a menu, then from that display a submenu (and possibly sub-sub-menus, etc.) `rotateStack` would allow you to "unwind" the stack of menus and get back to the original display without removing them explicitly.
 
@@ -277,6 +277,7 @@ Returns whatever panel is currently at the bottom of the instance's panel stack.
 
 ```javascript
 firstSic.getBos();
+
 ```
 
 
@@ -284,6 +285,7 @@ firstSic.getBos();
 Returns whatever panel is currently at the top of the instance's panel stack.
 ```javascript
 firstSic.getTos();
+
 ```
 
 
@@ -361,6 +363,7 @@ There are other parameters that might be of interest to advanced users, in parti
 
 Examples:
 
+##### Duration
 ```javascript
 // Set the duration for the `swipeInFromLeft` transition
 // to 3 seconds (3000 ms), rather than the default 500 ms:
@@ -373,6 +376,8 @@ firstSic.setParameter("duration",3000,"swipeInFromLeft");
 
 firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeInFromLeft"});
 ```
+
+##### menuPercentage
 
 The percentage of the container covered by menus is a settable parameter.
 
@@ -423,21 +428,7 @@ firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuInFromRi
 firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuOutToRight"});
 ```
 
-#### `removePanel(panelSelector)`
-
-Removes the panel with the given selector from the Sic Transit instance. Returns the panel. If you wish, you can retain the panel and add it back at a later time with `showPanel()`.
-
-```javascript
-// Remove #panel4 from the internal panel stack and the DOM.
-// After this is called, removedPanel will retain a reference
-// to the panel, so it can be added back later (e.g. with showPanel()).
-// If you do not save a reference, the removed panel will eventually
-// be garbage collected.
-
-let removedPanel = firstSic.removePanel("#panel4");
-```
-
-#### Callbacks
+##### Callbacks
 
 The `setParameter` method can also be used to set a callback method that will be called whenever a transition is complete.
 
@@ -471,6 +462,7 @@ function anotherCallBackFunc(args){
 // anotherCallbackFunc should be set as the callback for all transitions.
 firstSic.setParameter("callback",anotherCallBackFunc,"*");
 ```
+
 Note the use of args.transitionName in `anotherCallBackFunc()` The args object passed to a callback has the following data available for use:
 
     args.transitionName
@@ -484,6 +476,21 @@ Future transitions may define other key/value pairs on the args object.
     
 Most of these are self-explanatory. The difference between `panelSelector` and `selectedPanel` is that the first is the selector provided by the user and the second is the HTML element that was actually selected using that selector.
 
+
+#### `removePanel(panelSelector)`
+
+Removes the panel with the given selector from the Sic Transit instance. Returns the panel. If you wish, you can retain the panel and add it back at a later time with `showPanel()`.
+
+```javascript
+// Remove #panel4 from the internal panel stack and the DOM.
+// After this is called, removedPanel will retain a reference
+// to the panel, so it can be added back later (e.g. with showPanel()).
+// If you do not save a reference, the removed panel will eventually
+// be garbage collected.
+
+let removedPanel = firstSic.removePanel("#panel4");
+```
+
 #### `showPanel(selector)`
 Move the `div` with the given selector to the top of the stack and display it immediately. If the `div` is not already a panel, it will be removed from its current location in the DOM, added to the panel container, and added to the panel stack. The CSS classes required to make it function as a panel will be added automatically, if necessary. Most reasonable pre-existing `div` classes (other than those that specify hard-coded positions) should work. Please open an issue if you have problems here. See the examples in the section on Selectors, below.
 
@@ -493,17 +500,18 @@ Prints the current state of the panel stack to the console. This is handy if you
 
 #### `transferPanel(selector,destinationSic)`
 
-Transfers a panel between one Sic Transit instance and another. Call this method on the source instance.
+Transfers a panel between one Sic Transit instance and another. Call this method on the source instance, giving the panel Id and second instance as parameters.
 
 ```javascript
-// Transfer #panel1 from #sic1 to #sic2
+// Transfer #panel1 from firstSic to secondSic
 
 firstSic.transferPanel("#panel1",secondSic);
 
 ```
-## Selectors
 
-Many of the Sic Transit public methods have a selector argument to specify a particular panel. The examples below use `showPanel()` for simplicity, but these selector types below can be used with any method that requires selecting a panel (for example, the `panelSelector` parameter in `performTransition`).
+## More on Selectors
+
+Many of the Sic Transit public methods have a selector argument to specify a particular panel. The examples below use `showPanel()` for simplicity, but these selector types below apply to any method that requires selecting a panel (for example, the `panelSelector` parameter in `performTransition`).
 
 A Sic Transit selector can be any of the following types:
 
