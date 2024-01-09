@@ -114,24 +114,6 @@ class SicTransit {
         self.normalizeStack(self);
     }
 
-    /* This updates the zIndex of the panels in the panel stack, so that the top of stack panel has a zIndex of 0, the next one down has a zIndex of -1, etc. This should be called any time the panel stack changes. Most public methods methods already call this as needed.
-*/
-    normalizeStack(self=this){
-        let panelStack = self.panelStack;
-        let zindex = 0;
-        for(let index = panelStack.length - 1; index >= 0; index--){
-            let panel = panelStack[index];
-            panel.style.zIndex = zindex;
-            zindex= zindex - 1;
-        }
-    }
-
-/* Remove any overlay panels left behind by a previous transition. */
-    removeOverlayPanels(self=this){
-        self.panelStack = self.panelStack.filter(item => !item.classList.contains("sic-transit-overlay-panel"));
-        document.querySelectorAll(".sic-transit-overlay-panel").forEach(element => element.remove());
-        self.normalizeStack(self);
-    }
 
 /* Performs the specified transition. The following keys in args are recognized:
     panelSelector: the selector for the panel to be transitioned. See selectPanel() for details.
@@ -155,30 +137,6 @@ class SicTransit {
         args.transitionFunction(args);
     }
 
-/*  Removes the selected panel from the panel stack for the current
-    instance, if it's there, but not the DOM. Returns the panel if
-    it was found, otherwise returns null. 
-*/
-    removeFromStack(panelSelector,self=this){
-        let panel = self.selectPanel(panelSelector, self);
-        let panelStack = self.panelStack;
-        for(let i = 0; i < panelStack.length; i++){
-            if(panelStack[i] === panel){
-                panelStack.splice(i,1);
-                return panel;
-            }
-        }
-        return null;
-    }
-
-/* Removes the selected panel from the panel stacks for all
-   instances. Does not remove from DOM. 
-*/
-    removeFromAllStacks(panelSelector){
-        for(let i = 0; i < SicTransit.allInstances.length; i++){
-            SicTransit.allInstances[i].removeFromStack(panelSelector,SicTransit.allInstances[i]);
-        }
-    }
 
 /* Remove selected panel from the panel stack for all instances and the
     DOM as well. Returns the removed panel.
@@ -221,62 +179,6 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
          self.performCallback(args);
      }
 
-/* Returns the panel corresponding to the given panelSelector, if it exists. If panelSelector is blank (i.e. "" or undefined), the panel at the current
-    top of the stack is returned. If panelSelector is already a DOM element, it is returned as-is. If panelSelector is a string, it is treated as a query selector, and the first matching DOM element is returned (if one exists). If panelSelector is a positive integer, the element at that index in the panel stack is returned (if it exists). If panelSelector is a negative integer, the element at that index from the top of the stack is returned (if it exists). If panelSelector is 0, the element at the bottom of the stack is returned (same as getBos()). If panelSelector is -0, the element at the top of the stack is returned (same as getTos()). */
-    selectPanel(panelSelector,self=this){
-        // No selector, return top of stack.
-        if((panelSelector === undefined) || (panelSelector === "")){
-            return self.getTos(self);
-        }
-        else if(panelSelector instanceof HTMLElement){ // It's already a DOM element, just return it.
-            return panelSelector;
-        }
-        else if(Number.isInteger(panelSelector)){
-             // We're selecting the item by stack position
-            if(panelSelector > 0){
-                // Counting up from bottom of stack.
-                if(panelSelector < self.panelStack.length){
-                    return self.panelStack[panelSelector];
-                }
-                else{
-                    throw new Error("SicTransit selectPanel(): panel index " + panelSelector + " is outside the bounds of the panelStack.");
-                        return null;
-                }
-            }
-            else if(panelSelector < 0) {
-                // Counting down from top of stack.
-                let panelIndex = self.panelStack.length + (panelSelector - 1);
-                if(panelIndex >= 0){
-                    return self.panelStack[panelIndex];
-                }
-                else{
-                    throw new Error("SicTransit selectPanel(): panelStack index " + panelIndex + " (" + panelSelector + " from top of stack) is outside the bounds of the panelStack.");
-                    return null;
-                } 
-            }
-            // ES2015 lets us distinguish between +0 and -0.
-            else if(Object.is(panelSelector,-0)){
-                    return self.panelStack[self.panelStack.length - 1];
-            }
-            else{
-                return self.panelStack[0];
-            }
-        }
-        else if(typeof panelSelector === 'string'){
-            // we assume strings are query selectors
-            let selectedPanel = document.querySelector(panelSelector);
-            if(selectedPanel === null){
-                throw new Error("SicTransit selectPanel(): no panels matching " + panelSelector);
-                return null;
-            }
-            return selectedPanel;
-       }
-        else {
-            // The panelSelector is something truly weird. Give up.
-            throw new Error("SicTransit selectPanel(): panelSelector " + panelSelector + " is invalid.");
-                return null;
-        }
-    }
 
 // Sets the given parameter for the specified transition. If the transition isn't specified, or is set to '*', sets it for all transitions.
     setParameter(parametername, parametervalue,transitionname){
@@ -348,6 +250,107 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
     
 /* Internal methods below. Undocumented and not intended to be called directly by user code. These may change at any time. Use at your own risk. :-) */
 
+
+removeFromStack(panelSelector,self=this){
+    /*  Removes the selected panel from the panel stack for the current
+    instance, if it's there, but not the DOM. Returns the panel if
+    it was found, otherwise returns null. 
+*/
+    let panel = self.selectPanel(panelSelector, self);
+    let panelStack = self.panelStack;
+    for(let i = 0; i < panelStack.length; i++){
+        if(panelStack[i] === panel){
+            panelStack.splice(i,1);
+            return panel;
+        }
+    }
+    return null;
+}
+
+
+removeFromAllStacks(panelSelector){
+    // Removes the selected panel from the panel stacks for all instances. Does not remove from DOM. 
+    for(let i = 0; i < SicTransit.allInstances.length; i++){
+        SicTransit.allInstances[i].removeFromStack(panelSelector,SicTransit.allInstances[i]);
+    }
+}
+
+normalizeStack(self=this){
+    /* Updates the zIndex of the panels in the panel stack, so that the top of stack panel has a zIndex of 0, the next one down has a zIndex of -1, etc. This should be called any time the panel stack changes. Most public methods methods already call this as needed.
+    */
+    let panelStack = self.panelStack;
+    let zindex = 0;
+    for(let index = panelStack.length - 1; index >= 0; index--){
+        let panel = panelStack[index];
+        panel.style.zIndex = zindex;
+        zindex= zindex - 1;
+    }
+}
+
+
+removeOverlayPanels(self=this){
+    // Remove any overlay panels left behind by a previous transition.
+    self.panelStack = self.panelStack.filter(item => !item.classList.contains("sic-transit-overlay-panel"));
+    document.querySelectorAll(".sic-transit-overlay-panel").forEach(element => element.remove());
+    self.normalizeStack(self);
+}
+
+/* Returns the panel corresponding to the given panelSelector, if it exists. If panelSelector is blank (i.e. "" or undefined), the panel at the current
+    top of the stack is returned. If panelSelector is already a DOM element, it is returned as-is. If panelSelector is a string, it is treated as a query selector, and the first matching DOM element is returned (if one exists). If panelSelector is a positive integer, the element at that index in the panel stack is returned (if it exists). If panelSelector is a negative integer, the element at that index from the top of the stack is returned (if it exists). If panelSelector is 0, the element at the bottom of the stack is returned (same as getBos()). If panelSelector is -0, the element at the top of the stack is returned (same as getTos()). */
+    selectPanel(panelSelector,self=this){
+        // No selector, return top of stack.
+        if((panelSelector === undefined) || (panelSelector === "")){
+            return self.getTos(self);
+        }
+        else if(panelSelector instanceof HTMLElement){ // It's already a DOM element, just return it.
+            return panelSelector;
+        }
+        else if(Number.isInteger(panelSelector)){
+             // We're selecting the item by stack position
+            if(panelSelector > 0){
+                // Counting up from bottom of stack.
+                if(panelSelector < self.panelStack.length){
+                    return self.panelStack[panelSelector];
+                }
+                else{
+                    throw new Error("SicTransit selectPanel(): panel index " + panelSelector + " is outside the bounds of the panelStack.");
+                        return null;
+                }
+            }
+            else if(panelSelector < 0) {
+                // Counting down from top of stack.
+                let panelIndex = self.panelStack.length + (panelSelector - 1);
+                if(panelIndex >= 0){
+                    return self.panelStack[panelIndex];
+                }
+                else{
+                    throw new Error("SicTransit selectPanel(): panelStack index " + panelIndex + " (" + panelSelector + " from top of stack) is outside the bounds of the panelStack.");
+                    return null;
+                } 
+            }
+            // ES2015 lets us distinguish between +0 and -0.
+            else if(Object.is(panelSelector,-0)){
+                    return self.panelStack[self.panelStack.length - 1];
+            }
+            else{
+                return self.panelStack[0];
+            }
+        }
+        else if(typeof panelSelector === 'string'){
+            // we assume strings are query selectors
+            let selectedPanel = document.querySelector(panelSelector);
+            if(selectedPanel === null){
+                throw new Error("SicTransit selectPanel(): no panels matching " + panelSelector);
+                return null;
+            }
+            return selectedPanel;
+       }
+        else {
+            // The panelSelector is something truly weird. Give up.
+            throw new Error("SicTransit selectPanel(): panelSelector " + panelSelector + " is invalid.");
+                return null;
+        }
+    }
 /* Lookup table for transition parameters. Shouldn't have to do anything with this unless you're defining a new transition or fixing a bug.  */
     dispatchTable =  {
         "cutIn": {

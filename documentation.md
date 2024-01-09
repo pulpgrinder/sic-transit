@@ -1,4 +1,4 @@
-# Sic Transit Documentation
+# Sic Transit Documentation and Tutorial
 
 This is the full documentation for the Sic Transit library. It has live examples for all the public methods that can be run directly from this documentation, the effect of which can be seen in the demo area below.
 
@@ -32,7 +32,7 @@ Sic Transit does not have (or need) "teardown" or "destroy" methods -- instances
 ## Public Methods
 
 ### `performTransition(args)`
-Transitions are the heart of Sic Transit. There are over 50 transitions, all of which are listed below.
+Transitions are the heart of Sic Transit. There are over 50 transitions, which are described below.
 
 #### `swipeInFromBottom, swipeOutToBottom, swipeInFromLeft, swipeOutToLeft, swipeInFromRight, swipeOutToRight, swipeInFromTop, swipeOutToTop`
 
@@ -42,6 +42,7 @@ Swipes are probably the most commonly used transition. The specified panel will 
 
 // Swipe #panel4 in from the right, and make it the
 // current visible panel.
+
 firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeInFromRight"});
 ```
 
@@ -49,6 +50,7 @@ Note: in this documentation, green code (like the above) is live code. It can be
 
 ```javascript
 // Swipe #panel4 out to the right, revealing the previous panel.
+
 firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeOutToRight"});
 
 ```
@@ -278,6 +280,13 @@ firstSic.getBos();
 ```
 
 
+#### `getTos()`
+Returns whatever panel is currently at the top of the instance's panel stack.
+```javascript
+firstSic.getTos();
+```
+
+
 #### `getContainerId()`
 Returns the user-specified ID that was given for the panel container when the instance was created.
 
@@ -295,6 +304,14 @@ firstSic.getPanelClass();
 
 ```
 
+#### `getPanelList()`
+Returns an array of the ids of panels within the panel container. This (obviously) returns only the ones that *have* ids. Panels that don't have ids (for example, the internal overlay panels used for certain transitions) will not be included.
+
+```javascript
+firstSic.getPanelList();
+```
+
+
 #### `getTransitionList()`
 Returns an array containing the names of all defined transitions.
 
@@ -304,17 +321,29 @@ Returns an array containing the names of all defined transitions.
 firstSic.getTransitionList();
 ```
 
-#### `getPanelList()`
-Returns an array of the ids of panels within the panel container. This (obviously) returns only the ones that *have* ids. Panels that don't have ids (for example, the background panels used for certain transitions) will not be included.
+#### `getZIndex(selector)`
+Returns the current z-index for the selected panel.
 
 ```javascript
-firstSic.getPanelList();
+
+firstSic.getZIndex("#panel1");
 ```
 
-#### `getTos()`
-Returns whatever panel is currently at the top of the instance's panel stack.
+
+#### `moveToBos(selector)`
+Moves the selected panel to the bottom of the stack.
+
 ```javascript
-firstSic.getTos();
+
+firstSic.moveToBos("#panel4");
+```
+
+#### `moveToTos(selector)`
+Moves the selected panel to the top of the stack.
+
+```javascript
+
+firstSic.moveToTos("#panel4");
 ```
 
 #### `setParameter(parametername, parametervalue,transitionname)`
@@ -394,6 +423,20 @@ firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuInFromRi
 firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuOutToRight"});
 ```
 
+#### `removePanel(panelSelector)`
+
+Removes the panel with the given selector from the Sic Transit instance. Returns the panel. If you wish, you can retain the panel and add it back at a later time with `showPanel()`.
+
+```javascript
+// Remove #panel4 from the internal panel stack and the DOM.
+// After this is called, removedPanel will retain a reference
+// to the panel, so it can be added back later (e.g. with showPanel()).
+// If you do not save a reference, the removed panel will eventually
+// be garbage collected.
+
+let removedPanel = firstSic.removePanel("#panel4");
+```
+
 #### Callbacks
 
 The `setParameter` method can also be used to set a callback method that will be called whenever a transition is complete.
@@ -442,7 +485,8 @@ Future transitions may define other key/value pairs on the args object.
 Most of these are self-explanatory. The difference between `panelSelector` and `selectedPanel` is that the first is the selector provided by the user and the second is the HTML element that was actually selected using that selector.
 
 #### `showPanel(selector)`
-Move the `div` with the given selector to the top of the stack and display it. If the `div` is not already a panel, it will be removed from its current location in the DOM, added to the panel container, and added to the panel stack. The CSS classes required to make it function as a panel will be added automatically, if necessary. Most reasonable pre-existing `div` classes (other than those that specify hard-coded positions) should work. Please open an issue if you have problems here. 
+Move the `div` with the given selector to the top of the stack and display it immediately. If the `div` is not already a panel, it will be removed from its current location in the DOM, added to the panel container, and added to the panel stack. The CSS classes required to make it function as a panel will be added automatically, if necessary. Most reasonable pre-existing `div` classes (other than those that specify hard-coded positions) should work. Please open an issue if you have problems here. See the examples in the section on Selectors, below.
+
 
 #### `stackDump()`
 Prints the current state of the panel stack to the console. This is handy if you are debugging a new transition.
@@ -459,56 +503,49 @@ firstSic.transferPanel("#panel1",secondSic);
 ```
 ## Selectors
 
-Many of the public methods take a `selector` argument to specify a particular panel. 
+Many of the Sic Transit public methods have a selector argument to specify a particular panel. The examples below use `showPanel()` for simplicity, but these selector types below can be used with any method that requires selecting a panel (for example, the `panelSelector` parameter in `performTransition`).
 
 A Sic Transit selector can be any of the following types:
 
 ### String 
-Strings as normal query selectors, with the same basic syntax as `document.querySelector()` and CSS. This is the most common type.
+Strings as normal query selectors, with the same basic syntax as `document.querySelector()` and CSS. This is the most common type. SicTransit actually uses `document.querySelector()` under the hood here, so the selectors can get as fancy as you need them to be.
 
-SicTransit actually uses `document.querySelector()` under the hood here, so the selectors can get as fancy as you need them to be.
+```javascript
+
+// Move the "loose" #panel9 div out of the top level and put it in firstSic.
+
+firstSic.showPanel("#panel9"); 
+```
 
 ### Integer
 Integers are intepreted as numeric indices into the internal panel stack. A negative integer, including "negative zero" -- yes, negative zero is an actual JavaScript value -- denotes an offset from the top of the stack, while a positive integer, including the normal "positive zero", indicates an offset from the bottom of the stack.
 
-### HTML Element
-An explicit HTML element. This form is mostly  used for internal SicTransit operations, but it's there if you need it.
-
-### Selector Examples
-
 ```javascript
-// Use a query selector to move #panel1 to the top of the firstSic stack and display it.
-
-firstSic.showPanel("#panel1"); 
-```
-
-```javascript
-Use a query selector to move #panel5 to the top of the secondSic stack and display it.
-
-secondSic.showPanel("#panel5"); 
-```
-
-```javascript
-// Use an integer value to move the panel one down from the top of the firstSic stack
-to the top of the stack and display it.
-
-firstSic.showPanel(-1); 
-```
-
-```javascript
-// Use an integer value to move the panel one up from the bottom of the secondSic stack to the top of the stack and display it. If you haven't changed anything, this will be the solid gray panel used internally by some of the transitions.
+// Use an integer value to move the panel one up from the bottom of the secondSic stack to the top of the stack and display it. 
 
 secondSic.showPanel(1);
 ```
 
 ```javascript
-// Use an integer value to move the panel at the top of the firstSic stack to the top of the stack and display it. This obviously has no visible effect with `showPanel()`, but will with some of the transitions (for instance, those that animate the element). */
+// Use an integer value to move the panel one down from the top of the firstSic stack to the top of the stack and display it.
+
+firstSic.showPanel(-1); 
+```
+
+
+```javascript
+// Use an integer value to move the panel at the top of the firstSic stack to the top of the stack and display it. This obviously has no visible effect with showPanel(), but will with some of the transitions (for instance, those that animate the element). 
 
 firstSic.showPanel(-0); 
 ```
 
+
+### Dom Element
+An explicit DOM element. This form is mostly  used for internal SicTransit operations, but it's there if you need it. The special classes required for a Sic Transit panel will be added automatically.
+
+
 ```javascript
-// Create a new HTML DIV element and use `showPanel()` to display it in firstSic's container. Normally you'd give this an id or some kind of special class so you could it manipulate later, but you don't have to.
+// Create a new HTML div element and use `showPanel()` to display it in firstSic's container. Normally you'd give this an id or some kind of special class so you could it manipulate later, but you don't have to.
 
 const newpanel =  document.createElement('div');
 newpanel.innerText = "Hi, there!";

@@ -87,9 +87,19 @@
         document.getElementById("docs").innerHTML = html;
         let codeSamples = document.querySelectorAll(".language-javascript");
         for(let i=0;i < codeSamples.length; i++){
+          // Set up editors.
           codeSamples[i].setAttribute("contenteditable","true");
+
+          // Try to keep HTML garbage from being pasted into the code editors.
+          // If only there were a standard for contenteditable plaintext-only that worked the same across browsers...sigh.
+          codeSamples[i].addEventListener('paste', function(e) {
+            e.preventDefault();
+            let text = (e.originalEvent || e).clipboardData.getData('text/plain');
+          document.execCommand('insertText', false, text);
+          });
+
         }
-      } 
+      }
       loadDocs();
      
       function runDemo(index){
@@ -114,6 +124,7 @@
           }
         oldLog.apply(console, arguments);
       }
+
     </script>
   </script>
  </html>
