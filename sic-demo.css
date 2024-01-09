@@ -1,10 +1,23 @@
 body{
-    display:grid;
-    grid-template-rows:500px 1fr;
-    
+    height:1vh;
 }
+p > code {
+    font-weight:bold;
+}
+#mainscreen{
+    display:grid;
+    grid-template-rows: 35vh 65vh;
+    height:1vh;
+    background-color: gray;
+}
+
 pre{
     margin-bottom:0;
+}
+
+code {
+    white-space: pre-wrap;
+    word-wrap: break-word; 
 }
 .language-javascript{
     width:60em;
@@ -17,19 +30,28 @@ pre{
     padding:0.5em;
     
 }
+#docwrapper{
+    overflow:auto;
+    background-color: gray;
+    overflow:scroll;
+}
 #docs{
-    padding:0.5em;
-    overflow-y:scroll;
+    height:auto;
+    padding:1em;
     word-wrap:break-word;
-    max-height:400px;
-    max-width:60em;
-    position:relative
-    
+    width:60em;
+    margin:auto;
+    margin-top:0;
+    margin-bottom:0;
+    background-color:white;
+    overflow:scroll;
 }
 #demodiv{
     border-top:5px solid darkslategrey;
     background-color:lightgray;
-    position:absolute;
+    height:auto;
+    overflow: auto;
+    position:relative;
 }
 
 
@@ -46,7 +68,7 @@ pre{
 }
 #firstcontainer, #secondcontainer {
     width:300px;
-    height:450px;
+    height:20em;
     display:inline-block;
     padding:0;
     overflow: scroll;

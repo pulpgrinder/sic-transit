@@ -14,8 +14,10 @@
     <title>Sic Transit Demo</title>
   </head>
   <body>
-   <div>
-      <div id="docs">
+    <div id="mainscreen">
+      <div id="docwrapper">
+        <div id="docs">
+        </div>
       </div>
       <div id="demodiv">
         <div id='firstcontainer'>
@@ -63,6 +65,7 @@
       </div>
       </div>
     </div>
+  </body>  
   
     <script type="text/javascript">
         let logger = null;
@@ -82,13 +85,17 @@
         });
         let html = md.render(doctext);
         document.getElementById("docs").innerHTML = html;
+        let codeSamples = document.querySelectorAll(".language-javascript");
+        for(let i=0;i < codeSamples.length; i++){
+          codeSamples[i].setAttribute("contenteditable","true");
+        }
       } 
       loadDocs();
+     
       function runDemo(index){
           // Yes, I know. We actually want to allow the execution of random code here. IN THIS CASE, it's safe. There are no credentials or cross-site issues involved.
           logger = document.getElementById("demoresult-" + index);
           let code = document.getElementById("demoresult-" + index).previousElementSibling.innerText;
-          console.log(code)
           let codeResult = eval(code);
           if(codeResult=== undefined){
             codeResult = "OK";

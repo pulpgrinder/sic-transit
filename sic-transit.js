@@ -336,18 +336,17 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
     transferPanel(selector,destinationSic,self=this){
             let selectedPanel = self.selectPanel(selector,self);
             if(selectedPanel === null){
-                console.log("SicTransit transferPanel(): panelSelector " + panelSelector + " is invalid.");
-                return;
+                throw new Error("SicTransit transferPanel(): panelSelector " + panelSelector + " is invalid.");
             }
             selectedPanel.classList.add(self.panelClass,"sic-transit-panel")
             self.removeFromAllStacks(selector,self);
-            destinationSic.moveToBos(selector,destinationSic);
+            destinationSic.moveToTos(selector,destinationSic);
             destinationSic.container.appendChild(selectedPanel);
             
     }
 
     
-/* Internal methods below. Not well-documented and not intended to be called directly by user code. These may change at any time. Use at your own risk. :-) */
+/* Internal methods below. Undocumented and not intended to be called directly by user code. These may change at any time. Use at your own risk. :-) */
 
 /* Lookup table for transition parameters. Shouldn't have to do anything with this unless you're defining a new transition or fixing a bug.  */
     dispatchTable =  {
@@ -389,6 +388,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
             duration:2000,
             callback:null
         },
+
         "fadeInFromBlack": {
             forwardTransition: this.fadeInFromBlack,
             firstanimation: [{ display:"block", opacity: 0}, {display:"block",opacity:1}],
@@ -801,7 +801,7 @@ resetPanel(panelSelector,self=this){
 }
 
 
-/* Creates the initial panel stack, using elements which have the user-specified panel class and are contained within the user-specified container. It is not an error if there are none.
+/* Creates the initial panel stack, using any elements which have the user-specified panel class and that are contained within the user-specified container. It is not an error if there are none.
 */
     loadPanelStack(self=this){
         self.panelStack = [];
@@ -918,7 +918,7 @@ resetPanel(panelSelector,self=this){
         topanimation.cancel();
         args.finishHandler(); 
     }
-    fadeIn(args){
+    doFadeIn(args){
         let self = args.self;
         self.resetPanel(args.fadePanel,self);
         self.moveToTos(args.fadePanel,self);
@@ -932,7 +932,7 @@ resetPanel(panelSelector,self=this){
         }
         self.performAnimation(args);
     }
-    fadeOut(args){
+    doFadeOut(args){
         let self = args.self;
         self.resetPanel(args.selectedPanel,self);
         args.fadePanel.style.opacity = 0;
@@ -947,46 +947,47 @@ resetPanel(panelSelector,self=this){
         let temp = args.selectedPanel;
         args.selectedPanel = args.fadePanel;
         args.fadePanel = temp;
-        self.fadeIn(args);
+        self.doFadeIn(args);
     }
+   
     fadeInFromBlack(args){
         let self = args.self;
         args.firstanimation = self.dispatchTable["fadeInFromBlack"].firstanimation;
         args.fadePanel = self.specialtyPanels.blackpanel;
-        self.fadeIn(args);
+        self.doFadeIn(args);
     }
     fadeOutToBlack(args){
         let self = args.self;
         // This may look wrong, but the panels get swapped in .fadeOut() to work around a Safari bug.
         args.firstanimation = self.dispatchTable["fadeInFromBlack"].firstanimation;
         args.fadePanel = self.specialtyPanels.blackpanel;
-        self.fadeOut(args);
+        self.doFadeOut(args);
     }
     fadeInFromGray(args){
         let self = args.self;
         args.firstanimation = self.dispatchTable["fadeInFromGray"].firstanimation;
         args.fadePanel = self.specialtyPanels.graypanel;
-        self.fadeIn(args);
+        self.doFadeIn(args);
     }
     fadeOutToGray(args){
         let self = args.self;
         // This may look wrong, but the panels get swapped in .fadeOut() to work around a Safari bug.
         args.firstanimation = self.dispatchTable["fadeInFromGray"].firstanimation;
         args.fadePanel = self.specialtyPanels.graypanel;
-        self.fadeOut(args);
+        self.doFadeOut(args);
     }
     fadeInFromWhite(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["fadeInFromWhite"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.fadePanel = self.specialtyPanels.whitepanel;
-        self.fadeIn(args);
+        self.doFadeIn(args);
     }
     fadeOutToWhite(args){
         let self = args.self;
         args.firstanimation = self.dispatchTable["fadeInFromWhite"].firstanimation;
         args.fadePanel = self.specialtyPanels.whitepanel;
-        self.fadeOut(args);
+        self.doFadeOut(args);
     }
     async flipInX(args){
         let self = args.self;
