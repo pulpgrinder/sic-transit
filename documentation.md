@@ -160,13 +160,13 @@ firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisOut"});
 
 
 ```javascript
-// Iris "#panel3" out to a white background.
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisOutToWhite"});
+// Iris "#panel3" in from a white background.
+firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisInFromWhite"});
 ```
 
 ```javascript
-// Iris "#panel3" in starting from a black background.
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisInFromBlack"});
+// Iris "#panel3" out to a black background.
+firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisOutToBlack"});
 ```
 
 

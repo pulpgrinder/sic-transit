@@ -900,19 +900,28 @@ resetPanel(panelSelector,self=this){
     }
     async crossDissolveOut(args){
         let self = args.self;
+        // Work around Safari bug by swapping panels and calling crossDissolveIn().
+        args["transitionName"] = "crossDissolveIn";
+        let temp = args.selectedPanel;
+        self.moveToBos(temp,self);
+        args.selectedPanel = self.panelStack.pop();
+        self.moveToTos(temp,self);
+        self.normalizeStack(self)
+        self.crossDissolveIn(args);
+        /* Maybe go back to this with the next version of Safari. Bug seems to be fixed in Safari Technology Preview.
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
         self.resetPanel(args.selectedPanel,self);
         self.moveToTos(args.selectedPanel,self);
         let selectedPanel = self.panelStack.pop();
         let topPanel =  self.panelStack.pop();
         self.panelStack.push(self.specialtyPanels.graypanel);
-        self.resetPanel(topPanel,self);
         self.moveToTos(topPanel,self);
+        self.resetPanel(topPanel,self);
         self.moveToTos(selectedPanel,self);
         args.finishHandler = function(){
             self.moveToBos(self.specialtyPanels.graypanel,self);
             self.moveToBos(args.selectedPanel,self);
-            self.performCallback(args);
+            self.performCallback(args); 
         }
       
         const animation = args.selectedPanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration:dispatchEntry.duration,fill:"forwards"});
@@ -923,7 +932,7 @@ resetPanel(panelSelector,self=this){
         animation.cancel();
         topanimation.commitStyles();
         topanimation.cancel();
-        args.finishHandler(); 
+        args.finishHandler(); */
     }
     doFadeIn(args){
         let self = args.self;
@@ -1248,12 +1257,11 @@ resetPanel(panelSelector,self=this){
     }
     irisOutToBlack(args){
         let self = args.self;
-             self.specialtyPanels.blackpanel.style.display = "none";
+        self.specialtyPanels.blackpanel.style.display = "none";
         self.moveToTos(self.specialtyPanels.blackpanel, self);
-        self.container.append(self.specialtyPanels .blackpanel);
-        self.stackSwap();
+        self.container.append(self.specialtyPanels.blackpanel);
         self.normalizeStack();
-             self.specialtyPanels.blackpanel.style.display = "block";
+        self.specialtyPanels.blackpanel.style.display = "block";
         self.irisOut(args);
     }
     irisInFromGray(args){
@@ -1267,7 +1275,6 @@ resetPanel(panelSelector,self=this){
         self.specialtyPanels.graypanel.style.display = "none";
         self.moveToTos(self.specialtyPanels.graypanel, self);
         self.container.append(self.specialtyPanels.graypanel);
-        self.stackSwap();
         self.normalizeStack();
         self.specialtyPanels.graypanel.style.display = "block";
         self.irisOut(args);
@@ -1283,7 +1290,6 @@ resetPanel(panelSelector,self=this){
         self.specialtyPanels.whitepanel.style.display = "none";
         self.moveToTos(self.specialtyPanels.whitepanel, self);
         self.container.append(self.specialtyPanels.whitepanel);
-        self.stackSwap();
         self.normalizeStack();
          self.specialtyPanels.whitepanel.style.display = "block";
         self.irisOut(args);
