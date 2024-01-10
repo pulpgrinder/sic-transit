@@ -110,10 +110,10 @@
           try {
             let codeResult = eval(code);
             if(codeResult !== undefined){
-              console.log(codeResult);
+              console.log(codeResult) + "\n";
             }
             else{
-              console.log("(no errors)");
+              console.log("(no errors)\n");
             }
 
           } catch (e) {
@@ -130,7 +130,7 @@
                 logger.innerHTML = JSON.stringify(message);
               }
               else {
-                logger.innerHTML += message;
+                logger.innerHTML = message;
               }
           }
         oldLog.apply(console, arguments);
@@ -141,10 +141,10 @@
                 logger.innerHTML = "[HTMLElement]";
               }
              else if(typeof message == 'object') {
-                logger.innerHTML = JSON.stringify(message);
+                logger.innerHTML = JSON.stringify(message) + "\n";
               }
               else {
-                logger.innerHTML += message;
+                logger.innerHTML = message;
               }
         }
         oldError.apply(console, arguments);

@@ -40,24 +40,22 @@ Swipes are probably the most commonly used transition. The specified panel will 
 
 ```javascript
 
-// Swipe #panel4 in from the right, and make it the
+// Swipe #panel1 in from the right, and make it the
 // current visible panel.
 
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeInFromRight"});
+firstSic.performTransition({panelSelector:"#panel1",transitionName:"swipeInFromRight"});
 ```
 
 Note: in this documentation, green code (like the above) is live code. It can be run using its associated Run button, edited and rerun, and so on.
 
 ```javascript
-// Swipe #panel4 out to the right, revealing the previous panel.
+// Swipe #panel1 out to the top, revealing the previous panel. Note that swiping out to a different direction than the swipe in is fine. In general, this applies to all Sic Transit transtiions other than the menu transitions.
 
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeOutToRight"});
+firstSic.performTransition({panelSelector:"#panel1",transitionName:"swipeOutToTop"});
 
 ```
 
-Swiping in from one direction and swiping out to another is permitted.
-
-The transitions `swipeInFromLeft`, `swipeOutToLeft`, `swipeInFromTop`, `swipeOutToTop`, `swipeIFromBottom`, and `swipeOutToBottom` are the same, other than the direction from which the swiped panel appears or disappears.  You can edit the above code snippets and rerun them if you want to see the other swipe transitions.
+You can edit the above code snippets and rerun them if you want to see the other swipe transitions.
 
 #### `cutIn/cutOut` 
 
@@ -98,7 +96,7 @@ firstSic.performTransition({panelSelector:"#panel1",transitionName:"crossDissolv
 firstSic.performTransition({panelSelector:"#panel1",transitionName:"crossDissolveOut"});
 ```
 
-#### `fadeInFrom/fadeOutTo`
+#### `fadeInFromBlack, fadeInFromGray, fadeInFromWhite, fadeOutToBlack, fadeOutToGray, fadeOutToWhite`
 
 Fade transitions gradually fade the specified panel in or out from a solid color background.
 
@@ -114,12 +112,12 @@ firstSic.performTransition({panelSelector:"#panel3",transitionName:"fadeInFromBl
 
 ```javascript
 // Gradually fade "#panel3" out,
-// leaving a solid black background panel.
+// leaving a solid gray background panel.
 
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"fadeOutToBlack"})
+firstSic.performTransition({panelSelector:"#panel3",transitionName:"fadeOutToGray"})
 ```
 
-`fadeInFromWhite`, `fadeOutToWhite`, `fadeInFromGray`, and `fadeOutToGray` are exactly the same, except that they use white and gray panels respectively rather than black. As always, you can edit the above code snippets and rerun them if you want to see the other fade transitions.
+As always, you can edit the above code snippets and rerun them if you want to see the other fade transitions.
 
 #### `flipInX/flipOutX, flipInY/flipOutY`
 
@@ -133,17 +131,16 @@ firstSic.performTransition({panelSelector:"#panel1",transitionName:"flipInX"});
 ```
 
 ```javascript
-// Hide #panel1 by using the inverse flipcard
-// effect about the X axis. The previous panel will be restored.
+// Hide #panel1 by using an inverse flipcard
+// effect about the Y axis.
 
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"flipOutX"});
+firstSic.performTransition({panelSelector:"#panel1",transitionName:"flipOutY"});
 ```
 
-You can edit the above code to use  `flipInY` and `flipOutY` if you want to see those transitions.
 
 #### `irisIn/irisOut, irisInFrom/irisOutTo`
 
-These transitions use growing or shrinking circles through which the panel in question is visible (similar to a "camera iris" effect). `irisIn` and `irisOut` work with whatever elements are currently on the stack, while `irisInFromWhite`, `irisOutToWhite`, `irisInFromBlack`, `irisOutToBlack`, `irisInFromGray`, and `irisOutToGray` use panels of the specified color for the iris surround.
+These transitions use growing or shrinking circles through which the panel in question is visible (similar to a "camera iris" effect). `irisIn` and `irisOut` work with whatever elements are already on the stack, while `irisInFromWhite`, `irisOutToWhite`, `irisInFromBlack`, `irisOutToBlack`, `irisInFromGray`, and `irisOutToGray` use panels of the specified color for the iris surround.
 
 ```javascript
 // Move "#panel3" to the top of the stack and
@@ -161,17 +158,17 @@ firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisIn"});
 firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisOut"});
 ```
 
+
 ```javascript
-// Move "#panel3" to the top of the stack and iris it in starting from a black screen.
+// Iris "#panel3" out to a white background.
+firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisOutToWhite"});
+```
+
+```javascript
+// Iris "#panel3" in starting from a black background.
 firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisInFromBlack"});
 ```
 
-```javascript
-// Iris out "#panel3" to a black background.
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisOutToBlack"});
-```
-
-`irisInFromGray`,`irisOutToGray`, `irisInFromWhite`, and `irisOutToWhite` work the same, except using the specified color rather than black. You can edit the above code to use one of the other iris effects if you want to have a look.
 
 #### menuInFromBottom, menuOutToBottom,menuInFromLeft, menuOutToLeft,menuInFromRight, menuOutToRight,menuInFromTop, menuOutToTop
 
@@ -190,23 +187,25 @@ firstSic.performTransition({panelSelector:"#panel1",transitionName:"menuInFromRi
 firstSic.performTransition({panelSelector:"#panel1",transitionName:"menuOutToRight"});
 ```
 
-The other directions (left, top, and bottom) work the same, other than the direction from/to which the menu appears/disappears. As usual, you can edit the code above to experiment with them.
+The other directions (left, top, and bottom) work the same, other than the direction from/to which the menu appears/disappears. As usual, you can edit the code above to experiment with them. 
+
+*Unlike most transitions, using `menuIn` from one direction and `menuOut` to another, while not causing an error, will produce an odd visual effect that you probably don't want*. 
 
 #### hingeInFromTop, hingeOutToTop, hingeInFromBottom, hingeOutToBottom, hingeInFromLeft, hingeOutToLeft, hingeInFromRight, hingeOutToRight
 
-These transitions have the visual effect of a "hinge" on the specified side (like a door opening).
+These transitions have the visual effect of a "hinge" on the specified side (like a door or a book opening).
 
 ```javascript
-// Move "#panel3" to the top of the stack and hinge it in from the left side.
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"hingeInFromLeft"});
+// Hing "#panel5" in from the left side.
+firstSic.performTransition({panelSelector:"#panel5",transitionName:"hingeInFromLeft"});
 ```
 
 ```javascript
-// Hinge "#panel3" out to the left.
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"hingeOutToLeft"});
+// Hinge "#panel5" out to the top.
+firstSic.performTransition({panelSelector:"#panel5",transitionName:"hingeOutToTop"});
 ```
 
-You can edit the code samples above to see the hinge effect applied to a different side.
+Edit the code samples above to see the hinge effect applied to different sides.
 
 
 #### newspaperIn, newspaperOut
@@ -416,16 +415,16 @@ firstSic.setParameter("menuPercentage",50,"*");
 ```
 
 ```javascript
-// Now show a menu from the right, which will use
+// Now show a menu from the bottom, which will use
 // the new 50% menu coverage.
 
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuInFromRight"});
+firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuInFromBottom"});
 ```
 
 ```javascript
 // Close the menu.
 
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuOutToRight"});
+firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuOutToBottom"});
 ```
 
 ##### Callbacks
@@ -449,6 +448,15 @@ firstSic.setParameter("callback",myCallBackFunc,"swipeInFromLeft");
 ```
 
 ```javascript
+// See our callback function in action.
+
+firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeInFromLeft"});
+
+// myCallBackFunc() will be called when this is complete.
+
+```
+
+```javascript
 // Set a callback function for all
 // transitions.
 
@@ -462,6 +470,15 @@ function anotherCallBackFunc(args){
 // anotherCallbackFunc should be set as the callback for all transitions.
 firstSic.setParameter("callback",anotherCallBackFunc,"*");
 ```
+
+
+```javascript
+// Try our new global callback function.
+
+firstSic.performTransition({panelSelector:"#panel4",transitionName:"irisIn"});
+
+```
+
 
 Note the use of args.transitionName in `anotherCallBackFunc()` The args object passed to a callback has the following data available for use:
 
@@ -511,7 +528,9 @@ firstSic.transferPanel("#panel1",secondSic);
 
 ## More on Selectors
 
-Many of the Sic Transit public methods have a selector argument to specify a particular panel. The examples below use `showPanel()` for simplicity, but these selector types below apply to any method that requires selecting a panel (for example, the `panelSelector` parameter in `performTransition`).
+Many of the Sic Transit public methods have a selector argument to specify a particular panel. Usually this is the id for the panel, but there are many other options.
+
+The examples below use `showPanel()` for simplicity, but these selector types below apply to any method that requires selecting a panel (for example, the `panelSelector` parameter in `performTransition`).
 
 A Sic Transit selector can be any of the following types:
 
