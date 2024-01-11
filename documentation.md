@@ -224,16 +224,16 @@ firstSic.performTransition({panelSelector:"#panel2",transitionName:"hingeOutToTo
 Edit the code samples above to see the hinge effect applied to different sides.
 
 
-#### newspaperIn, newspaperOut
+#### spinIn, spinOut
 
 These transitions provide a "spinning newspaper" effect, as seen in many old movies. 
-`newspaperIn` makes the selected panel grow and rotate as it appears, while `newspaperOut` reverses the process.
+`spinIn` makes the selected panel grow and rotate as it appears, while `spinOut` reverses the process.
 
 ```javascript
 // Transition panel "#panel2" in, using the 
 // spinning newspaper effect
 
-firstSic.performTransition({panelSelector:"#panel2",transitionName:"newspaperIn"});
+firstSic.performTransition({panelSelector:"#panel2",transitionName:"spinIn"});
 
 ```
 
@@ -241,7 +241,7 @@ firstSic.performTransition({panelSelector:"#panel2",transitionName:"newspaperIn"
 // Transition panel "#panel2" out, using the
 // spinning newspaper effect
 
-firstSic.performTransition({panelSelector:"#panel2",transitionName:"newspaperOut"});
+firstSic.performTransition({panelSelector:"#panel2",transitionName:"spinOut"});
 
 ```
 

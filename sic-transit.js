@@ -649,16 +649,16 @@ removeOverlayPanels(self=this){
             menuPercentage:33,
             callback:null
         },
-        "newspaperIn": {
-            forwardTransition: this.newspaperIn,
+        "spinIn": {
+            forwardTransition: this.spinIn,
             firstanimation: [{display:"block", transform: "rotate(0deg) scale(0)"}, {display:"block", transform: "rotate(720deg) scale(1)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
            duration:1000,
            callback:null
         },
-        "newspaperOut":{
-            forwardTransition: this.newspaperOut,
+        "spinOut":{
+            forwardTransition: this.spinOut,
             firstanimation:[{display:"block", transform: "rotate(0deg)  scale(1)"}, {display:"block", transform: "rotate(-720deg) scale(0)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
@@ -1395,13 +1395,13 @@ resetPanel(panelSelector,self=this){
         }
         self.performAnimation(args);
     }
-    newspaperIn(args){
+    spinIn(args){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
         args.selectedPanel.style.transform = "scale(0)";
         self.moveToTos(args.selectedPanel,self);
-        let dispatchEntry = self.dispatchTable["newspaperIn"];
+        let dispatchEntry = self.dispatchTable["spinIn"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.finishHandler = function(){
             self.resetPanel(args.selectedPanel,self);
@@ -1409,10 +1409,10 @@ resetPanel(panelSelector,self=this){
         }
         self.performAnimation(args);
     }
-    newspaperOut(args){
+    spinOut(args){
         let self = args.self;
         self.resetPanel(args.selectedPanel,self);
-        let dispatchEntry = self.dispatchTable["newspaperOut"];
+        let dispatchEntry = self.dispatchTable["spinOut"];
         args.firstanimation = dispatchEntry.firstanimation;
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
