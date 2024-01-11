@@ -5,7 +5,7 @@
 ## Features
 - Pure JavaScript and CSS with NO dependencies.
 - One JavaScript and one CSS file. 
-- Weighs less than 40k compressed.
+- Weighs less than 40k minified.
 - Simple HTML markup.
 - More than 50 available transitions including swipes, cuts, dissolves, fades, flips, hinges, irises, zooms, and more.
 - Easy addition and removal of screen panels.
