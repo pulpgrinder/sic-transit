@@ -1,6 +1,6 @@
 /* @preserve 
  * sic-transit.js 
- * Copyright 2023 by Anthony W. Hursh
+ * Copyright 2024 by Anthony W. Hursh
  * MIT license.
  * @endpreserve
  */
@@ -17,12 +17,12 @@ class SicTransit {
       this.containerId = containerId;
       this.container = document.querySelector(containerId);
       if(this.container === null){
-        throw new Error("Sic Transit: container " + containerId + " not found.  Sic Transit requires a container element.")
+        throw new Error("SicTransit: container " + containerId + " not found.  SicTransit requires a container element.")
       }
       this.container.classList.add("sic-transit-container");
       // First make sure the panelClass starts with a period.
         if(panelClass[0] !== "."){
-            throw new Error("Sic Transit: panelClass " + panelClass + " must start with a period.");
+            throw new Error("SicTransit: panelClass " + panelClass + " must start with a period.");
         }
  /* If the user-supplied panel class is (e.g.) .foobar, some things want it as the raw class name 'foobar', while others want it in the CSS/querySelector format '.foobar'. Irritating. We'll store it both ways. */
       this.panelClass = panelClass.substring(1);
@@ -49,16 +49,16 @@ class SicTransit {
             return self.panelStack[0];
         }
         else {
-            throw new Error("Sic Transit getBos(): trying to get element at bottom of empty stack.");
+            throw new Error("SicTransit getBos(): trying to get element at bottom of empty stack.");
         }
     }
 
-    // Return the container id for this instance of Sic Transit.
+    // Return the container id for this instance of SicTransit.
     getContainerId(self=this){
         return self.containerId;
     }
 
-    // Return the panel class for this instance of Sic Transit in CSS query form.
+    // Return the panel class for this instance of SicTransit in CSS query form.
     getPanelClass(self=this){
         return  self.panelQuery;
     }
@@ -81,7 +81,7 @@ class SicTransit {
             return self.panelStack[self.panelStack.length - 1];
         }
         else {
-        throw new Error("Sic Transit getTos(): trying to get element at top of empty stack.");
+        throw new Error("SicTransit getTos(): trying to get element at top of empty stack.");
         }
     }
 
@@ -221,7 +221,7 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
         console.log(result);
     }
 
-    // Transfer a panel into the Sic Transit instance. This can come from another instance or from the DOM. The panel is put on the bottom of the stack (not displayed). Use showPanel() if you want to display it immediately.
+    // Transfer a panel into the SicTransit instance. This can come from another instance or from the DOM. The panel is put on the bottom of the stack (not displayed). Use showPanel() if you want to display it immediately.
     transferPanel(selector,self=this){
             let selectedPanel = self.selectPanel(selector,self);
             if(selectedPanel === null){

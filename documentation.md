@@ -1,8 +1,8 @@
-# Sic Transit Documentation and Tutorial
+# SicTransit Documentation and Tutorial
 
-This is the full documentation for the Sic Transit library. It has live examples for all the public methods which can be run directly from this documentation, the effect of which can be seen in the demo area to the left. 
+This is the full documentation for the SicTransit library. It has live examples for all the public methods which can be run directly from this documentation, the effect of which can be seen in the demo area to the left. 
 
-Sic Transit is [available on GitHub](https://github.com/pulpgrinder/sic-transit).
+SicTransit is [available on GitHub](https://github.com/pulpgrinder/sic-transit).
 
 If you're looking for a basic example just to get started, have a look at the [minimal example](minimalexample.html).
 
@@ -12,13 +12,13 @@ Add `sic-transit-min.js` (minified) or `sic-transit.js` and `sic-transit.css` to
 
 ## Initialization
 
-Schematically, an instance of Sic Transit is organized like this:
+Schematically, an instance of SicTransit is organized like this:
 
-![Sic Transit Block Diagram](sic-transit-block-diagram.png)
+![SicTransit Block Diagram](sic-transit-block-diagram.png)
 
 Basically, there's a container div which contains multiple panel divs. 
 
-Setting up a new instance of Sic Transit requires only two parameters, an id for the container div and a CSS class for the panels.
+Setting up a new instance of SicTransit requires only two parameters, an id for the container div and a CSS class for the panels.
 
 `const mySic = new SicTransit(containerId, panelClass);`
 
@@ -30,7 +30,7 @@ Put all your initial panel `divs` within your container `div`. Make sure each on
 
 Example:
 
-Set up a new instance of Sic Transit named `firstSic`, and associate it with a container `div` named `#firstcontainer`, and tell it that the nested panel `divs` in the container use the class `.demopanel`.
+Set up a new instance of SicTransit named `firstSic`, associate it with a container `div` named `#firstcontainer`, and tell it that the nested panel `divs` in the container use the class `.demopanel`.
 
 `const firstSic = new SicTransit("#firstcontainer", ".demopanel");`
 
@@ -38,17 +38,17 @@ This has already been done for you on this demo page. `firstSic` has been preloa
 
 The layout and content for these panels has intentionally been made very basic, to avoid distraction from the workings. In your own code, the panels can contain arbitrarily complex content (e.g., an entire screen for a mobile device).
 
-There's no problem having multple instances of Sic Transit on the same page.
+There's no problem having multple instances of SicTransit on the same page.
 
-Later we'll see how to generate panels dynamically or turn `divs` elsewhere on the page (such as the "loose divs"  at the bottom of the page) into Sic Transit panels and transfer them into a Sic Transit container.
+Later we'll see how to generate panels dynamically or turn `divs` elsewhere on the page (such as the "loose divs"  at the bottom left) into SicTransit panels and transfer them into a SicTransit container.
 
-Sic Transit does not have (or need) "teardown" or "destroy" methods -- instances of Sic 
+SicTransit does not have (or need) "teardown" or "destroy" methods -- instances of Sic 
  Transit are removed by the normal JavaScript garbage collection process when the last reference to them disappears.
 
 ## Public Methods
 
 ### `performTransition(args)`
-Transitions are the heart of Sic Transit. There are over 50 transitions described below.
+Transitions are the heart of SicTransit. There are over 50 transitions described below.
 
 #### `swipeInFromBottom, swipeOutToBottom, swipeInFromLeft, swipeOutToLeft, swipeInFromRight, swipeOutToRight, swipeInFromTop, swipeOutToTop`
 
@@ -65,7 +65,7 @@ firstSic.performTransition({panelSelector:"#panel1",transitionName:"swipeInFromR
 Note: in this documentation, green code (like the above) is live code. It can be run using its associated Run button, edited and rerun, and so on.
 
 ```javascript
-// Swipe #panel1 out to the top, revealing the previous panel. Note that swiping out to a different direction than the swipe in is fine. In general, this applies to all Sic Transit transtiions other than the menu transitions.
+// Swipe #panel1 out to the top, revealing the previous panel. Note that swiping out to a different direction than the swipe in is fine. In general, this applies to all SicTransit transtiions other than the menu transitions.
 
 firstSic.performTransition({panelSelector:"#panel1",transitionName:"swipeOutToTop"});
 
@@ -512,11 +512,11 @@ Most of these are self-explanatory. The difference between `panelSelector` and `
 
 #### `removePanel(panelSelector)`
 
-Removes the panel with the given selector from the Sic Transit instance. Returns the panel. If you wish, you can retain the panel and put it elsewhere in the DOM and/or add it back to the Sic Transit instance at a later time. Generally, though, you'd only use this if you want to get rid of the panel permanently. If you just want to make the panel disappear, it would be more efficient to just move it to the bottom of the stack (`moveToBos()`) or use one of the "transitionOut" transitions.
+Removes the panel with the given selector from the SicTransit instance. Returns the panel. If you wish, you can retain the panel and put it elsewhere in the DOM and/or add it back to the SicTransit instance at a later time. Generally, though, you'd only use this if you want to get rid of the panel permanently. If you just want to make the panel disappear, it would be more efficient to just move it to the bottom of the stack (`moveToBos()`) or use one of the "transitionOut" transitions.
 
 
 #### `showPanel(selector)`
-Make the selected `div` a Sic Transit panel, move it to the top of the stack and display it immediately. The div can already be within this instance, in another instance of Sic Transit, or even at an arbitrary place in the page DOM. The special CSS classes for Sic Transit will be added automatically, if needed, but you may need to do some custom CSS tweaking to make arbitrary DOM `divs` work (e.g., if the imported DOM element has some kind of CSS sizing or positioning that makes it incompatible with being a Sic Transit panel).
+Make the selected `div` a SicTransit panel, move it to the top of the stack and display it immediately. The div can already be within this instance, in another instance of SicTransit, or even at an arbitrary place in the page DOM. The special CSS classes for SicTransit will be added automatically, if needed, but you may need to do some custom CSS tweaking to make arbitrary DOM `divs` work (e.g., if the imported DOM element has some kind of CSS sizing or positioning that makes it incompatible with being a SicTransit panel).
 
 ```javascript
 
@@ -537,7 +537,7 @@ firstSic.stackDump();
 
 #### `transferPanel(selector)`
 
-Transfers a panel from the DOM or another instance of Sic Transit into this one. The difference between this and `showPanel()`, above, is that `transferPanel()` does not automatically display the panel. In fact, `showPanel()` works by first calling `transferPanel()` and then moving the transferred panel to the top of the stack. 
+Transfers a panel from the DOM or another instance of SicTransit into this one. The difference between this and `showPanel()`, above, is that `transferPanel()` does not automatically display the panel. In fact, `showPanel()` works by first calling `transferPanel()` and then moving the transferred panel to the top of the stack. 
 
 ```javascript
 // Transfer the "loose" #panel6 from the DOM to firstSic.
@@ -556,11 +556,11 @@ firstSic.performTransition({panelSelector:"#panel6",transitionName:"zoomIn"});
 
 ## More on Selectors
 
-Many of the Sic Transit public methods have a selector argument to specify a particular panel. Usually this is the id for the panel, but there are many other options.
+Many of the SicTransit public methods have a selector argument to specify a particular panel. Usually this is the id for the panel, but there are many other options.
 
 The examples below use `showPanel()` for simplicity, but these selector types below apply to any method that requires selecting a panel (for example, the `panelSelector` parameter in `performTransition`).
 
-A Sic Transit selector can be any of the following types:
+A SicTransit selector can be any of the following types:
 
 ### String 
 Strings as normal query selectors, with the same basic syntax as `document.querySelector()` and CSS. This is the most common type. SicTransit actually uses `document.querySelector()` under the hood here, so the selectors can get as fancy as you need them to be.
@@ -591,7 +591,7 @@ firstSic.showPanel(-0);
 
 
 ### Dom Element
-An explicit DOM element. This form is mostly  used for internal SicTransit operations, but it's there if you need it. The special classes required for a Sic Transit panel will be added automatically.
+An explicit DOM element. This form is mostly  used for internal SicTransit operations, but it's there if you need it. The special classes required for a SicTransit panel will be added automatically.
 
 
 ```javascript
