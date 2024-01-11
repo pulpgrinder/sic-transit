@@ -1,6 +1,8 @@
-/*  sic-transit.js 
- *  Copyright 2023 by Anthony W. Hursh
- *  MIT license.
+/* @preserve 
+ * sic-transit.js 
+ * Copyright 2023 by Anthony W. Hursh
+ * MIT license.
+ * @endpreserve
  */
 
 "use strict";
@@ -200,55 +202,40 @@ stack to the top. Does nothing if the argument is zero, other than making sure t
 
 // Puts selected panel in the panel container (if it isn't already there), moves it to the top of the panel stack, and displays it.
     showPanel(selector,self=this){
-        let selectedPanel = self.selectPanel(selector);
-        if(selectedPanel === null){
-            return;
-        }
-        // Remove from the panel stack for all instances, if it's there,
-        // and remove from DOM.
-        
-        self.removePanel(selectedPanel,this); 
-        // Add the necessary classes to make it behave as a Sic Transit
-        // panel.
-        selectedPanel.classList.add(self.panelClass,"sic-transit-panel");
-        // Reset display parameters (in case they were previously altered).
-        selectedPanel.style.display = "block";
-        selectedPanel.style.opacity = 1.0;
-        selectedPanel.style.removeProperty("transform");
-        selectedPanel.style.removeProperty("transformOrigin");
-        // Put it on top of stack.
-        self.panelStack.push(selectedPanel);
-        // Put it back in DOM, but now inside the container (in case it wasn't there before)
-        self.container.appendChild(selectedPanel);
-        self.normalizeStack(self);
+        self.transferPanel(selector,self);
+        self.moveToTos(selector,self);
     }
 
     // Dump the internal state of the panel stack to the JavaScript console.
     // Handy when debugging a new transition.
     stackDump(args={self:this}){
-        console.log("stackDump:");
+        let result = "stackDump:\n";
         for (const panel of args.self.panelStack) {
             if(panel.id !== ""){
-                console.log("id: " + panel.id + " display:" + panel.style.display + " z-index: " + panel.style.zIndex);
+                result = result + ("id: " + panel.id + " display:" + panel.style.display + " z-index: " + panel.style.zIndex + "\n");
             }
             else {
-                console.log("class: " + panel.className + " display:" + panel.style.display + " z-index: " + panel.style.zIndex);
+                result = result + ("class: " + panel.className + " display:" + panel.style.display + " z-index: " + panel.style.zIndex + "\n");
             }
-        } 
+        }
+        console.log(result);
     }
 
-    /* Transfer a panel from one instance of Sic Transit to another. The panel is removed from the panel stack for the source instance, and added to the panel stack for the destination instance. The panel is also removed from the container for the source instance, and added to the container for the destination instance. Call the method on the source instance,
-        with a panel selector and the destination instance as parameters.*/
-    transferPanel(selector,destinationSic,self=this){
+    // Transfer a panel into the Sic Transit instance. This can come from another instance or from the DOM. The panel is put on the bottom of the stack (not displayed). Use showPanel() if you want to display it immediately.
+    transferPanel(selector,self=this){
             let selectedPanel = self.selectPanel(selector,self);
             if(selectedPanel === null){
                 throw new Error("SicTransit transferPanel(): panelSelector " + panelSelector + " is invalid.");
             }
-            selectedPanel.classList.add(self.panelClass,"sic-transit-panel")
-            self.removeFromAllStacks(selector,self);
-            destinationSic.moveToTos(selector,destinationSic);
-            destinationSic.container.appendChild(selectedPanel);
-            
+            // Remove from the panel stack for all instances (if it's there) and remove from DOM.
+            self.removePanel(selectedPanel,this); 
+            selectedPanel.classList.add(self.panelClass,"sic-transit-panel");
+            self.moveToBos(selectedPanel,this);
+            self.container.appendChild(selectedPanel);
+            selectedPanel.classList.add(self.panelClass,"sic-transit-panel");
+            selectedPanel.classList.add(self.panelClass,this.panelClass);
+            // Reset the panel position, etc. to a known state.
+            self.resetPanel(selector,this);
     }
 
     
@@ -596,7 +583,7 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:25,
+            menuPercentage:33,
             callback:null
         },
         "menuOutToBottom": {
@@ -605,7 +592,7 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:25,
+            menuPercentage:33,
             callback:null
         },
         "menuInFromLeft": {
@@ -614,7 +601,7 @@ removeOverlayPanels(self=this){
             boxShadow:  "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:25,
+            menuPercentage:33,
             callback:null
         },
         "menuOutToLeft": {
@@ -623,7 +610,7 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:25,
+            menuPercentage:33,
             callback:null
         },
         "menuInFromRight": {
@@ -632,7 +619,7 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
            duration:500,
-           menuPercentage:25,
+           menuPercentage:33,
            callback:null
         },
         "menuOutToRight": {
@@ -641,7 +628,7 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             easing: 'ease-in-out',
             duration:500,
-            menuPercentage:25,
+            menuPercentage:33,
             callback:null
         },
         "menuInFromTop": {
@@ -650,7 +637,7 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:25,
+            menuPercentage:33,
             callback:null
         },
         "menuOutToTop": {
@@ -659,7 +646,7 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
             duration:500,
-            menuPercentage:25,
+            menuPercentage:33,
             callback:null
         },
         "newspaperIn": {

@@ -15,10 +15,6 @@
   </head>
   <body>
     <div id="mainscreen">
-      <div id="docwrapper">
-        <div id="docs">
-        </div>
-      </div>
       <div id="demodiv">
         <div id='firstcontainer'>
           <div id='panel1' class='demopanel'>
@@ -38,31 +34,18 @@
           Aliquam erat volutpat. Nulla facilisi. Suspendisse potenti. Morbi in sem quis dui placerat ornare. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu. Cras consequat.
           </div>
         </div>
-        <div id='secondcontainer'>
-          <div id='panel5' class='demopanel'>
-          <h4>#panel5 says "Namaste!"</h4>
-          Cras sed felis eget velit aliquet sagittis id consectetur purus. Ut commodo suscipit neque, ac fermentum orci pellentesque id. Aliquam erat volutpat.
-          </div>
-          <div id='panel6' class='demopanel'>
-            <h4>#panel6 says "Nǐ hǎo!</h4>
-            In eget sapien vitae massa rhoncus lacinia. Nullam at leo nec metus aliquam semper. Phasellus elit dolor, porttitor id consectetur sit amet, posuere id magna.
-          </div>
-          <div id='panel7' class='demopanel'>
-          <h4>#panel7 says "Salve!"</h4>
-          Donec consectetur libero faucibus ornare iaculis. Quisque auctor placerat orci ut mattis. Cras nisi nunc, consequat nec egestas nec, lacinia sed nisl.
-          </div>
-          <div id='panel8' class='demopanel'>
-          <h4>#panel8 says "Γεια!"</h4>
-          Sed nunc est, mollis non facilisis ac, cursus non elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae. Nullam ultrices, orci ut convallis placerat, nisi nisi lacinia erat, eu consequat erat ipsum a velit.
-          </div>
+        <div id="panel5"">
+          <h4>This is #panel5</h4>
+          It's outside of the Sic Transit container to start with, but we'll move it into the container in one of the examples in the docs.
         </div>
-        <div id="ondeck">
-        <div id="panel9"">
-          <h4>This is #panel9</h4>
-          It's outside of the containers to start with, but we'll move it into one of them in one of the examples in the docs.
-          Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.
+        <div id="panel6"">
+          <h4>This is #panel6</h4>
+          It's outside of the Sic Transit container to start with, but we'll move it into the container in one of the examples in the docs.
         </div>
-      </div>
+       </div>
+      <div id="docwrapper">
+        <div id="docs">
+        </div>
       </div>
     </div>
   </body>  
@@ -72,7 +55,6 @@
         let oldLog = console.log;
         let oldError = console.error;
         let firstSic = new SicTransit("#firstcontainer",".demopanel");
-        let secondSic = new SicTransit("#secondcontainer",".demopanel");
         async function loadDocs(){
           const response = await fetch("documentation.md");
           let doctext = await response.text();

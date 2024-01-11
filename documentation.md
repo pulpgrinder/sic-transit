@@ -4,17 +4,27 @@ This is the full documentation for the Sic Transit library. It has live examples
 
 If you're looking for a basic example just to get started, have a look at the [minimal example](minimalexample.html).
 
+## Installation
+
+Add `sic-transit-min.js` (minified) or `sic-transit.js` and `sic-transit.css` to your page. That's it!
+
 ## Initialization
 
-Setting up a new instance of Sic Transit requires only two parameters:
+Schematically, an instance of Sic Transit is organized like this:
 
-`const mySic = new SicTransit(containerId, elementClass);`
+![Sic Transit Block Diagram](sic-transit-block-diagram.png)
+
+Basically, there's a container div which contains multiple panel divs. 
+
+Setting up a new instance of Sic Transit requires only two parameters, an id for the container div and a CSS class for the panels.
+
+`const mySic = new SicTransit(containerId, panelClass);`
 
 `containerId`: The ID of the container `div` that holds the panels.
 
-`elementClass`: The user-specified class for the panels. Panels are  `div`s with the given element class, which are nested within the `div` with id `containerID`. 
+`panelClass`: The user-specified class for the panels.
 
-Place all your initial panel `div`s within the container `div` you're planning to use and make sure each one has the given `elementClass` (don't worry, you can add or remove panels later -- see below).
+Put all your initial panel `divs` within your container `div`. Make sure each one has the given `panelClass` (you can add or remove panels later -- see below). If you've added more than one panel, the last panel in page order will be the panel shown at startup.
 
 Example:
 
@@ -22,9 +32,11 @@ Set up a new instance of Sic Transit named `firstSic`, and associate it with a c
 
 `const firstSic = new SicTransit("#firstcontainer", ".demopanel");`
 
-This has already been done for you in the demo below. In fact, there are two instances of Sic Transit in the demo, `firstSic` and `secondSic`. Both of these have been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4` in `#firstcontainer`, for `firstSic` and  `#panel5` through `#panel8` in `#secondcontainer` for `secondSic`. There's also a "loose" `div` at the bottom with the id `#panel9` (we'll be adding this to one of our containers later). As you can see, there's no problem having multple instances of Sic Transit on the same page.
+This has already been done for you on this demo page. `firstSic` has been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4`. There are also some  "loose" `divs` at the bottom, `#panel5` and `#panel6` (we'll be adding these to the container later).
 
-Later we'll see how to generate panels dynamically, turn `divs` elsewhere on the page (such as the "loose div" `#panel9` at the bottom of the page) into Sic Transit panels and move them into a Sic Transit container, and transfer panels between instances of Sic Transit.
+There's no problem having multple instances of Sic Transit on the same page.
+
+Later we'll see how to generate panels dynamically or turn `divs` elsewhere on the page (such as the "loose divs"  at the bottom of the page) into Sic Transit panels and transfer them into a Sic Transit container.
 
 Sic Transit does not have (or need) "teardown" or "destroy" methods -- instances of Sic 
  Transit are removed by the normal JavaScript garbage collection process when the last reference to them disappears.
@@ -172,7 +184,7 @@ firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisOutToBla
 
 #### menuInFromBottom, menuOutToBottom,menuInFromLeft, menuOutToLeft,menuInFromRight, menuOutToRight,menuInFromTop, menuOutToTop
 
-The `menuInFrom/menuOutTo` transitions do a "partial swipe (see "swipe", above), sliding the specified panel in/out from/to the specified direction only partially. This is useful for making sliding menus. Valid directions are Left, Right, Top, and Bottom. The default menu coverage is 25%. This can be changed with `setParameter()` (see below). Examples: 
+The `menuInFrom/menuOutTo` transitions do a "partial swipe" (see the swipe transitions above), sliding the specified panel in/out from/to the specified direction only partially. This is useful for making sliding menus. Valid directions are Left, Right, Top, and Bottom. The default menu coverage is 33%. This can be changed with `setParameter()` (see below). Examples: 
 
 ```javascript
 // Display "#panel1" as a menu on the right 
@@ -196,13 +208,13 @@ The other directions (left, top, and bottom) work the same, other than the direc
 These transitions have the visual effect of a "hinge" on the specified side (like a door or a book opening).
 
 ```javascript
-// Hing "#panel5" in from the left side.
-firstSic.performTransition({panelSelector:"#panel5",transitionName:"hingeInFromLeft"});
+// Hinge "#panel2" in from the left side.
+firstSic.performTransition({panelSelector:"#panel2",transitionName:"hingeInFromLeft"});
 ```
 
 ```javascript
-// Hinge "#panel5" out to the top.
-firstSic.performTransition({panelSelector:"#panel5",transitionName:"hingeOutToTop"});
+// Hinge "#panel2" out to the top.
+firstSic.performTransition({panelSelector:"#panel2",transitionName:"hingeOutToTop"});
 ```
 
 Edit the code samples above to see the hinge effect applied to different sides.
@@ -214,18 +226,18 @@ These transitions provide a "spinning newspaper" effect, as seen in many old mov
 `newspaperIn` makes the selected panel grow and rotate as it appears, while `newspaperOut` reverses the process.
 
 ```javascript
-// Transition panel "#panel4" in, using the 
+// Transition panel "#panel2" in, using the 
 // spinning newspaper effect
 
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"newspaperIn"});
+firstSic.performTransition({panelSelector:"#panel2",transitionName:"newspaperIn"});
 
 ```
 
 ```javascript
-// Transition panel "#panel4" out, using the
+// Transition panel "#panel2" out, using the
 // spinning newspaper effect
 
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"newspaperOut"});
+firstSic.performTransition({panelSelector:"#panel2",transitionName:"newspaperOut"});
 
 ```
 
@@ -317,13 +329,13 @@ firstSic.getPanelList();
 Returns an array containing the names of all defined transitions.
 
 ```javascript
-// Returns a list of all available transitions (> 50 at present).
+// Returns an array of all available transitions (> 50 at present).
 
 firstSic.getTransitionList();
 ```
 
 #### `getZIndex(selector)`
-Returns the current z-index for the selected panel.
+Returns the current z-index for the selected panel. The visible panel at the top of the stack always has z-index 0. The panels below it have indices of -1, -2, -3... counting from the top of the stack.
 
 ```javascript
 
@@ -356,7 +368,7 @@ Some commonly used parameters include:
 
 `callback` -- sets a user-written function that is called when the transition is complete. Default is null.
 
-`menuPercentage` -- controls the percentage of the panel container that gets covered by a menu. Only relevant for the "menu-" transitions (see above), though it will not cause an error if you set it for other transitions. It will simply have no effect. Default is 25%.
+`menuPercentage` -- controls the percentage of the panel container that gets covered by a menu. Only relevant for the "menu-" transitions (see above), though it will not cause an error if you set it for other transitions. It will simply have no effect. Default is 33%.
 
 There are other parameters that might be of interest to advanced users, in particular those defining their own custom transtitions. See the `dispatchTable` object in `sic-transit.js` to learn more.
 
@@ -371,7 +383,7 @@ firstSic.setParameter("duration",3000,"swipeInFromLeft");
 ```
 
 ```javascript
-// Demo our new swipeInFromLeft duration
+// Demo our new (slow!) swipeInFromLeft duration
 
 firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeInFromLeft"});
 ```
@@ -382,20 +394,20 @@ The percentage of the container covered by menus is a settable parameter.
 
 ```javascript
 // Set the menu coverage for the menuInFromRight 
-// transition to 33% (rather than the default 25%).
+// transition to 50% (rather than the default 33%).
 
-firstSic.setParameter("menuPercentage",33,"menuInFromRight");
+firstSic.setParameter("menuPercentage",50,"menuInFromRight");
 
 // Do the same for the menuOutToRight transition
 // (unexpected effects may occur if menu in and out transitions
 // have different coverage percentages).
 
-firstSic.setParameter("menuPercentage",33,"menuOutToRight");
+firstSic.setParameter("menuPercentage",50,"menuOutToRight");
 ```
 
 ```javascript
 // Now show a menu from the right, which will use
-// the new 33% menu coverage.
+// the new 50% menu coverage.
 
 firstSic.performTransition({panelSelector:"#panel1",transitionName:"menuInFromRight"});
 ```
@@ -496,7 +508,7 @@ Most of these are self-explanatory. The difference between `panelSelector` and `
 
 #### `removePanel(panelSelector)`
 
-Removes the panel with the given selector from the Sic Transit instance. Returns the panel. If you wish, you can retain the panel and add it back at a later time with `showPanel()`.
+Removes the panel with the given selector from the Sic Transit instance. Returns the panel. If you wish, you can retain the panel and put it elsewhere in the DOM and/or add it back to the Sic Transit instance at a later time with `showPanel()` (below).
 
 ```javascript
 // Remove #panel4 from the internal panel stack and the DOM.
@@ -509,20 +521,33 @@ let removedPanel = firstSic.removePanel("#panel4");
 ```
 
 #### `showPanel(selector)`
-Move the `div` with the given selector to the top of the stack and display it immediately. If the `div` is not already a panel, it will be removed from its current location in the DOM, added to the panel container, and added to the panel stack. The CSS classes required to make it function as a panel will be added automatically, if necessary. Most reasonable pre-existing `div` classes (other than those that specify hard-coded positions) should work. Please open an issue if you have problems here. See the examples in the section on Selectors, below.
+Move the selected panel `div` to the top of the stack and display it immediately. The div can be within this instance, in another instance of Sic Transit, or at an arbitrary place in the page DOM. The special CSS classes for Sic Transit will be added automatically, if needed, but you may need to do some custom CSS tweaking to make arbitrary DOM `divs` work.
 
+```javascript
+
+// Move the "loose" #panel5 div out of the top level and put it in firstSic.
+
+firstSic.showPanel("#panel5"); 
+```
 
 #### `stackDump()`
 Prints the current state of the panel stack to the console. This is handy if you are debugging a new transition.
 
-#### `transferPanel(selector,destinationSic)`
+```javascript
 
-Transfers a panel between one Sic Transit instance and another. Call this method on the source instance, giving the panel Id and second instance as parameters.
+// Dump the current panel stack for firstSic.
+
+firstSic.stackDump(); 
+```
+
+#### `transferPanel(selector)`
+
+Transfers a panel from the DOM or another instance of Sic Transit into this one. The difference between this and `showPanel()`, above, is that `transferPanel()` does not automatically display the panel. In fact, `showPanel()` works by calling `transferPanel()` and then moving the transferred panel to the top of the stack. 
 
 ```javascript
-// Transfer #panel1 from firstSic to secondSic
+// Transfer #panel6 from the DOM to firstSic.
 
-firstSic.transferPanel("#panel1",secondSic);
+firstSic.transferPanel("#panel6");
 
 ```
 
@@ -537,20 +562,15 @@ A Sic Transit selector can be any of the following types:
 ### String 
 Strings as normal query selectors, with the same basic syntax as `document.querySelector()` and CSS. This is the most common type. SicTransit actually uses `document.querySelector()` under the hood here, so the selectors can get as fancy as you need them to be.
 
-```javascript
 
-// Move the "loose" #panel9 div out of the top level and put it in firstSic.
-
-firstSic.showPanel("#panel9"); 
-```
 
 ### Integer
 Integers are intepreted as numeric indices into the internal panel stack. A negative integer, including "negative zero" -- yes, negative zero is an actual JavaScript value -- denotes an offset from the top of the stack, while a positive integer, including the normal "positive zero", indicates an offset from the bottom of the stack.
 
 ```javascript
-// Use an integer value to move the panel one up from the bottom of the secondSic stack to the top of the stack and display it. 
+// Use an integer value to move the panel one up from the bottom of the firstSic stack to the top of the stack and display it. 
 
-secondSic.showPanel(1);
+firstSic.showPanel(1);
 ```
 
 ```javascript
