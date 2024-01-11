@@ -1,6 +1,6 @@
 # Sic Transit Documentation and Tutorial
 
-This is the full documentation for the Sic Transit library. It has live examples for all the public methods that can be run directly from this documentation, the effect of which can be seen in the demo area below. Sic Transit is [available on GitHub](https://github.com/pulpgrinder/sic-transit).
+This is the full documentation for the Sic Transit library. It has live examples for all the public methods that can be run directly from this documentation, the effect of which can be seen in the demo area to the left. Sic Transit is [available on GitHub](https://github.com/pulpgrinder/sic-transit).
 
 If you're looking for a basic example just to get started, have a look at the [minimal example](minimalexample.html).
 
@@ -32,7 +32,7 @@ Set up a new instance of Sic Transit named `firstSic`, and associate it with a c
 
 `const firstSic = new SicTransit("#firstcontainer", ".demopanel");`
 
-This has already been done for you on this demo page. `firstSic` has been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4`. There are also some  "loose" `divs` at the bottom, `#panel5` and `#panel6` (we'll be adding these to the container later).
+This has already been done for you on this demo page. `firstSic` has been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4`. There are also some  "loose" `divs` at the bottom, `#panel5` and `#panel6` (we'll be adding these to the container later). The layout and content for these panels has intentionally been made very basic, to avoid distraction from the workings. In your own code, the panels can contain arbitrarily complex content (e.g., an entire screen for a mobile device).
 
 There's no problem having multple instances of Sic Transit on the same page.
 
@@ -508,20 +508,11 @@ Most of these are self-explanatory. The difference between `panelSelector` and `
 
 #### `removePanel(panelSelector)`
 
-Removes the panel with the given selector from the Sic Transit instance. Returns the panel. If you wish, you can retain the panel and put it elsewhere in the DOM and/or add it back to the Sic Transit instance at a later time with `showPanel()` (below).
+Removes the panel with the given selector from the Sic Transit instance. Returns the panel. If you wish, you can retain the panel and put it elsewhere in the DOM and/or add it back to the Sic Transit instance at a later time. Generally, though, you'd only use this if you want to get rid of the panel permanently. If you just want to make the panel disappear, it would be more efficient to just move it to the bottom of the stack (`moveToBos()`) or use one of the "transitionOut" transitions.
 
-```javascript
-// Remove #panel4 from the internal panel stack and the DOM.
-// After this is called, removedPanel will retain a reference
-// to the panel, so it can be added back later (e.g. with showPanel()).
-// If you do not save a reference, the removed panel will eventually
-// be garbage collected.
-
-let removedPanel = firstSic.removePanel("#panel4");
-```
 
 #### `showPanel(selector)`
-Move the selected panel `div` to the top of the stack and display it immediately. The div can be within this instance, in another instance of Sic Transit, or at an arbitrary place in the page DOM. The special CSS classes for Sic Transit will be added automatically, if needed, but you may need to do some custom CSS tweaking to make arbitrary DOM `divs` work.
+Make the selected `div` a Sic Transit panel, move it to the top of the stack and display it immediately. The div can already be within this instance, in another instance of Sic Transit, or even at an arbitrary place in the page DOM. The special CSS classes for Sic Transit will be added automatically, if needed, but you may need to do some custom CSS tweaking to make arbitrary DOM `divs` work (e.g., if the imported DOM element has some kind of CSS sizing or positioning that makes it incompatible with being a Sic Transit panel).
 
 ```javascript
 
@@ -542,13 +533,21 @@ firstSic.stackDump();
 
 #### `transferPanel(selector)`
 
-Transfers a panel from the DOM or another instance of Sic Transit into this one. The difference between this and `showPanel()`, above, is that `transferPanel()` does not automatically display the panel. In fact, `showPanel()` works by calling `transferPanel()` and then moving the transferred panel to the top of the stack. 
+Transfers a panel from the DOM or another instance of Sic Transit into this one. The difference between this and `showPanel()`, above, is that `transferPanel()` does not automatically display the panel. In fact, `showPanel()` works by first calling `transferPanel()` and then moving the transferred panel to the top of the stack. 
 
 ```javascript
-// Transfer #panel6 from the DOM to firstSic.
+// Transfer the "loose" #panel6 from the DOM to firstSic.
 
 firstSic.transferPanel("#panel6");
 
+// #panel6 is now in firstSic, but at the bottom of the stack (i.e., not visible).
+
+```
+
+```javascript
+// We can transition #panel6 in at a later time.
+
+firstSic.performTransition({panelSelector:"#panel6",transitionName:"zoomIn"});
 ```
 
 ## More on Selectors
