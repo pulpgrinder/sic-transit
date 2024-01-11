@@ -568,7 +568,7 @@ Strings as normal query selectors, with the same basic syntax as `document.query
 
 
 ### Integer
-Integers are intepreted as numeric indices into the internal panel stack. A negative integer, including "negative zero" -- yes, negative zero is an actual JavaScript value -- denotes an offset from the top of the stack, while a positive integer, including the normal "positive zero", indicates an offset from the bottom of the stack.
+Integers are intepreted as numeric indices into the internal panel stack. A negative integer denotes an offset from the top of the stack, while a non-negative integer (i.e., including zero) indicates an offset from the bottom of the stack.
 
 ```javascript
 // Use an integer value to move the panel one up from the bottom of the firstSic stack to the top of the stack and display it. 
