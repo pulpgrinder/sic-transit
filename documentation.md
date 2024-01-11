@@ -8,7 +8,7 @@ If you're looking for a basic example just to get started, have a look at the [m
 
 ## Installation
 
-Add `sic-transit-min.js` (minified) or `sic-transit.js` and `sic-transit.css` to your page. That's it!
+Add  `sic-transit.js` or `sic-transit-min.js` (minified) to your page, along with `sic-transit.css`. That's it!
 
 ## Initialization
 

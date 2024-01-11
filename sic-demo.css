@@ -43,6 +43,10 @@ p > code {
     margin-right:0;
 }
 
+#minimalcontainer{
+    height:30em;
+    width:20em;
+}
 
 .demoresult{
     font-style:italic;
