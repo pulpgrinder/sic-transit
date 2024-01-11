@@ -583,12 +583,6 @@ firstSic.showPanel(-1);
 ```
 
 
-```javascript
-// Use an integer value to move the panel at the top of the firstSic stack to the top of the stack and display it. This obviously has no visible effect with showPanel(), but will with some of the transitions (for instance, those that animate the element). 
-
-firstSic.showPanel(-0); 
-```
-
 
 ### Dom Element
 An explicit DOM element. This form is mostly  used for internal SicTransit operations, but it's there if you need it. The special classes required for a SicTransit panel will be added automatically.

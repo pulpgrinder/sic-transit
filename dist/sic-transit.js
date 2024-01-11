@@ -287,7 +287,7 @@ removeOverlayPanels(self=this){
 }
 
 /* Returns the panel corresponding to the given panelSelector, if it exists. If panelSelector is blank (i.e. "" or undefined), the panel at the current
-    top of the stack is returned. If panelSelector is already a DOM element, it is returned as-is. If panelSelector is a string, it is treated as a query selector, and the first matching DOM element is returned (if one exists). If panelSelector is a positive integer, the element at that index in the panel stack is returned (if it exists). If panelSelector is a negative integer, the element at that index from the top of the stack is returned (if it exists). If panelSelector is 0, the element at the bottom of the stack is returned (same as getBos()). If panelSelector is -0, the element at the top of the stack is returned (same as getTos()). */
+    top of the stack is returned. If panelSelector is already a DOM element, it is returned as-is. If panelSelector is a string, it is treated as a query selector, and the first matching DOM element is returned (if one exists). If panelSelector is a positive integer, the element at that index in the panel stack is returned (if it exists). If panelSelector is a negative integer, the element at that index from the top of the stack is returned (if it exists). If panelSelector is 0, the element at the bottom of the stack is returned (same as getBos()). */
     selectPanel(panelSelector,self=this){
         // No selector, return top of stack.
         if((panelSelector === undefined) || (panelSelector === "")){
@@ -318,10 +318,6 @@ removeOverlayPanels(self=this){
                     throw new Error("SicTransit selectPanel(): panelStack index " + panelIndex + " (" + panelSelector + " from top of stack) is outside the bounds of the panelStack.");
                     return null;
                 } 
-            }
-            // ES2015 lets us distinguish between +0 and -0.
-            else if(Object.is(panelSelector,-0)){
-                    return self.panelStack[self.panelStack.length - 1];
             }
             else{
                 return self.panelStack[0];
