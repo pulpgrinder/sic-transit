@@ -1,6 +1,8 @@
 # Sic Transit Documentation and Tutorial
 
-This is the full documentation for the Sic Transit library. It has live examples for all the public methods that can be run directly from this documentation, the effect of which can be seen in the demo area to the left. Sic Transit is [available on GitHub](https://github.com/pulpgrinder/sic-transit).
+This is the full documentation for the Sic Transit library. It has live examples for all the public methods which can be run directly from this documentation, the effect of which can be seen in the demo area to the left. 
+
+Sic Transit is [available on GitHub](https://github.com/pulpgrinder/sic-transit).
 
 If you're looking for a basic example just to get started, have a look at the [minimal example](minimalexample.html).
 
@@ -32,7 +34,9 @@ Set up a new instance of Sic Transit named `firstSic`, and associate it with a c
 
 `const firstSic = new SicTransit("#firstcontainer", ".demopanel");`
 
-This has already been done for you on this demo page. `firstSic` has been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4`. There are also some  "loose" `divs` at the bottom, `#panel5` and `#panel6` (we'll be adding these to the container later). The layout and content for these panels has intentionally been made very basic, to avoid distraction from the workings. In your own code, the panels can contain arbitrarily complex content (e.g., an entire screen for a mobile device).
+This has already been done for you on this demo page. `firstSic` has been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4`. There are also some  "loose" `divs` at the bottom, `#panel5` and `#panel6` (we'll be adding these to the container later). 
+
+The layout and content for these panels has intentionally been made very basic, to avoid distraction from the workings. In your own code, the panels can contain arbitrarily complex content (e.g., an entire screen for a mobile device).
 
 There's no problem having multple instances of Sic Transit on the same page.
 
@@ -44,7 +48,7 @@ Sic Transit does not have (or need) "teardown" or "destroy" methods -- instances
 ## Public Methods
 
 ### `performTransition(args)`
-Transitions are the heart of Sic Transit. There are over 50 transitions, which are described below.
+Transitions are the heart of Sic Transit. There are over 50 transitions described below.
 
 #### `swipeInFromBottom, swipeOutToBottom, swipeInFromLeft, swipeOutToLeft, swipeInFromRight, swipeOutToRight, swipeInFromTop, swipeOutToTop`
 
