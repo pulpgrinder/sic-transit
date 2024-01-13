@@ -8,17 +8,17 @@
     <meta http-equiv="Pragma" content="no-store">
     <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="dist/sic-transit.css">
-    <link rel="stylesheet" href="sic-demo.css">
+    <link rel="stylesheet" href="sic-simple.css">
     <script type="text/javascript" src="dist/sic-transit-min.js"></script>
     <title>SicTransit Demo</title>
   </head>
   <body>
     <div id="minimalcontainer">
-        <div id="panel2" class="demopanel">
+        <div id="panel2" class="simplepanel">
             This is #panel2.
          </div>
         <!-- The last panel in this HTML (in this case, #panel1) will be displayed on startup by default -->
-        <div id="panel1" class="demopanel">
+        <div id="panel1" class="simplepanel">
             This is #panel1.
         </div>
     </div>
@@ -32,11 +32,11 @@
     <script type="text/javascript">
 
         // Set up a new instance of SicTransit, using the container and panels specified in the HTML above.
-        let sic = new SicTransit("#minimalcontainer",".demopanel");
+        let sic = new SicTransit("#minimalcontainer",".simplepanel");
 
         // When the button is clicked, transition to #panel2 using a swipe transition.
         function demoTransition(){
-            sic.performTransition({panelSelector:"#panel2",transitionName:"swipeInFromLeft"});
+            sic.performTransition({panelSelector:"#panel2",transitionName:"swipeInFromRight"});
         }
     </script>
 </html>

@@ -8,9 +8,9 @@
     */
     position:relative;
     padding:0;
-   
     width:auto;
     height: auto;
+    overflow:hidden;
     z-index:1;
 }
 

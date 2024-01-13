@@ -1,0 +1,24 @@
+body{
+    display:grid;
+    grid-template-rows: 30em 2em 2em;
+
+.simplepanel{
+    margin:0;
+    padding:0.5em;
+    text-align:justify;
+    height:30em;
+    width:20em;
+ }
+
+#minimalcontainer{
+    width:20em;
+    height:30em;
+    position: relative;
+}
+
+#panel1{
+    background-color:paleturquoise;
+}
+#panel2{
+    background-color:lightgreen;
+}

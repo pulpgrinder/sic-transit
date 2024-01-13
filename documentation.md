@@ -1,6 +1,6 @@
 # SicTransit Documentation and Tutorial
 
-This is the full documentation for the SicTransit library. It has live examples for all the public methods which can be run directly from this documentation, the effect of which can be seen in the demo area to the left. 
+This is the full documentation for the SicTransit library. It has live examples for all the public methods which can be run directly from this documentation.
 
 SicTransit is [available on GitHub](https://github.com/pulpgrinder/sic-transit).
 
@@ -36,11 +36,11 @@ Set up a new instance of SicTransit named `firstSic`, associate it with a contai
 
 This has already been done for you on this demo page. `firstSic` has been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4`. There are also some  "loose" `divs` at the bottom, `#panel5` and `#panel6` (we'll be adding these to the container later). 
 
-The layout and content for these panels has intentionally been made very basic, to avoid distraction from the workings. In your own code, the panels can contain arbitrarily complex content (e.g., an entire screen for a mobile device).
+The layout and content for these panels has intentionally been made very basic, to avoid distraction from the workings. In your own code, the panels can contain arbitrarily complex content (e.g., an entire screen for a mobile device). You should also set the CSS for your panels to (e.g.) make sure that the panels have the right size and so on for your application. Caveat: make sure to set a background color for your panels, or panels at lower levels of the stack may show through.
 
 There's no problem having multple instances of SicTransit on the same page.
 
-Later we'll see how to generate panels dynamically or turn `divs` elsewhere on the page (such as the "loose divs"  at the bottom left) into SicTransit panels and transfer them into a SicTransit container.
+Later we'll see how to generate panels dynamically or turn preexisting `divs` elsewhere on the page into SicTransit panels and transfer them into a SicTransit container.
 
 SicTransit does not have (or need) "teardown" or "destroy" methods -- instances of Sic 
  Transit are removed by the normal JavaScript garbage collection process when the last reference to them disappears.
@@ -62,7 +62,7 @@ Swipes are probably the most commonly used transition. The specified panel will 
 firstSic.performTransition({panelSelector:"#panel1",transitionName:"swipeInFromRight"});
 ```
 
-Note: in this documentation, green code (like the above) is live code. It can be run using its associated Run button, edited and rerun, and so on.
+Note: in this documentation, green code (like the above) is live code. It can be run by switching to the demo screen with the Demo button, then run with the Run Demo button.
 
 ```javascript
 // Swipe #panel1 out to the top, revealing the previous panel. Note that swiping out to a different direction than the swipe in is fine. In general, this applies to all SicTransit transtiions other than the menu transitions.
@@ -288,80 +288,32 @@ firstSic.performTransition({panelSelector:"#panel4",transitionName:"zoomOut"});
 ### Other public methods
 
 #### `getBos()`
-Returns whatever panel is currently at the bottom of the instance's panel stack.
-
-```javascript
-firstSic.getBos();
-
-```
+Returns whatever panel is currently at the bottom of the instance's panel stack as an HTML element.
 
 
 #### `getTos()`
-Returns whatever panel is currently at the top of the instance's panel stack.
-```javascript
-firstSic.getTos();
-
-```
-
+Returns whatever panel is currently at the top of the instance's panel stack as an HTML element.
 
 #### `getContainerId()`
-Returns the user-specified ID that was given for the panel container when the instance was created.
-
-```javascript
-firstSic.getContainerId();
-
-// Returns '#firstcontainer' for this page.
-```
+Returns the user-specified ID that was given for the panel container when the instance was created. Returns '#firstcontainer' for this page.
 
 #### `getPanelClass()`
-Returns the user-specified CSS class that was given when the instance was created.
-
-```javascript
-firstSic.getPanelClass();
-
-```
+Returns the user-specified CSS class that was given when the instance was created. Returns '.demopanel' for this page.
 
 #### `getPanelList()`
-Returns an array of the ids of panels within the panel container. This (obviously) returns only the ones that *have* ids. Panels that don't have ids (for example, the internal overlay panels used for certain transitions) will not be included.
-
-```javascript
-firstSic.getPanelList();
-```
-
+Returns an array of the ids of user-created panels within the panel container, whether there initially or added later. Panels that don't have ids won't be included, nor will the special internal panels (black, white, gray, etc.) that are used in certain transitions.
 
 #### `getTransitionList()`
-Returns an array containing the names of all defined transitions.
-
-```javascript
-// Returns an array of all available transitions (> 50 at present).
-
-firstSic.getTransitionList();
-```
+Returns an array containing the names of all defined transitions, more than 50 at present.
 
 #### `getZIndex(selector)`
-Returns the current z-index for the selected panel. The visible panel at the top of the stack always has z-index 0. The panels below it have indices of -1, -2, -3... counting from the top of the stack.
-
-```javascript
-
-firstSic.getZIndex("#panel1");
-```
-
+Returns the current z-index for the selected panel. The visible panel at the top of the stack always has z-index 0. The panels below it have indices of -1, -2, -3... counting down from the top of the stack.
 
 #### `moveToBos(selector)`
 Moves the selected panel to the bottom of the stack.
 
-```javascript
-
-firstSic.moveToBos("#panel4");
-```
-
 #### `moveToTos(selector)`
 Moves the selected panel to the top of the stack.
-
-```javascript
-
-firstSic.moveToTos("#panel4");
-```
 
 #### `setParameter(parametername, parametervalue,transitionname)`
 Sets the given parameter name to the given value for the given transition name. If the transition name is "\*" (in quotes), or not supplied, the specified parameter is set for *all* transitions.
@@ -379,69 +331,18 @@ There are other parameters that might be of interest to advanced users, in parti
 Examples:
 
 ##### Duration
-```javascript
-// Set the duration for the `swipeInFromLeft` transition
-// to 3 seconds (3000 ms), rather than the default 500 ms:
-
-firstSic.setParameter("duration",3000,"swipeInFromLeft");
-```
-
-```javascript
-// Demo our new (slow!) swipeInFromLeft duration
-
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeInFromLeft"});
-```
+`firstSic.setParameter("duration",3000,"swipeInFromLeft");` -- sets the duration for the `swipeInFromLeft` transition to 3000 milliseconds (3 seconds) rather than the default 500 ms.
 
 ##### menuPercentage
 
-The percentage of the container covered by menus is a settable parameter.
+`firstSic.setParameter("menuPercentage",50,"menuInFromRight");`
+`firstSic.setParameter("menuPercentage",50,"menuInFromRight");`
 
-```javascript
-// Set the menu coverage for the menuInFromRight 
-// transition to 50% (rather than the default 33%).
+These set the coverage for the right-side menu transitions to 50% coverage rather than the default 33% coverage. Note that in most cases you should set the menuIn and menuOut menuPercentage to the same value. Having different values will not cause an error, but will produce odd effects that you probably don't want in other than very special circumstances.
 
-firstSic.setParameter("menuPercentage",50,"menuInFromRight");
+You can also set the menu percentage for **all** menu transitions by using "*" for the transition name.
 
-// Do the same for the menuOutToRight transition
-// (unexpected effects may occur if menu in and out transitions
-// have different coverage percentages).
-
-firstSic.setParameter("menuPercentage",50,"menuOutToRight");
-```
-
-```javascript
-// Now show a menu from the right, which will use
-// the new 50% menu coverage.
-
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"menuInFromRight"});
-```
-
-```javascript
-// Close the menu.
-
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"menuOutToRight"});
-```
-You can also set the menu percentage for all menu transitions by using "*" for the transition name.
-
-```javascript
-// Set the menu coverage percentage to 50% for all
-// transitions (will have no effect on non-menu transitions).
-
-firstSic.setParameter("menuPercentage",50,"*");
-```
-
-```javascript
-// Now show a menu from the bottom, which will use
-// the new 50% menu coverage.
-
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuInFromBottom"});
-```
-
-```javascript
-// Close the menu.
-
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"menuOutToBottom"});
-```
+    firstSic.setParameter("menuPercentage",50,"*");
 
 ##### Callbacks
 
@@ -449,54 +350,29 @@ The `setParameter` method can also be used to set a callback method that will be
 
 Examples:
 
-```javascript
-// Set a callback function for the 
-// `swipeInFromLeft` transition.
+Suppose we have a callback function like this:
 
-// Define our callback function.
-function myCallBackFunc(args){
-    alert("Hello from swipeInFromLeft");
-}
-// Set up the callback.
-firstSic.setParameter("callback",myCallBackFunc,"swipeInFromLeft");
-// myCallbackFunc() will now be executed every time a 
-// "swipeInFromLeft" transition is complete.
-```
+    function myCallBackFunc(args){
+        alert("Hello from swipeInFromLeft");
+    }
 
-```javascript
-// See our callback function in action.
+We can have this function called whenever a `swipeInFromLeft` transition is completed by using:
 
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"swipeInFromLeft"});
-
-// myCallBackFunc() will be called when this is complete.
-
-```
-
-```javascript
-// Set a callback function for all
-// transitions.
-
-// Define the callback function.
-function anotherCallBackFunc(args){
-    alert("Hello from " + args.transitionName);
-}
-
-// Set up the callback. Note that we're using "*" 
-// for the selector here. That specifies that 
-// anotherCallbackFunc should be set as the callback for all transitions.
-firstSic.setParameter("callback",anotherCallBackFunc,"*");
-```
+    firstSic.setParameter("callback",myCallBackFunc,"swipeInFromLeft");
 
 
-```javascript
-// Try our new global callback function.
+We can also set a callback function for **all** transitions. If our function is:
 
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"irisIn"});
+    function anotherCallBackFunc(args){
+        alert("Hello from " + args.transitionName);
+    }
 
-```
+We'd use:
+
+    firstSic.setParameter("callback",anotherCallBackFunc,"*");
 
 
-Note the use of args.transitionName in `anotherCallBackFunc()` The args object passed to a callback has the following data available for use:
+Note the use of args.transitionName in `anotherCallBackFunc()` The args object passed to a callback has the following data available for your use:
 
     args.transitionName
     args.startTime
@@ -512,47 +388,31 @@ Most of these are self-explanatory. The difference between `panelSelector` and `
 
 #### `removePanel(selector)`
 
-Removes the panel with the given selector from the SicTransit instance. Returns the panel. If you wish, you can retain the panel and put it elsewhere in the DOM and/or add it back to the SicTransit instance at a later time. Generally, though, you'd only use this if you want to get rid of the panel permanently. If you just want to make the panel disappear, it would be more efficient to just move it to the bottom of the stack (`moveToBos()`) or use one of the "transitionOut" transitions.
+Removes the panel with the given selector from the SicTransit instance. Returns the panel as an HTML element. If you wish, you can retain the panel and put it elsewhere in the DOM and/or add it back to the SicTransit instance at a later time. Generally, though, you'd only use this if you want to get rid of the panel permanently. If you just want to make the panel disappear, it would be more efficient to move it to the bottom of the stack (`moveToBos()`) or use one of the "transitionOut" transitions.
 
 
 #### `showPanel(selector)`
 Make the selected `div` a SicTransit panel, move it to the top of the stack and display it immediately. The div can already be within this instance, in another instance of SicTransit, or even at an arbitrary place in the page DOM. The special CSS classes for SicTransit will be added automatically, if needed, but you may need to do some custom CSS tweaking to make arbitrary DOM `divs` work (e.g., if the imported DOM element has some kind of CSS sizing or positioning that makes it incompatible with being a SicTransit panel).
 
-```javascript
+Example:
 
-// Move the "loose" #panel5 div out of the top level and put it in firstSic.
-
-firstSic.showPanel("#panel5"); 
-```
+    firstSic.showPanel("#mycoolpanel");
 
 #### `stackDump()`
 Prints the current state of the panel stack to the console. This is handy if you are debugging a new transition.
+Example:
 
-```javascript
-
-// Dump the current panel stack for firstSic.
-
-firstSic.stackDump(); 
-```
+    firstSic.stackDump();
 
 #### `transferPanel(selector)`
 
-Transfers a panel from the DOM or another instance of SicTransit into this one. The difference between this and `showPanel()`, above, is that `transferPanel()` does not automatically display the panel. In fact, `showPanel()` works by first calling `transferPanel()` and then moving the transferred panel to the top of the stack. 
+Transfers a panel from the DOM (or another instance of SicTransit) into this one. The difference between this and `showPanel()`, above, is that `transferPanel()` does not automatically display the panel, while `showPanel()` does. In fact, `showPanel()` works by first calling `transferPanel()` and then moving the transferred panel to the top of the stack. 
 
-```javascript
-// Transfer the "loose" #panel6 from the DOM to firstSic.
+Example:
 
-firstSic.transferPanel("#panel6");
+                firstSic.transferPanel("#mycoolpanel");
 
-// #panel6 is now in firstSic, but at the bottom of the stack (i.e., not visible).
 
-```
-
-```javascript
-// We can transition #panel6 in at a later time.
-
-firstSic.performTransition({panelSelector:"#panel6",transitionName:"zoomIn"});
-```
 
 ## More on Selectors
 
@@ -570,28 +430,25 @@ Strings as normal query selectors, with the same basic syntax as `document.query
 ### Integer
 Integers are intepreted as numeric indices into the internal panel stack. A negative integer denotes an offset from the top of the stack, while a non-negative integer (i.e., including zero) indicates an offset from the bottom of the stack.
 
-```javascript
-// Use an integer value to move the panel one up from the bottom of the firstSic stack to the top of the stack and display it. 
+Examples:
 
-firstSic.showPanel(1);
-```
+Use an integer value to move the panel one up from the bottom of the firstSic stack to the top of the stack and display it.
 
-```javascript
-// Use an integer value to move the panel one down from the top of the firstSic stack to the top of the stack and display it.
+    firstSic.showPanel(1);
 
-firstSic.showPanel(-1); 
-```
+Use an integer value to move the panel one down from the top of the firstSic stack to the top of the stack and display it.
+
+    firstSic.showPanel(-1);
 
 
 
 ### Dom Element
-An explicit DOM element. This form is mostly  used for internal SicTransit operations, but it's there if you need it. The special classes required for a SicTransit panel will be added automatically.
+An explicit DOM element. This form is mostly  used for internal SicTransit operations, but it's there if you need it. The special classes required for a SicTransit panel will be added automatically. This exampl
 
-
-```javascript
-// Create a new HTML div element and use `showPanel()` to display it in firstSic's container. Normally you'd give this an id or some kind of special class so you could it manipulate later, but you don't have to.
+Example:
 
 const newpanel =  document.createElement('div');
-newpanel.innerText = "Hi, there!";
+newpanel.innerHTML = "<h1>Hi, there!</h1>";
 firstSic.showPanel(newpanel);
-```
+
+This is a bare-bones example. You'll likely need to add some CSS to your dymamically generated panel to make it work right. In particular, make sure it has a background color, as noted above. Depending on how your other CSS is set up, you may also need to use some CSS to make sure it's the same size as the other panel.

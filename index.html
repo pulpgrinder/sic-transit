@@ -16,7 +16,8 @@
   <body>
     <div id="mainscreen">
       <div id="demodiv">
-        <div id='firstcontainer'>
+        <div id="democontrols"><button id="codebutton" onclick="runCode()" index = 0;>Run Demo</button> <button id="returnbutton" onclick="returnToDocs()">Return to Docs</button></div>
+        <div id="democontainer">
           <div id='panel1' class='demopanel'>
           <h1>#panel1</h1>
           <img src="images/panel1-large.jpg" alt="panel1" />
@@ -34,14 +35,6 @@
           <img src="images/panel4-large.jpg" alt="panel4" />
           </div>
         </div>
-        <div id="panel5" class="demopanel">
-          <h1>#panel5 ("loose")</h1>
-          <img src="images/panel5-large.jpg" alt="panel5" />
-        </div>
-        <div id="panel6" class="demopanel">
-          <h1>#panel6 ("loose")</h1>
-          <img src="images/panel6-large.jpg" alt="panel6" />
-        </div>
        </div>
       <div id="docwrapper">
         <div id="docs">
@@ -54,14 +47,14 @@
         let logger = null;
         let oldLog = console.log;
         let oldError = console.error;
-        let firstSic = new SicTransit("#firstcontainer",".demopanel");
+        let firstSic = new SicTransit("#democontainer",".demopanel");
         async function loadDocs(){
           const response = await fetch("documentation.md");
           let doctext = await response.text();
           let demoinstance = 0;
           doctext = doctext.replace(/```javascript[\s\S]*?```/g,function(match) {
                       demoinstance++;
-                      return match + "\n<div class='demoresult' id='demoresult-" + demoinstance + "'></div>\n<div><button onclick='runDemo(" + demoinstance + ")'>Run</button></div>";
+                      return match + "\n<div class='demoresult' id='demoresult-" + demoinstance + "'></div>\n<div><button onclick='displayDemo(" + demoinstance + ")'>Demo</button></div>";
                     });
         let md = window.markdownit({
               html: true
@@ -85,8 +78,18 @@
       }
       loadDocs();
      
-      function runDemo(index){
+      function returnToDocs(){
+        document.getElementById("demodiv").style.display = "none";
+        document.getElementById("docwrapper").style.display = "block";
+      }
+      function displayDemo(index){
+        document.getElementById("demodiv").style.display = "grid";
+        document.getElementById("docwrapper").style.display = "none";
+        document.getElementById("codebutton").setAttribute("index",index);
+      }
+      function runCode(){
           // Yes, I know. We actually want to allow the execution of random code here. IN THIS CASE, it's safe. There are no credentials or cross-site issues involved.
+          let index = document.getElementById("codebutton").getAttribute("index");
           logger = document.getElementById("demoresult-" + index);
           let code = document.getElementById("demoresult-" + index).previousElementSibling.innerText;
           try {
