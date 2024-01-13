@@ -36,6 +36,7 @@ class SicTransit {
 
       // Create our special internal overlay panels. These are things like solid black, solid white ,etc. Used to support various transitions.
       this.createOverlayPanels(); 
+      // We need to keep track of all instances so we can transfer panels between instances. Transferring panels requires removing the panel from the source panel stack as well as moving it within the DOM.
       SicTransit.allInstances.push(this);
     } // End of constructor.
 

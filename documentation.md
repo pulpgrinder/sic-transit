@@ -510,7 +510,7 @@ Future transitions may define other key/value pairs on the args object.
 Most of these are self-explanatory. The difference between `panelSelector` and `selectedPanel` is that the first is the selector provided by the user and the second is the HTML element that was actually selected using that selector.
 
 
-#### `removePanel(panelSelector)`
+#### `removePanel(selector)`
 
 Removes the panel with the given selector from the SicTransit instance. Returns the panel. If you wish, you can retain the panel and put it elsewhere in the DOM and/or add it back to the SicTransit instance at a later time. Generally, though, you'd only use this if you want to get rid of the panel permanently. If you just want to make the panel disappear, it would be more efficient to just move it to the bottom of the stack (`moveToBos()`) or use one of the "transitionOut" transitions.
 

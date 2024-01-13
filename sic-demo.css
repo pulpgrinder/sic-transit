@@ -1,3 +1,8 @@
+@font-face {
+    font-family: Bocklin;
+    src: url(fonts/Bocklin.ttf);
+  }
+
 body{
     height:100vh;
     width:100vw;
@@ -79,45 +84,49 @@ code {
     
 }
 #firstcontainer {
+    color:darkred;
     padding:0;
     margin:0;
     overflow: hidden;
  }
  .demopanel{
+    font-family: "Bocklin";
     margin:0;
     padding:0.5em;
-    font-family:sans-serif;
     text-align:justify;
+    width:100%;
+ }
+
+ .demopanel img{
+    width:7%;
+    height:auto;
+    margin-left:auto;
+    margin-right:auto;
+    display:block;
  }
 
  #panel1 {
-    color: #555;
     background-color: #a2d5c6;
 }
 
 #panel2 {
-    color: #555;
     background-color: #fce5cd;
 }
 
 #panel3 {
-    color: #555;
     background-color: #fff2cc;
 }
 
 #panel4 {
-    color: #555;
     background-color: #d9ead3;
 }
 
 #panel5 {
-    color: #555;
     background-color: #b4a7d6;
     padding:0.5em;
     overflow:auto;
 }
 #panel6 {
-    color: #555;
     background-color: #cfe2f3;
     padding:0.5em;
     overflow:auto;
