@@ -809,12 +809,16 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
         self.moveToTos(args.selectedPanel,self);
-        const animation = args.selectedPanel.animate(args.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
-        await animation.finished;
-        animation.commitStyles();
-        animation.cancel();
-        args.finishHandler(); 
+        
+        await navigator.locks.request('animation_lock', async (lock) => {
+            const animation = args.selectedPanel.animate(args.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
+            await animation.finished;
+            animation.commitStyles();
+            animation.cancel();
+            args.finishHandler();
+        });
     }
+       
 
 /* Performs the callback function for the given transition, if one is specified. */
     performCallback(args){
@@ -871,15 +875,17 @@ resetPanel(panelSelector,self=this){
             self.normalizeStack(self);
             self.performCallback(args);
         }
-        const animation = args.selectedPanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration + 100,fill:"forwards"});
-        const topanimation = topPanel.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
-        await animation.finished;
-        await topanimation.finished
-        animation.commitStyles();
-        animation.cancel();
-        topanimation.commitStyles();
-        topanimation.cancel();
-        args.finishHandler(); 
+        await navigator.locks.request('animation_lock', async (lock) => {
+            const animation = args.selectedPanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration + 100,fill:"forwards"});
+            const topanimation = topPanel.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
+            await animation.finished;
+            animation.commitStyles();
+            animation.cancel();
+            await topanimation.finished;
+            topanimation.commitStyles();
+            topanimation.cancel();
+            args.finishHandler(); 
+        });
         
     }
     async crossDissolveOut(args){
