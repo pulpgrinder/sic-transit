@@ -1,18 +1,15 @@
-body{
-    display:grid;
-    grid-template-rows: 30em 2em 2em;
 
-.simplepanel{
+.minimalpanel{
     margin:0;
     padding:0.5em;
-    text-align:justify;
-    height:30em;
     width:20em;
+    height:30em;
  }
 
 #minimalcontainer{
     width:20em;
     height:30em;
+    /* container must be positioned in order for z-index to work on children */
     position: relative;
 }
 

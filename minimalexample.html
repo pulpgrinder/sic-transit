@@ -14,25 +14,23 @@
   </head>
   <body>
     <div id="minimalcontainer">
-        <div id="panel2" class="simplepanel">
+        <div id="panel2" class="minimalpanel">
             This is #panel2.
          </div>
-        <!-- The last panel in this HTML (in this case, #panel1) will be displayed on startup by default -->
-        <div id="panel1" class="simplepanel">
+        <!-- By default, the last panel in this HTML (in this case, #panel1) will be displayed on startup. -->
+        <div id="panel1" class="minimalpanel">
             This is #panel1.
         </div>
     </div>
     <div>
         <button onclick="demoTransition()">Click to transition to #panel2</button> 
-    </div>
-    <div>
         <p>Simple example of SicTransit in action. View source to have a look at the HTML and JavaScript.</p>
     </div>
 </body>
     <script type="text/javascript">
 
         // Set up a new instance of SicTransit, using the container and panels specified in the HTML above.
-        let sic = new SicTransit("#minimalcontainer",".simplepanel");
+        let sic = new SicTransit("#minimalcontainer",".minimalpanel");
 
         // When the button is clicked, transition to #panel2 using a swipe transition.
         function demoTransition(){
