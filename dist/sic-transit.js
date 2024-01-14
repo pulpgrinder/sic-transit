@@ -428,6 +428,7 @@ removeOverlayPanels(self=this){
             duration:2000,
             callback:null
         },
+        /*
         "flipInX":{
             forwardTransition: this.flipInX,
             firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
@@ -459,7 +460,7 @@ removeOverlayPanels(self=this){
             easing:'linear',
             duration:1000,
             callback:null
-        },
+        }, */
         "hingeInFromBottom":{
             forwardTransition: this.hingeInFromBottom,
             firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
@@ -765,8 +766,8 @@ removeOverlayPanels(self=this){
             "blackpanel",
             "graypanel",
             "whitepanel",
-            "flippanel",
-            "flipbackgroundpanel"
+//            "flippanel",
+//            "flipbackgroundpanel"
         ];
         overlayPanels.forEach(element => {
             overlaypanel = document.createElement('div');
@@ -989,7 +990,7 @@ resetPanel(panelSelector,self=this){
         args.fadePanel = self.specialtyPanels.whitepanel;
         self.doFadeOut(args);
     }
-    async flipInX(args){
+   /* async flipInX(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInX"];
         self.resetPanel(self.specialtyPanels.flippanel,self);
@@ -1124,7 +1125,7 @@ resetPanel(panelSelector,self=this){
         animation.cancel();
         args.finishHandler();
        
-    }
+    } */
     hinge(args){
         let self = args.self;
         self.resetPanel(args.selectedPanel,self);

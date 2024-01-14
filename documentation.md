@@ -135,24 +135,6 @@ firstSic.performTransition({panelSelector:"#panel3",transitionName:"fadeOutToGra
 
 As always, you can edit the above code snippets and rerun them if you want to see the other fade transitions.
 
-#### `flipInX/flipOutX, flipInY/flipOutY`
-
-These transitions provide a "flip card" effect. `flipInX` and `flipOutX` rotate the card about the X axis, while `flipInY` and   `flipOutY` rotate it about the Y axis.
-
-```javascript
-// Display #panel1 using a flipcard effect
-// about the X axis
-
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"flipInX"});
-```
-
-```javascript
-// Hide #panel1 by using an inverse flipcard
-// effect about the Y axis.
-
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"flipOutY"});
-```
-
 
 #### `irisIn/irisOut, irisInFrom/irisOutTo`
 
