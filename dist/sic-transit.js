@@ -132,6 +132,11 @@ class SicTransit {
             args.self = this;
         }
         let self = args.self;
+        const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)') === true || window.matchMedia('(prefers-reduced-motion: reduce)').matches === true;
+        if(isReduced === true){
+            console.log("SicTransit: prefers-reduced-motion is set to reduce. Using cutIn/cutOut transitions.");
+            args.transitionName = args.self.dispatchTable[args.transitionName]["prefersReducedMotion"];
+        }
         self.removeOverlayPanels(self);
         args.selectedPanel =  self.selectPanel(args.panelSelector,self);
         args.startTime = new Date().getTime();
@@ -349,7 +354,8 @@ removeOverlayPanels(self=this){
             // cuts happen immediately, no timing parameters
             easing:"",
             duration:0,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "cutOut": {
             forwardTransition: this.cutOut,
@@ -359,7 +365,8 @@ removeOverlayPanels(self=this){
             // cuts happen immediately, no timing parameters
             easing:"",
             duration:0,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "crossDissolveIn": {
             forwardTransition: this.crossDissolveIn,
@@ -368,7 +375,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out',
             duration:2000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "crossDissolveOut": {
             forwardTransition: this.crossDissolveOut,
@@ -386,7 +394,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
             duration:2000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "fadeOutToBlack": {
             forwardTransition: this.fadeOutToBlack,
@@ -394,7 +403,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
             duration:2000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "fadeInFromGray": {
             forwardTransition: this.fadeInFromGray,
@@ -402,7 +412,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:2000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "fadeOutToGray": {
             forwardTransition: this.fadeOutToGray,
@@ -410,7 +421,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:2000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "fadeInFromWhite": {
             forwardTransition: this.fadeInFromWhite,
@@ -418,7 +430,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:2000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "fadeOutToWhite": {
             forwardTransition: this.fadeOutToWhite,
@@ -426,15 +439,18 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:2000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
+        /* Does not work in Safari. Investigating. 
         "flipInX":{
             forwardTransition: this.flipInX,
             firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'linear',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "flipOutX":{
             forwardTransition: this.flipOutX,
@@ -442,7 +458,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'linear',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "flipInY":{
             forwardTransition: this.flipInY,
@@ -450,7 +467,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'linear',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "flipOutY":{
             forwardTransition: this.flipOutY,
@@ -458,15 +476,18 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'linear',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
+        */
         "hingeInFromBottom":{
             forwardTransition: this.hingeInFromBottom,
             firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "hingeOutToBottom":{
             forwardTransition: this.hingeOutToBottom,
@@ -474,7 +495,8 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "hingeInFromLeft":{
             forwardTransition: this.hingeInFromLeft,
@@ -482,7 +504,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "hingeOutToLeft":{
             forwardTransition: this.hingeOutToLeft,
@@ -490,7 +513,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "hingeInFromRight":{
             forwardTransition: this.hingeInFromRight,
@@ -498,7 +522,8 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "hingeOutToRight":{
             forwardTransition: this.hingeOutToRight,
@@ -506,7 +531,8 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "hingeInFromTop":{
             forwardTransition: this.hingeInFromTop,
@@ -514,7 +540,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "hingeOutToTop":{
             forwardTransition: this.hingeOutToTop,
@@ -522,57 +549,66 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "irisIn":{
             forwardTransition:this.irisIn,
             firstanimation: [{display:"block", clipPath:"circle(0% at center"}, {display:"block",  clipPath:"circle(100% at center)"}],
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "irisOut":{
             forwardTransition:this.irisOut,
             firstanimation: [{display:"block", clipPath:"circle(100% at center"}, {display:"block",  clipPath:"circle(0% at center)"}],
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "irisInFromBlack":{
             forwardTransition:this.irisInFromBlack,
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "irisOutToBlack":{
             forwardTransition:this.irisOutToBlack,
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "irisInFromGray":{
             forwardTransition:this.irisInFromGray,
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "irisOutToGray":{
             forwardTransition:this.irisOutToGray,
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "irisInFromWhite":{
             forwardTransition:this.irisInFromWhite,
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "irisOutToWhite":{
             forwardTransition:this.irisOutToWhite,
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "menuInFromBottom": {
             forwardTransition: this.menuInFromBottom,
@@ -581,6 +617,11 @@ removeOverlayPanels(self=this){
             easing:'ease-in-out',
             duration:500,
             menuPercentage:33,
+            callback:null,
+            prefersReducedMotion:"menuInFromBottomReduced"
+        },
+        "menuInFromBottomReduced": {
+            forwardTransition: this.menuInFromBottomReduced,
             callback:null
         },
         "menuOutToBottom": {
@@ -590,6 +631,11 @@ removeOverlayPanels(self=this){
             easing:'ease-in-out',
             duration:500,
             menuPercentage:33,
+            callback:null,
+            prefersReducedMotion:"menuOutToBottomReduced"
+        },
+        "menuOutToBottomReduced": {
+            forwardTransition: this.menuOutToBottomReduced,
             callback:null
         },
         "menuInFromLeft": {
@@ -599,6 +645,11 @@ removeOverlayPanels(self=this){
             easing:'ease-in-out',
             duration:500,
             menuPercentage:33,
+            callback:null,
+            prefersReducedMotion:"menuInFromLeftReduced"
+        },
+        "menuInFromLeftReduced": {
+            forwardTransition: this.menuInFromLeftReduced,
             callback:null
         },
         "menuOutToLeft": {
@@ -608,6 +659,11 @@ removeOverlayPanels(self=this){
             easing:'ease-in-out',
             duration:500,
             menuPercentage:33,
+            callback:null,
+            prefersReducedMotion:"menuOutToLeftReduced"
+        },
+        "menuOutToLeftReduced": {
+            forwardTransition: this.menuOutToLeftReduced,
             callback:null
         },
         "menuInFromRight": {
@@ -617,7 +673,12 @@ removeOverlayPanels(self=this){
            easing:'ease-in-out',
            duration:500,
            menuPercentage:33,
-           callback:null
+           callback:null,
+           prefersReducedMotion:"menuInFromRightReduced"
+        },
+        "menuInFromRightReduced": {
+            forwardTransition: this.menuInFromRightReduced,
+            callback:null
         },
         "menuOutToRight": {
             forwardTransition: this.menuOutToRight,
@@ -626,6 +687,11 @@ removeOverlayPanels(self=this){
             easing: 'ease-in-out',
             duration:500,
             menuPercentage:33,
+            callback:null,
+            prefersReducedMotion:"menuOutToRightReduced"
+        },
+        "menuOutToRightReduced": {
+            forwardTransition: this.menuOutToRightReduced,
             callback:null
         },
         "menuInFromTop": {
@@ -635,6 +701,11 @@ removeOverlayPanels(self=this){
             easing:'ease-in-out',
             duration:500,
             menuPercentage:33,
+            callback:null,
+            prefersReducedMotion:"menuInFromTopReduced"
+        },
+        "menuInFromTopReduced": {
+            forwardTransition: this.menuInFromTopReduced,
             callback:null
         },
         "menuOutToTop": {
@@ -644,6 +715,11 @@ removeOverlayPanels(self=this){
             easing: 'ease-in-out', 
             duration:500,
             menuPercentage:33,
+            callback:null,
+            prefersReducedMotion:"menuOutToTopReduced"
+        },
+        "menuOutToTopReduced": {
+            forwardTransition: this.menuOutToTopReduced,
             callback:null
         },
         "spinIn": {
@@ -652,7 +728,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
            duration:1000,
-           callback:null
+           callback:null,
+           prefersReducedMotion:"cutIn"
         },
         "spinOut":{
             forwardTransition: this.spinOut,
@@ -660,7 +737,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:1000,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "rotateStack": {
             forwardTransition: this.rotateStack,
@@ -681,7 +759,8 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 30px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
            duration:500,
-           callback:null
+           callback:null,
+           prefersReducedMotion:"cutIn"
         },
         "swipeOutToBottom": {
             forwardTransition: this.swipeOutToBottom,
@@ -689,7 +768,8 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "swipeInFromLeft": {
             forwardTransition: this.swipeInFromLeft,
@@ -697,7 +777,8 @@ removeOverlayPanels(self=this){
             boxShadow:  "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "swipeOutToLeft": {
             forwardTransition: this.swipeOutToLeft,
@@ -705,7 +786,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "swipeInFromRight": {
             forwardTransition: this.swipeInFromRight,
@@ -713,7 +795,8 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "swipeOutToRight": {
             forwardTransition: this.swipeOutToRight,
@@ -721,7 +804,8 @@ removeOverlayPanels(self=this){
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             easing: 'ease-in-out',
             duration:500,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "swipeInFromTop": {
             forwardTransition: this.swipeInFromTop,
@@ -729,7 +813,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         },
         "swipeOutToTop": {
             forwardTransition: this.swipeOutToTop,
@@ -737,7 +822,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
             duration:500,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutOut"
         },
         "zoomIn": {
             forwardTransition: this.zoomIn,
@@ -745,7 +831,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
 
         },
         "zoomOut":{
@@ -754,7 +841,8 @@ removeOverlayPanels(self=this){
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            callback:null
+            callback:null,
+            prefersReducedMotion:"cutIn"
         }
     }
     // These panels are used internally in various transitions (e.g., fadeInFromBlack). Not intended to be accessed directly from user code.
@@ -765,8 +853,10 @@ removeOverlayPanels(self=this){
             "blackpanel",
             "graypanel",
             "whitepanel",
+             /* Does not work in Safari. Investigating. 
             "flippanel",
             "flipbackgroundpanel"
+            */
         ];
         overlayPanels.forEach(element => {
             overlaypanel = document.createElement('div');
@@ -898,7 +988,7 @@ resetPanel(panelSelector,self=this){
         self.moveToTos(temp,self);
         self.normalizeStack(self)
         self.crossDissolveIn(args);
-        /* Maybe go back to this with the next version of Safari. Bug seems to be fixed in Safari Technology Preview.
+        /* This *specific* bug (though not the one with flip transitions) seems to be fixed in Safari Technology Preview. Maybe go back to this with the next version of Safari. IF SO, be SURE to change this to use Web Locks, like crossDissolveIn, above.
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
         self.resetPanel(args.selectedPanel,self);
         self.moveToTos(args.selectedPanel,self);
@@ -995,7 +1085,7 @@ resetPanel(panelSelector,self=this){
         args.fadePanel = self.specialtyPanels.whitepanel;
         self.doFadeOut(args);
     }
-  /* async flipInX(args){
+  /* Does not work in Safari. Investigating. async flipInX(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInX"];
         self.resetPanel(self.specialtyPanels.flippanel,self);
@@ -1029,6 +1119,7 @@ resetPanel(panelSelector,self=this){
         animation.cancel();
         args.finishHandler();
     }
+    Does not work in Safari. Investigating. 
     async flipInY(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInY"];
@@ -1064,6 +1155,7 @@ resetPanel(panelSelector,self=this){
         args.finishHandler();
         
     }
+    Does not work in Safari. Investigating. 
     async flipOutX(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipOutX"];
@@ -1096,7 +1188,7 @@ resetPanel(panelSelector,self=this){
         animation.cancel();
         args.finishHandler();
     }
-   
+   Does not work in Safari. Investigating. 
     async flipOutY(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipOutY"];
@@ -1312,6 +1404,18 @@ resetPanel(panelSelector,self=this){
         }
         self.performAnimation(args);
     }
+    menuInFromBottomReduced(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["menuInFromBottom"];
+        let menuPercentage =  100 - dispatchEntry.menuPercentage;
+        args.selectedPanel.style.transform = "translateY(" + menuPercentage + "%)";
+        self.moveToTos(args.selectedPanel,self);
+        args.selectedPanel.style.display = "block";
+        self.performCallback(args);
+    }
+
     menuOutToBottom(args){
         let self = args.self;
         self.moveToTos(args.selectedPanel,self);
@@ -1324,6 +1428,13 @@ resetPanel(panelSelector,self=this){
             self.performCallback(args);
         }
         self.performAnimation(args);
+    }
+    menuOutToBottomReduced(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.style.transform = "translateY(0%)";
+        self.performCallback(args);
     }
     menuInFromLeft(args){
         let self = args.self;
@@ -1341,6 +1452,17 @@ resetPanel(panelSelector,self=this){
         }
         self.performAnimation(args);
     }
+    menuInFromLeftReduced(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["menuInFromLeft"];
+        let menuPercentage =  100 - dispatchEntry.menuPercentage;
+        args.selectedPanel.style.transform = "translateX(-" +  menuPercentage + "%)";
+        self.moveToTos(args.selectedPanel,self);
+        args.selectedPanel.style.display = "block";
+        self.performCallback(args);
+    }
     menuOutToLeft(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["menuOutToLeft"];
@@ -1352,6 +1474,13 @@ resetPanel(panelSelector,self=this){
             self.performCallback(args);
         }
         self.performAnimation(args);
+    }
+    menuOutToLeftReduced(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.style.transform = "translateX(0%)";
+        self.performCallback(args);
     }
     menuInFromRight(args){
         let self = args.self;
@@ -1369,6 +1498,17 @@ resetPanel(panelSelector,self=this){
         }
         self.performAnimation(args);
     }
+    menuInFromRightReduced(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["menuInFromRight"];
+        let menuPercentage =  100 - dispatchEntry.menuPercentage;
+        args.selectedPanel.style.transform = "translateX(" +  menuPercentage + "%)";
+        self.moveToTos(args.selectedPanel,self);
+        args.selectedPanel.style.display = "block";
+        self.performCallback(args);
+    }
     menuOutToRight(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["menuOutToRight"];
@@ -1380,6 +1520,13 @@ resetPanel(panelSelector,self=this){
             self.performCallback(args);
         }
         self.performAnimation(args);
+    }
+    menuOutToRightReduced(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.style.transform = "translateX(0%)";
+        self.performCallback(args);
     }
     menuInFromTop(args){
         let self = args.self;
@@ -1397,6 +1544,17 @@ resetPanel(panelSelector,self=this){
         }
         self.performAnimation(args);
     }
+    menuInFromTopReduced(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        let dispatchEntry = self.dispatchTable["menuInFromTop"];
+        let menuPercentage =  100 - dispatchEntry.menuPercentage;
+        args.selectedPanel.style.transform = "translateY(-" + menuPercentage + "%)";
+        self.moveToTos(args.selectedPanel,self);
+        args.selectedPanel.style.display = "block";
+        self.performCallback(args);
+    }
     menuOutToTop(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["menuOutToTop"];
@@ -1408,6 +1566,13 @@ resetPanel(panelSelector,self=this){
             self.performCallback(args);
         }
         self.performAnimation(args);
+    }
+    menuOutToTopReduced(args){
+        let self = args.self;
+        self.moveToBos(args.selectedPanel,self);
+        self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.style.transform = "translateY(0%)";
+        self.performCallback(args);
     }
     spinIn(args){
         let self = args.self;
