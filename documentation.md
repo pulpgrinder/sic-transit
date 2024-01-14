@@ -34,7 +34,7 @@ Set up a new instance of SicTransit named `demoSic`, associate it with a contain
 
 `const demoSic = new SicTransit("#democontainer", ".demopanel");`
 
-This has already been done for you on this demo page. `demoSic` has been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4`. There are also some  "loose" `divs` at the bottom, `#panel5` and `#panel6` (we'll be adding these to the container later). 
+This has already been done for you on this demo page. `demoSic` has been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4`.
 
 The layout and content for these panels has intentionally been made very basic, to avoid distraction from the workings. In your own code, the panels can contain arbitrarily complex content (e.g., an entire screen for a mobile device). You should also set the CSS for your panels to (e.g.) make sure that the panels have the right size and so on for your application. Caveat: make sure to set a background color for your panels, or panels at lower levels of the stack may show through.
 
