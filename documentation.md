@@ -392,7 +392,7 @@ Transfers a panel from the DOM (or another instance of SicTransit) into this one
 
 Example:
 
-                firstSic.transferPanel("#mycoolpanel");
+    firstSic.transferPanel("#mycoolpanel");
 
 
 
@@ -429,8 +429,8 @@ An explicit DOM element. This form is mostly  used for internal SicTransit opera
 
 Example:
 
-const newpanel =  document.createElement('div');
-newpanel.innerHTML = "<h1>Hi, there!</h1>";
-firstSic.showPanel(newpanel);
+    const newpanel =  document.createElement('div');
+    newpanel.innerHTML = "<h1>Hi, there!</h1>";
+    firstSic.showPanel(newpanel);
 
 This is a bare-bones example. You'll likely need to add some CSS to your dymamically generated panel to make it work right. In particular, make sure it has a background color, as noted above. Depending on how your other CSS is set up, you may also need to use some CSS to make sure it's the same size as the other panel.
