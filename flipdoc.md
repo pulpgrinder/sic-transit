@@ -8,12 +8,12 @@ These transitions provide a "flip card" effect. `flipInX` and `flipOutX` rotate 
 // Display #panel1 using a flipcard effect
 // about the X axis
 
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"flipInX"});
+demoSic.performTransition({panelSelector:"#panel1",transitionName:"flipInX"});
 ```
 
 ```javascript
 // Hide #panel1 by using an inverse flipcard
 // effect about the Y axis.
 
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"flipOutY"});
+demoSic.performTransition({panelSelector:"#panel1",transitionName:"flipOutY"});
 ```

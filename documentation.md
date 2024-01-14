@@ -20,7 +20,7 @@ Basically, there's a container div which contains multiple panel divs.
 
 Setting up a new instance of SicTransit requires only two parameters, an id for the container div and a CSS class for the panels.
 
-`const mySic = new SicTransit(containerId, panelClass);`
+`const sicName = new SicTransit(containerId, panelClass);`
 
 `containerId`: The ID of the container `div` that holds the panels.
 
@@ -30,11 +30,11 @@ Put all your initial panel `divs` within your container `div`. Make sure each on
 
 Example:
 
-Set up a new instance of SicTransit named `firstSic`, associate it with a container `div` named `#firstcontainer`, and tell it that the nested panel `divs` in the container use the class `.demopanel`.
+Set up a new instance of SicTransit named `demoSic`, associate it with a container `div` named `#democontainer`, and tell it that the nested panel `divs` in the container use the class `.demopanel`.
 
-`const firstSic = new SicTransit("#firstcontainer", ".demopanel");`
+`const demoSic = new SicTransit("#democontainer", ".demopanel");`
 
-This has already been done for you on this demo page. `firstSic` has been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4`. There are also some  "loose" `divs` at the bottom, `#panel5` and `#panel6` (we'll be adding these to the container later). 
+This has already been done for you on this demo page. `demoSic` has been preloaded with `.demopanel` `divs` in the HTML markup for the page -- `#panel1` through `#panel4`. There are also some  "loose" `divs` at the bottom, `#panel5` and `#panel6` (we'll be adding these to the container later). 
 
 The layout and content for these panels has intentionally been made very basic, to avoid distraction from the workings. In your own code, the panels can contain arbitrarily complex content (e.g., an entire screen for a mobile device). You should also set the CSS for your panels to (e.g.) make sure that the panels have the right size and so on for your application. Caveat: make sure to set a background color for your panels, or panels at lower levels of the stack may show through.
 
@@ -59,7 +59,7 @@ Swipes are probably the most commonly used transition. The specified panel will 
 // Swipe #panel1 in from the right, and make it the
 // current visible panel.
 
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"swipeInFromRight"});
+demoSic.performTransition({panelSelector:"#panel1",transitionName:"swipeInFromRight"});
 ```
 
 Note: in this documentation, green code (like the above) is live code. It can be run by switching to the demo screen with the Demo button, then run with the Run Demo button.
@@ -67,7 +67,7 @@ Note: in this documentation, green code (like the above) is live code. It can be
 ```javascript
 // Swipe #panel1 out to the top, revealing the previous panel. Note that swiping out to a different direction than the swipe in is fine. In general, this applies to all SicTransit transtiions other than the menu transitions.
 
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"swipeOutToTop"});
+demoSic.performTransition({panelSelector:"#panel1",transitionName:"swipeOutToTop"});
 
 ```
 
@@ -81,7 +81,7 @@ These transitions make the change immediately, without any animation effects (li
 // Move "#panel2" to the top of the stack
 // and display it immediately.
 
-firstSic.performTransition({panelSelector:"#panel2",transitionName:"cutIn"});
+demoSic.performTransition({panelSelector:"#panel2",transitionName:"cutIn"});
 ```
 
 ```javascript
@@ -90,7 +90,7 @@ firstSic.performTransition({panelSelector:"#panel2",transitionName:"cutIn"});
 // one down from the top of the stack will become
 // visible.
 
-firstSic.performTransition({panelSelector:"#panel2",transitionName:"cutOut"});
+demoSic.performTransition({panelSelector:"#panel2",transitionName:"cutOut"});
 ```
 
 #### `crossDissolveIn/crossDissolveOut` 
@@ -102,14 +102,14 @@ These transitions fade in one panel, while simultaneously fading out another.
 // gradually fade it in, while fading out the 
 // panel which was the previous top of the stack.
 
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"crossDissolveIn"});
+demoSic.performTransition({panelSelector:"#panel1",transitionName:"crossDissolveIn"});
 ```
 
 ```javascript
 // Gradually fade out "#panel1", while fading
 // in the panel underneath it on the stack.
 
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"crossDissolveOut"});
+demoSic.performTransition({panelSelector:"#panel1",transitionName:"crossDissolveOut"});
 ```
 
 #### `fadeInFromBlack, fadeInFromGray, fadeInFromWhite, fadeOutToBlack, fadeOutToGray, fadeOutToWhite`
@@ -123,14 +123,14 @@ There are six fade transitions,  a `fadeInFrom` and a `fadeOutTo` each for white
 // Gradually fade #panel3 in from a solid black
 // background panel.
 
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"fadeInFromBlack"});
+demoSic.performTransition({panelSelector:"#panel3",transitionName:"fadeInFromBlack"});
 ```
 
 ```javascript
 // Gradually fade "#panel3" out,
 // leaving a solid gray background panel.
 
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"fadeOutToGray"})
+demoSic.performTransition({panelSelector:"#panel3",transitionName:"fadeOutToGray"})
 ```
 
 As always, you can edit the above code snippets and rerun them if you want to see the other fade transitions.
@@ -145,25 +145,25 @@ These transitions use growing or shrinking circles through which the panel in qu
 // The iris surround will be whichever panel was 
 // previously on top of the stack.
 
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisIn"});
+demoSic.performTransition({panelSelector:"#panel3",transitionName:"irisIn"});
 ```
 
 
 ```javascript
 // Hide "#panel3" using an iris effect.
 
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisOut"});
+demoSic.performTransition({panelSelector:"#panel3",transitionName:"irisOut"});
 ```
 
 
 ```javascript
 // Iris "#panel3" in from a white background.
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisInFromWhite"});
+demoSic.performTransition({panelSelector:"#panel3",transitionName:"irisInFromWhite"});
 ```
 
 ```javascript
 // Iris "#panel3" out to a black background.
-firstSic.performTransition({panelSelector:"#panel3",transitionName:"irisOutToBlack"});
+demoSic.performTransition({panelSelector:"#panel3",transitionName:"irisOutToBlack"});
 ```
 
 
@@ -175,13 +175,13 @@ The `menuInFrom/menuOutTo` transitions do a "partial swipe" (see the swipe trans
 // Display "#panel1" as a menu on the right 
 // side of the panel container.
 
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"menuInFromRight"});
+demoSic.performTransition({panelSelector:"#panel1",transitionName:"menuInFromRight"});
 ```
 
 ```javascript
 // Hide the previous "#panel1" menu.
 
-firstSic.performTransition({panelSelector:"#panel1",transitionName:"menuOutToRight"});
+demoSic.performTransition({panelSelector:"#panel1",transitionName:"menuOutToRight"});
 ```
 
 The other directions (left, top, and bottom) work the same, other than the direction from/to which the menu appears/disappears. As usual, you can edit the code above to experiment with them. 
@@ -194,12 +194,12 @@ These transitions have the visual effect of a "hinge" on the specified side (lik
 
 ```javascript
 // Hinge "#panel2" in from the left side.
-firstSic.performTransition({panelSelector:"#panel2",transitionName:"hingeInFromLeft"});
+demoSic.performTransition({panelSelector:"#panel2",transitionName:"hingeInFromLeft"});
 ```
 
 ```javascript
 // Hinge "#panel2" out to the top.
-firstSic.performTransition({panelSelector:"#panel2",transitionName:"hingeOutToTop"});
+demoSic.performTransition({panelSelector:"#panel2",transitionName:"hingeOutToTop"});
 ```
 
 Edit the code samples above to see the hinge effect applied to different sides.
@@ -214,7 +214,7 @@ These transitions provide a "spinning newspaper" effect, as seen in many old mov
 // Transition panel "#panel2" in, using the 
 // spinning newspaper effect
 
-firstSic.performTransition({panelSelector:"#panel2",transitionName:"spinIn"});
+demoSic.performTransition({panelSelector:"#panel2",transitionName:"spinIn"});
 
 ```
 
@@ -222,7 +222,7 @@ firstSic.performTransition({panelSelector:"#panel2",transitionName:"spinIn"});
 // Transition panel "#panel2" out, using the
 // spinning newspaper effect
 
-firstSic.performTransition({panelSelector:"#panel2",transitionName:"spinOut"});
+demoSic.performTransition({panelSelector:"#panel2",transitionName:"spinOut"});
 
 ```
 
@@ -234,7 +234,7 @@ This is handy if you want to remove several elements from the stack at once, in 
 
 ```javascript
 
-firstSic.performTransition({transitionName:"rotateStack",stackRotationNumber:3});
+demoSic.performTransition({transitionName:"rotateStack",stackRotationNumber:3});
 // panel that was third from the top of the stack is now on top.
 
 ```
@@ -247,7 +247,7 @@ The `swap` transition reverses the top two entries on the panel stack. For examp
 ```javascript
 // Reverse the order of the top two elements on the panel stack.
 
-firstSic.performTransition({transitionName:"swap"})
+demoSic.performTransition({transitionName:"swap"})
 ```
 
 
@@ -257,12 +257,12 @@ These transitions provide a "zoom lens" effect. `zoomIn` causes the selected pan
 
 ```javascript
 // Use a zoom transition to display #panel4
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"zoomIn"});
+demoSic.performTransition({panelSelector:"#panel4",transitionName:"zoomIn"});
 ```
 
 ```javascript
 // Use a zoom transition to hide #panel4
-firstSic.performTransition({panelSelector:"#panel4",transitionName:"zoomOut"});
+demoSic.performTransition({panelSelector:"#panel4",transitionName:"zoomOut"});
 
 ```
 
@@ -276,7 +276,7 @@ Returns whatever panel is currently at the bottom of the instance's panel stack 
 Returns whatever panel is currently at the top of the instance's panel stack as an HTML element.
 
 #### `getContainerId()`
-Returns the user-specified ID that was given for the panel container when the instance was created. Returns '#firstcontainer' for this page.
+Returns the user-specified ID that was given for the panel container when the instance was created. Returns '#democontainer' for this page.
 
 #### `getPanelClass()`
 Returns the user-specified CSS class that was given when the instance was created. Returns '.demopanel' for this page.
@@ -312,18 +312,18 @@ There are other parameters that might be of interest to advanced users, in parti
 Examples:
 
 ##### Duration
-`firstSic.setParameter("duration",3000,"swipeInFromLeft");` -- sets the duration for the `swipeInFromLeft` transition to 3000 milliseconds (3 seconds) rather than the default 500 ms.
+`demoSic.setParameter("duration",3000,"swipeInFromLeft");` -- sets the duration for the `swipeInFromLeft` transition to 3000 milliseconds (3 seconds) rather than the default 500 ms.
 
 ##### menuPercentage
 
-`firstSic.setParameter("menuPercentage",50,"menuInFromRight");`
-`firstSic.setParameter("menuPercentage",50,"menuInFromRight");`
+`demoSic.setParameter("menuPercentage",50,"menuInFromRight");`
+`demoSic.setParameter("menuPercentage",50,"menuInFromRight");`
 
 These set the coverage for the right-side menu transitions to 50% coverage rather than the default 33% coverage. Note that in most cases you should set the menuIn and menuOut menuPercentage to the same value. Having different values will not cause an error, but will produce odd effects that you probably don't want in other than very special circumstances.
 
 You can also set the menu percentage for **all** menu transitions by using "*" for the transition name.
 
-    firstSic.setParameter("menuPercentage",50,"*");
+    demoSic.setParameter("menuPercentage",50,"*");
 
 ##### Callbacks
 
@@ -339,7 +339,7 @@ Suppose we have a callback function like this:
 
 We can have this function called whenever a `swipeInFromLeft` transition is completed by using:
 
-    firstSic.setParameter("callback",myCallBackFunc,"swipeInFromLeft");
+    demoSic.setParameter("callback",myCallBackFunc,"swipeInFromLeft");
 
 
 We can also set a callback function for **all** transitions. If our function is:
@@ -350,7 +350,7 @@ We can also set a callback function for **all** transitions. If our function is:
 
 We'd use:
 
-    firstSic.setParameter("callback",anotherCallBackFunc,"*");
+    demoSic.setParameter("callback",anotherCallBackFunc,"*");
 
 
 Note the use of args.transitionName in `anotherCallBackFunc()` The args object passed to a callback has the following data available for your use:
@@ -377,13 +377,13 @@ Make the selected `div` a SicTransit panel, move it to the top of the stack and 
 
 Example:
 
-    firstSic.showPanel("#mycoolpanel");
+    demoSic.showPanel("#mycoolpanel");
 
 #### `stackDump()`
 Prints the current state of the panel stack to the console. This is handy if you are debugging a new transition.
 Example:
 
-    firstSic.stackDump();
+    demoSic.stackDump();
 
 #### `transferPanel(selector)`
 
@@ -391,7 +391,7 @@ Transfers a panel from the DOM (or another instance of SicTransit) into this one
 
 Example:
 
-    firstSic.transferPanel("#mycoolpanel");
+    demoSic.transferPanel("#mycoolpanel");
 
 
 
@@ -413,13 +413,13 @@ Integers are intepreted as numeric indices into the internal panel stack. A nega
 
 Examples:
 
-Use an integer value to move the panel one up from the bottom of the firstSic stack to the top of the stack and display it.
+Use an integer value to move the panel one up from the bottom of the demoSic stack to the top of the stack and display it.
 
-    firstSic.showPanel(1);
+    demoSic.showPanel(1);
 
-Use an integer value to move the panel one down from the top of the firstSic stack to the top of the stack and display it.
+Use an integer value to move the panel one down from the top of the demoSic stack to the top of the stack and display it.
 
-    firstSic.showPanel(-1);
+    demoSic.showPanel(-1);
 
 
 
@@ -430,6 +430,6 @@ Example:
 
     const newpanel =  document.createElement('div');
     newpanel.innerHTML = "<h1>Hi, there!</h1>";
-    firstSic.showPanel(newpanel);
+    demoSic.showPanel(newpanel);
 
 This is a bare-bones example. You'll likely need to add some CSS to your dymamically generated panel to make it work right. In particular, make sure it has a background color, as noted above. Depending on how your other CSS is set up, you may also need to use some CSS to make sure it's the same size as the other panel.

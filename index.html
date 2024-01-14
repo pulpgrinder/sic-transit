@@ -47,7 +47,7 @@
         let logger = null;
         let oldLog = console.log;
         let oldError = console.error;
-        let firstSic = new SicTransit("#democontainer",".demopanel");
+        let demoSic = new SicTransit("#democontainer",".demopanel");
         async function loadDocs(){
           const response = await fetch("documentation.md");
           let doctext = await response.text();
