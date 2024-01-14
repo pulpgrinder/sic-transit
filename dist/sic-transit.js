@@ -428,7 +428,6 @@ removeOverlayPanels(self=this){
             duration:2000,
             callback:null
         },
-        /*
         "flipInX":{
             forwardTransition: this.flipInX,
             firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
@@ -460,7 +459,7 @@ removeOverlayPanels(self=this){
             easing:'linear',
             duration:1000,
             callback:null
-        }, */
+        },
         "hingeInFromBottom":{
             forwardTransition: this.hingeInFromBottom,
             firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
@@ -766,8 +765,8 @@ removeOverlayPanels(self=this){
             "blackpanel",
             "graypanel",
             "whitepanel",
-//            "flippanel",
-//            "flipbackgroundpanel"
+            "flippanel",
+            "flipbackgroundpanel"
         ];
         overlayPanels.forEach(element => {
             overlaypanel = document.createElement('div');
@@ -990,7 +989,7 @@ resetPanel(panelSelector,self=this){
         args.fadePanel = self.specialtyPanels.whitepanel;
         self.doFadeOut(args);
     }
-   /* async flipInX(args){
+  /* async flipInX(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["flipInX"];
         self.resetPanel(self.specialtyPanels.flippanel,self);
@@ -1129,9 +1128,12 @@ resetPanel(panelSelector,self=this){
     hinge(args){
         let self = args.self;
         self.resetPanel(args.selectedPanel,self);
+        self.container.style["-webkit-perspective"] =  "1000px";
         self.container.style.perspective =  "1000px";
+        self.container.style["-webkit-perspectiveOrigin"] =  "left";
         self.container.style.perspectiveOrigin = "left";
         args.finishHandler = function(){
+            args.selectedPanel.style["-webkit-transformOrigin"] = "center";
             args.selectedPanel.style.transformOrigin = "center";
             self.performCallback(args);
         }
@@ -1141,6 +1143,7 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["hingeInFromBottom"];
         args.firstanimation = dispatchEntry.firstanimation;
+        args.selectedPanel.style["-webkit-transformOrigin"] = "bottom";
         args.selectedPanel.style.transformOrigin = "bottom";
         self.hinge(args);
     }
@@ -1148,6 +1151,7 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["hingeOutToBottom"];
         args.firstanimation = dispatchEntry.firstanimation;
+        args.selectedPanel.style["-webkit-transformOrigin"] = "bottom";
         args.selectedPanel.style.transformOrigin = "bottom";
         self.hinge(args);
     }
@@ -1155,6 +1159,7 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["hingeInFromLeft"];
         args.firstanimation = dispatchEntry.firstanimation;
+        args.selectedPanel.style["-webkit-transformOrigin"] = "left";
         args.selectedPanel.style.transformOrigin = "left";
         self.hinge(args);
     }
@@ -1162,6 +1167,7 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["hingeOutToLeft"];
         args.firstanimation = dispatchEntry.firstanimation;
+        args.selectedPanel.style["-webkit-transformOrigin"] = "left";
         args.selectedPanel.style.transformOrigin = "left";
         self.hinge(args);
     }
@@ -1169,6 +1175,7 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["hingeInFromRight"];
         args.firstanimation = dispatchEntry.firstanimation;
+        args.selectedPanel.style["-webkit-transformOrigin"] = "right";
         args.selectedPanel.style.transformOrigin = "right";
         self.hinge(args);
     }
@@ -1176,6 +1183,7 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["hingeOutToRight"];
         args.firstanimation = dispatchEntry.firstanimation;
+        args.selectedPanel.style["-webkit-transformOrigin"] = "right";
         args.selectedPanel.style.transformOrigin = "right";
         self.hinge(args);
     }
@@ -1183,6 +1191,7 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["hingeInFromTop"];
         args.firstanimation = dispatchEntry.firstanimation;
+        args.selectedPanel.style["-webkit-transformOrigin"] = "top";
         args.selectedPanel.style.transformOrigin = "top";
         self.hinge(args);
     }
@@ -1190,6 +1199,7 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["hingeOutToTop"];
         args.firstanimation = dispatchEntry.firstanimation;
+        args.selectedPanel.style["-webkit-transformOrigin"] = "top";
         args.selectedPanel.style.transformOrigin = "top";
         self.hinge(args);
     }

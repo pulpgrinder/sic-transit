@@ -135,7 +135,6 @@ firstSic.performTransition({panelSelector:"#panel3",transitionName:"fadeOutToGra
 
 As always, you can edit the above code snippets and rerun them if you want to see the other fade transitions.
 
-
 #### `irisIn/irisOut, irisInFrom/irisOutTo`
 
 These transitions use growing or shrinking circles through which the panel in question is visible (similar to a "camera iris" effect). `irisIn` and `irisOut` work with whatever elements are already on the stack, while `irisInFromWhite`, `irisOutToWhite`, `irisInFromBlack`, `irisOutToBlack`, `irisInFromGray`, and `irisOutToGray` use panels of the specified color for the iris surround.
