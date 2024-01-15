@@ -3,11 +3,6 @@
     src: url(fonts/Bocklin.ttf);
   }
 
-  @font-face {
-    font-family: Baskerville;
-    src: url(fonts/LibreBaskerville-Regular.ttf);
-  }
-
 body{
     height:100vh;
     width:100vw;
@@ -35,7 +30,7 @@ p > code {
     position:relative;
 }
 #docs{
-    font-family: Baskerville;
+    font-family: serif;
     max-width:60em;
     padding:1em;
     word-wrap:break-word;
