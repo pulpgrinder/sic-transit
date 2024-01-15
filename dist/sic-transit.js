@@ -442,44 +442,7 @@ removeOverlayPanels(self=this){
             callback:null,
             prefersReducedMotion:"cutOut"
         },
-        /* Does not work in Safari. Investigating. 
-        "flipInX":{
-            forwardTransition: this.flipInX,
-            firstanimation: [{display:"block", transform: "rotateX(0deg)"}, {display:"block", transform: "rotateX(180deg)"}],
-            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            easing:'linear',
-            duration:1000,
-            callback:null,
-            prefersReducedMotion:"cutIn"
-        },
-        "flipOutX":{
-            forwardTransition: this.flipOutX,
-            firstanimation: [{display:"block", transform: "rotateX(180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
-            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            easing:'linear',
-            duration:1000,
-            callback:null,
-            prefersReducedMotion:"cutOut"
-        },
-        "flipInY":{
-            forwardTransition: this.flipInY,
-            firstanimation: [{display:"block", transform: "rotateY(0deg)"}, {display:"block", transform: "rotateY(180deg)"}],
-            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            easing:'linear',
-            duration:1000,
-            callback:null,
-            prefersReducedMotion:"cutIn"
-        },
-        "flipOutY":{
-            forwardTransition: this.flipOutY,
-            firstanimation: [{display:"block", transform: "rotateY(180deg)"}, {display:"block", transform: "rotateY(0deg)"}],
-            boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
-            easing:'linear',
-            duration:1000,
-            callback:null,
-            prefersReducedMotion:"cutOut"
-        },
-        */
+
         "hingeInFromBottom":{
             forwardTransition: this.hingeInFromBottom,
             firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
@@ -852,11 +815,7 @@ removeOverlayPanels(self=this){
         let overlayPanels = [
             "blackpanel",
             "graypanel",
-            "whitepanel",
-             /* Does not work in Safari. Investigating. 
-            "flippanel",
-            "flipbackgroundpanel"
-            */
+            "whitepanel"
         ];
         overlayPanels.forEach(element => {
             overlaypanel = document.createElement('div');
@@ -1085,144 +1044,7 @@ resetPanel(panelSelector,self=this){
         args.fadePanel = self.specialtyPanels.whitepanel;
         self.doFadeOut(args);
     }
-  /* Does not work in Safari. Investigating. async flipInX(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["flipInX"];
-        self.resetPanel(self.specialtyPanels.flippanel,self);
-        self.specialtyPanels.flippanel.replaceChildren([]);
-        self.specialtyPanels.flippanel.style.display = "none";
-        self.removeFromStack(args.selectedPanel,self);
-        self.resetPanel(args.selectedPanel,self);
-        args.selectedPanel.classList.add("sic-transit-flipped-x");
-        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
-        let tosItem = self.panelStack.pop();
-        self.resetPanel(tosItem,self);
-        self.specialtyPanels.flippanel.appendChild(tosItem);
-        self.specialtyPanels.flippanel.style.display = "block";
-        self.moveToTos(self.specialtyPanels.flipbackgroundpanel,self);
-        self.container.append(self.specialtyPanels.flipbackgroundpanel);
-        self.container.append(self.specialtyPanels.flippanel);
-        self.moveToTos(self.specialtyPanels.flippanel,self);
-        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
-        args.finishHandler = function(){
-            args.selectedPanel.classList.remove("sic-transit-flipped-x");
-            self.specialtyPanels.flippanel.replaceChildren([]);
-            self.container.append(tosItem);
-            self.container.append(args.selectedPanel);
-            self.resetPanel(args.selectedPanel,self);
-            self.panelStack.push(tosItem);
-            self.panelStack.push(args.selectedPanel);
-            self.normalizeStack(self);
-        }
-        await animation.finished;
-        animation.commitStyles();
-        animation.cancel();
-        args.finishHandler();
-    }
-    Does not work in Safari. Investigating. 
-    async flipInY(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["flipInY"];
-        self.resetPanel(self.specialtyPanels.flippanel,self);
-        self.specialtyPanels.flippanel.replaceChildren([]);
-        self.specialtyPanels.flippanel.style.display = "none";
-        self.removeFromStack(args.selectedPanel,self);
-        self.resetPanel(args.selectedPanel,self);
-        args.selectedPanel.classList.add("sic-transit-flipped-y");
-        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
-        let tosItem = self.panelStack.pop();
-        self.resetPanel(tosItem,self);
-        self.specialtyPanels.flippanel.appendChild(tosItem);
-        self.specialtyPanels.flippanel.style.display = "block";
-        self.moveToTos(self.specialtyPanels.flipbackgroundpanel,self);
-        self.container.append(self.specialtyPanels.flipbackgroundpanel);
-        self.moveToTos(self.specialtyPanels.flippanel,self);
-        self.container.append(self.specialtyPanels.flippanel);
-        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
-        args.finishHandler = function(){
-            args.selectedPanel.classList.remove("sic-transit-flipped-y");
-            self.specialtyPanels.flippanel.replaceChildren([]);
-            self.container.append(tosItem);
-            self.container.append(args.selectedPanel);
-            self.resetPanel(args.selectedPanel,self);
-            self.panelStack.push(tosItem);
-            self.panelStack.push(args.selectedPanel);
-            self.normalizeStack(self);
-        }
-        await animation.finished;
-        animation.commitStyles();
-        animation.cancel();
-        args.finishHandler();
-        
-    }
-    Does not work in Safari. Investigating. 
-    async flipOutX(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["flipOutX"];
-        self.specialtyPanels.flippanel.replaceChildren([]);
-        self.specialtyPanels.flippanel.style.display = "none";
-        self.specialtyPanels.flippanel.style.transform = "rotateX(180deg)";
-        self.moveToTos(args.selectedPanel,self);
-        self.panelStack.pop();
-        let tosItem = self.panelStack.pop();
-        self.moveToTos(self.specialtyPanels.flipbackgroundpanel,self);
-        self.container.append(self.specialtyPanels.flipbackgroundpanel);
-        self.specialtyPanels.flippanel.appendChild(tosItem);
-        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
-        self.specialtyPanels.flippanel.style.display = "block";
-        self.container.append(self.specialtyPanels.flippanel);
-        self.moveToTos(self.specialtyPanels.flippanel,self);
-        args.selectedPanel.classList.add("sic-transit-flipped-x");
-        args.finishHandler = function(){
-            args.selectedPanel.classList.remove("sic-transit-flipped-x");
-            self.container.append(args.selectedPanel);
-            self.container.append(tosItem);
-            self.panelStack.push(args.selectedPanel);
-            self.panelStack.push(tosItem);
-            self.normalizeStack(self);
-
-        }
-        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});    
-        await animation.finished;
-        animation.commitStyles();
-        animation.cancel();
-        args.finishHandler();
-    }
-   Does not work in Safari. Investigating. 
-    async flipOutY(args){
-        let self = args.self;
-        let dispatchEntry = self.dispatchTable["flipOutY"];
-        self.specialtyPanels.flippanel.replaceChildren([]);
-        self.specialtyPanels.flippanel.style.display = "none";
-        self.specialtyPanels.flippanel.style.transform = "rotateY(180deg)";
-        self.moveToTos(args.selectedPanel,self);
-        self.panelStack.pop();
-        let tosItem = self.panelStack.pop();
-        self.moveToTos(self.specialtyPanels.flipbackgroundpanel,self);
-        self.container.append(self.specialtyPanels.flipbackgroundpanel);
-        self.specialtyPanels.flippanel.appendChild(tosItem);
-        self.specialtyPanels.flippanel.appendChild(args.selectedPanel);
-        self.specialtyPanels.flippanel.style.display = "block";
-        args.selectedPanel.classList.add("sic-transit-flipped-y");
-        self.container.append(self.specialtyPanels.flippanel);
-        self.moveToTos(self.specialtyPanels.flippanel,self);
-        args.finishHandler = function(){
-            args.selectedPanel.classList.remove("sic-transit-flipped-y");
-            self.container.append(args.selectedPanel);
-            self.container.append(tosItem);
-            self.panelStack.push(args.selectedPanel);
-            self.panelStack.push(tosItem);
-            self.normalizeStack(self);
-         
-
-        }
-        const animation = self.specialtyPanels.flippanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});    
-        await animation.finished;
-        animation.commitStyles();
-        animation.cancel();
-        args.finishHandler();
-       
-    } */
+  
     hinge(args){
         let self = args.self;
         self.resetPanel(args.selectedPanel,self);
