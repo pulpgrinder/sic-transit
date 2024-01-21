@@ -48,7 +48,7 @@ SicTransit does not have (or need) "teardown" or "destroy" methods -- instances 
 ## Public Methods
 
 ### `performTransition(args)`
-Transitions are the heart of SicTransit. There are over 50 transitions described below.
+Transitions are the heart of SicTransit. There are over 40 transitions described below.
 
 #### `swipeInFromBottom, swipeOutToBottom, swipeInFromLeft, swipeOutToLeft, swipeInFromRight, swipeOutToRight, swipeInFromTop, swipeOutToTop`
 
@@ -169,24 +169,61 @@ demoSic.performTransition({panelSelector:"#panel3",transitionName:"irisOutToBlac
 
 #### menuInFromBottom, menuOutToBottom,menuInFromLeft, menuOutToLeft,menuInFromRight, menuOutToRight,menuInFromTop, menuOutToTop
 
-The `menuInFrom/menuOutTo` transitions do a "partial swipe" (see the swipe transitions above), sliding the specified panel in/out from/to the specified direction only partially. This is useful for making sliding menus. Valid directions are Left, Right, Top, and Bottom. The default menu coverage is 33%. This can be changed with `setParameter()` (see below). Examples: 
+The `menuInFrom/menuOutTo` transitions do a "partial swipe" (see the swipe transitions above), sliding the specified panel in/out from/to the specified direction only partially. This is useful for making sliding menus. Valid directions are Left, Right, Top, and Bottom. The default menu coverage varies depending on the direction. This can be changed with `setParameter()` (see below). Examples: 
 
 ```javascript
-// Display "#panel1" as a menu on the right 
+// Display "#menupanel" as a menu on the right 
 // side of the panel container.
 
-demoSic.performTransition({panelSelector:"#panel1",transitionName:"menuInFromRight"});
+demoSic.performTransition({panelSelector:"#menupaneltest",transitionName:"menuInFromRight"});
 ```
 
 ```javascript
-// Hide the previous "#panel1" menu.
+// Hide the previous "#menupanel" menu.
 
-demoSic.performTransition({panelSelector:"#panel1",transitionName:"menuOutToRight"});
+demoSic.performTransition({panelSelector:"#menupaneltest",transitionName:"menuOutToRight"});
 ```
 
-The other directions (left, top, and bottom) work the same, other than the direction from/to which the menu appears/disappears. As usual, you can edit the code above to experiment with them. 
+```javascript
+// Display "#menupanel" as a menu on the top 
+// side of the panel container.
 
-*Unlike most transitions, using `menuIn` from one direction and `menuOut` to another, while not causing an error, will produce an odd visual effect that you probably don't want*. 
+demoSic.performTransition({panelSelector:"#menupaneltest",transitionName:"menuInFromTop"});
+```
+
+```javascript
+// Hide the previous "#menupanel" menu.
+
+demoSic.performTransition({panelSelector:"#menupaneltest",transitionName:"menuOutToTop"});
+```
+ As usual, you can edit the code above to experiment with other menu transitions. 
+
+*Unlike most transitions, using `menuIn` from one direction and `menuOut` to another, while not causing an error, will produce an odd visual effect that you probably don't want*.
+
+The CSS for basic menus is minimal. This demo has some extra CSS to add some visual interest (see `sic-demo.css`) You're welcome to use your own CSS to make the menus look like you want them to.
+
+A SicTransit menu has this basic form:
+
+```html
+    <div id="(menupanel id)" class="(Sic Transit panel class">
+        <div class="sic-transit-menucontainer">
+            <div class="sic-transit-menuitem">
+                Menu Item 1
+            </div>
+            <div class="sic-transit-menuitem">
+                Menu Item 2
+            </div>
+            <div class="sic-transit-menuitem">
+                Menu Item 3
+            </div>
+            <div class="sic-transit-menuitem">
+                Menu Item 4
+            </div>
+        </div>
+    </div>
+```
+
+As noted above, you're welcome to apply your own CSS to style `sic-transit-menucontainer` and `sic-transit-menuitem`.
 
 #### hingeInFromTop, hingeOutToTop, hingeInFromBottom, hingeOutToBottom, hingeInFromLeft, hingeOutToLeft, hingeInFromRight, hingeOutToRight
 
@@ -232,10 +269,8 @@ The `rotateStack` transition takes an integer parameter, denoted by `stackRotati
 
 This is handy if you want to remove several elements from the stack at once, in the reverse order of how they were added. For example, suppose you display a menu, then from that display a submenu (and possibly sub-sub-menus, etc.) `rotateStack` would allow you to "unwind" the stack of menus and get back to the original display without removing them explicitly.
 
-```javascript
-
-demoSic.performTransition({transitionName:"rotateStack",stackRotationNumber:3});
-// panel that was third from the top of the stack is now on top.
+`demoSic.performTransition({transitionName:"rotateStack",stackRotationNumber:3});`
+(panel that was third from the top of the stack is now on top).
 
 ```
 
@@ -285,7 +320,7 @@ Returns the user-specified CSS class that was given when the instance was create
 Returns an array of the ids of user-created panels within the panel container, whether there initially or added later. Panels that don't have ids won't be included, nor will the special internal panels (black, white, gray, etc.) that are used in certain transitions.
 
 #### `getTransitionList()`
-Returns an array containing the names of all defined transitions, more than 50 at present.
+Returns an array containing the names of all defined transitions, more than 40 at present.
 
 #### `getZIndex(selector)`
 Returns the current z-index for the selected panel. The visible panel at the top of the stack always has z-index 0. The panels below it have indices of -1, -2, -3... counting down from the top of the stack.
@@ -305,7 +340,7 @@ Some commonly used parameters include:
 
 `callback` -- sets a user-written function that is called when the transition is complete. Default is null.
 
-`menuPercentage` -- controls the percentage of the panel container that gets covered by a menu. Only relevant for the "menu-" transitions (see above), though it will not cause an error if you set it for other transitions. It will simply have no effect. Default is 33%.
+`menuSize` -- controls the size of menu panels (i.e., the amount by which the underlying panel gets covered by the menu). Measured in ems. Only relevant for the "menu-" transitions (see above), though it will not cause an error if you set it for other transitions. It will simply have no effect. Default is 12 em for side menus, 3 em for top and bottom menus.
 
 There are other parameters that might be of interest to advanced users, in particular those defining their own custom transtitions. See the `dispatchTable` object in `sic-transit.js` to learn more.
 
@@ -314,16 +349,13 @@ Examples:
 ##### Duration
 `demoSic.setParameter("duration",3000,"swipeInFromLeft");` -- sets the duration for the `swipeInFromLeft` transition to 3000 milliseconds (3 seconds) rather than the default 500 ms.
 
-##### menuPercentage
+##### menuSize
 
-`demoSic.setParameter("menuPercentage",50,"menuInFromRight");`
-`demoSic.setParameter("menuPercentage",50,"menuInFromRight");`
+`demoSic.setParameter("menuSize",10,"menuInFromRight");`
+`demoSic.setParameter("menuPercentage",10,"menuInFromRight");`
 
-These set the coverage for the right-side menu transitions to 50% coverage rather than the default 33% coverage. Note that in most cases you should set the menuIn and menuOut menuPercentage to the same value. Having different values will not cause an error, but will produce odd effects that you probably don't want in other than very special circumstances.
+These set the coverage for the right-side menu transitions to 10 em rather than the default 12 em.. Note that in most cases you should set the menuIn and menuOut menuSize to the same value. Having different values will not cause an error, but will produce odd effects that you probably don't want in other than very special circumstances.
 
-You can also set the menu percentage for **all** menu transitions by using "*" for the transition name.
-
-    demoSic.setParameter("menuPercentage",50,"*");
 
 ##### Callbacks
 

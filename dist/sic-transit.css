@@ -39,6 +39,7 @@
     */
    z-index:-3000;
 
+   /*  Need this for flip transitions. */
    -webkit-backface-visibility: hidden;
    backface-visibility: hidden;
    -webkit-transform-style: preserve-3d;
@@ -46,6 +47,59 @@
  
 }
 
+.sic-transit-menupanel {
+    background-color: darkblue;
+}
+
+.sic-transit-menupanel .sic-transit-menuitem{
+    padding:0.5em;
+    margin:0;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: auto;
+    cursor:default;
+}
+
+.sic-transit-menupanel .sic-transit-menucontainer {
+    position:relative;
+    padding:0;
+    margin:auto;
+    display:inline-block;
+}
+
+.sic-transit-leftmenupanel {
+    text-align: right;
+    position:relative;
+    padding:0;
+}
+
+.sic-transit-bottommenupanel {
+    text-align: left;
+    position:relative;
+    padding:0;
+}
+
+.sic-transit-topmenupanel {
+    text-align: left;
+    position:absolute;
+    bottom:0;
+    padding:0;
+}
+
+.sic-transit-topmenupanel .sic-transit-menucontainer{
+    position:absolute;
+    bottom:0;
+    margin:0.5em;
+}
+.sic-transit-bottommenupanel .sic-transit-menucontainer{
+    padding-bottom:0.25em;
+}
+.sic-transit-leftmenupanel .sic-transit-menucontainer{
+    margin-left:1em;
+}
+.sic-transit-topmenupanel .sic-transit-menuitem , .sic-transit-bottommenupanel .sic-transit-menuitem {
+    display:inline-block;
+}
 
 /* Classes for specialty panels used in certain transitions. */
 .sic-transit-blackpanel {
@@ -76,3 +130,12 @@
     display:block;
     background-color:gray;
 }
+
+.sic-transit-flipped-x {
+    transform:rotateX(180deg);
+}
+
+.sic-transit-flipped-y {
+    transform:rotateY(180deg);
+}
+

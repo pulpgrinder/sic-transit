@@ -116,7 +116,7 @@ class SicTransit {
         let selectedPanel = this.selectPanel(panelSelector);
         self.removeFromStack(selectedPanel,self);
         self.panelStack.push(selectedPanel);
-        selectedPanel.remove();
+       // selectedPanel.remove();
         self.container.appendChild(selectedPanel);
         self.normalizeStack(self);
     }
@@ -442,7 +442,6 @@ removeOverlayPanels(self=this){
             callback:null,
             prefersReducedMotion:"cutOut"
         },
-
         "hingeInFromBottom":{
             forwardTransition: this.hingeInFromBottom,
             firstanimation: [{display:"block", transform: "rotateX(-180deg)"}, {display:"block", transform: "rotateX(0deg)"}],
@@ -575,11 +574,11 @@ removeOverlayPanels(self=this){
         },
         "menuInFromBottom": {
             forwardTransition: this.menuInFromBottom,
-            firstanimation: [{display:"block", transform: "translateY(100%)"}, {display:"block",transform: "translateY(%%%%)"}],
+            firstanimation: [{display:"block", transform: "translateY(100%)"}, {display:"block",transform: "translateY(%%%)"}],
             boxShadow: "-10px -10px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:33,
+            menuSize:3,
             callback:null,
             prefersReducedMotion:"menuInFromBottomReduced"
         },
@@ -589,11 +588,11 @@ removeOverlayPanels(self=this){
         },
         "menuOutToBottom": {
             forwardTransition: this.menuOutToBottom,
-            firstanimation: [{transform: "translateY(%%%%)"}, {transform: "translateY(100%)"}],
+            firstanimation: [{transform: "translateY(%%%)"}, {transform: "translateY(100%)"}],
             boxShadow: "-10px -10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:33,
+            menuSize:3,
             callback:null,
             prefersReducedMotion:"menuOutToBottomReduced"
         },
@@ -603,11 +602,11 @@ removeOverlayPanels(self=this){
         },
         "menuInFromLeft": {
             forwardTransition: this.menuInFromLeft,
-            firstanimation: [{display:"block", transform: "translateX(-100%)"}, {display:"block",transform: "translateX(-%%%%)"}],
+            firstanimation: [{display:"block", transform: "translateX(-100%)"}, {display:"block",transform: "translateX(%%%)"}],
             boxShadow:  "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:33,
+            menuSize:12,
             callback:null,
             prefersReducedMotion:"menuInFromLeftReduced"
         },
@@ -617,11 +616,11 @@ removeOverlayPanels(self=this){
         },
         "menuOutToLeft": {
             forwardTransition: this.menuOutToLeft,
-            firstanimation: [{display:"block", transform: "translateX(-%%%%)"}, {display:"block",transform: "translateX(-100%)"}],
+            firstanimation: [{display:"block", transform: "translateX(%%%)"}, {display:"block",transform: "translateX(-100%)"}],
             boxShadow: "10px 20px 20px 30px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:33,
+            menuSize:12,
             callback:null,
             prefersReducedMotion:"menuOutToLeftReduced"
         },
@@ -631,11 +630,11 @@ removeOverlayPanels(self=this){
         },
         "menuInFromRight": {
             forwardTransition: this.menuInFromRight,
-            firstanimation: [{ display:"block", transform: "translateX(100%)"}, {display:"block",transform: "translateX(%%%%)"}],
+            firstanimation: [{ display:"block", transform: "translateX(100%)"}, {display:"block",transform: "translateX(%%%)"}],
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
            easing:'ease-in-out',
            duration:500,
-           menuPercentage:33,
+           menuSize:12,
            callback:null,
            prefersReducedMotion:"menuInFromRightReduced"
         },
@@ -645,11 +644,11 @@ removeOverlayPanels(self=this){
         },
         "menuOutToRight": {
             forwardTransition: this.menuOutToRight,
-            firstanimation: [{transform: "translateX(%%%%)"}, {transform: "translateX(100%)"}],
+            firstanimation: [{transform: "translateX(%%%)"}, {transform: "translateX(100%)"}],
             boxShadow: "-10px -10px 20px 30px rgba(0,0,0,0.5)",
             easing: 'ease-in-out',
             duration:500,
-            menuPercentage:33,
+            menuSize:12,
             callback:null,
             prefersReducedMotion:"menuOutToRightReduced"
         },
@@ -659,11 +658,11 @@ removeOverlayPanels(self=this){
         },
         "menuInFromTop": {
             forwardTransition: this.menuInFromTop,
-            firstanimation: [{display:"block", transform: "translateY(-100%)"}, {display:"block",transform: "translateY(-%%%%)"}],
+            firstanimation: [{display:"block", transform: "translateY(-100%)"}, {display:"block",transform: "translateY(%%%)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing:'ease-in-out',
             duration:500,
-            menuPercentage:33,
+            menuSize:3,
             callback:null,
             prefersReducedMotion:"menuInFromTopReduced"
         },
@@ -673,11 +672,11 @@ removeOverlayPanels(self=this){
         },
         "menuOutToTop": {
             forwardTransition: this.menuOutToTop,
-            firstanimation:[{transform: "translateY(-%%%%)"}, {transform: "translateY(-100%)"}],
+            firstanimation:[{transform: "translateY(%%%)"}, {transform: "translateY(-100%)"}],
             boxShadow: "10px 10px 20px rgba(0,0,0,0.5)",
             easing: 'ease-in-out', 
             duration:500,
-            menuPercentage:33,
+            menuSize:3,
             callback:null,
             prefersReducedMotion:"menuOutToTopReduced"
         },
@@ -837,6 +836,11 @@ resetPanel(panelSelector,self=this){
     panel.style.removeProperty("transformOrigin");
     panel.style.removeProperty("clip-path");
     panel.style.animationFillMode = "none";
+    panel.classList.remove("sic-transit-menupanel");
+    panel.classList.remove("sic-transit-leftmenupanel");
+    panel.classList.remove("sic-transit-rightmenupanel");
+    panel.classList.remove("sic-transit-topmenupanel");
+    panel.classList.remove("sic-transit-bottommenupanel");
 
 }
 
@@ -1206,22 +1210,29 @@ resetPanel(panelSelector,self=this){
         self.moveToTos(self.specialtyPanels.whitepanel, self);
         self.container.append(self.specialtyPanels.whitepanel);
         self.normalizeStack();
-         self.specialtyPanels.whitepanel.style.display = "block";
+        self.specialtyPanels.whitepanel.style.display = "block";
         self.irisOut(args);
     }
     menuInFromBottom(args){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.classList.add("sic-transit-menupanel");
+        args.selectedPanel.classList.add("sic-transit-bottommenupanel");
         let dispatchEntry = self.dispatchTable["menuInFromBottom"];
-        let menuPercentage =  100 - dispatchEntry.menuPercentage;
-        args.selectedPanel.transform = "translateY(100%)";
+        let menuSize =   dispatchEntry.menuSize;
+        let menuShift = "calc(100% - " + menuSize + "em)";
+        args.selectedPanel.style.transform = "translateY(100%)";
+        let sictransitmenucontainer = args.selectedPanel.querySelector('.sic-transit-menupanel .sic-transit-menucontainer');
+        if(sictransitmenucontainer !== null){
+            sictransitmenucontainer.style.width =  "100%";
+        }
         self.moveToTos(args.selectedPanel,self);
-        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
+        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuShift));
         args.finishHandler = function(){
             self.moveToTos(args.selectedPanel,self);
             args.selectedPanel.style.display = "block";
-            args.selectedPanel.style.transform = "translateY(" + menuPercentage + "%)";
+            args.selectedPanel.style.transform = "translateY(" + menuShift + ")";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1230,9 +1241,16 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.classList.add("sic-transit-menupanel");
+        args.selectedPanel.classList.add("sic-transit-bottommenupanel");
+        let sictransitmenucontainer = args.selectedPanel.querySelector('.sic-transit-menupanel .sic-transit-menucontainer');
+        if(sictransitmenucontainer !== null){
+            sictransitmenucontainer.style.width =  "100%";
+        }
         let dispatchEntry = self.dispatchTable["menuInFromBottom"];
-        let menuPercentage =  100 - dispatchEntry.menuPercentage;
-        args.selectedPanel.style.transform = "translateY(" + menuPercentage + "%)";
+        let menuSize =   dispatchEntry.menuSize;
+        let menuShift = "calc(100% - " + menuSize + "em)";
+        args.selectedPanel.style.transform = "translateY(" + menuShift + ")";
         self.moveToTos(args.selectedPanel,self);
         args.selectedPanel.style.display = "block";
         self.performCallback(args);
@@ -1242,8 +1260,10 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         self.moveToTos(args.selectedPanel,self);
         let dispatchEntry = self.dispatchTable["menuOutToBottom"];
-        let menuPercentage = 100 - dispatchEntry.menuPercentage;
-        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
+        let menuSize =   dispatchEntry.menuSize;
+        let menuShift = "calc(100% - " + menuSize  + "em)";
+        args.selectedPanel.style.transform = "translateY(" + menuShift + ")";
+        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuShift));
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
             self.resetPanel(args.selectedPanel,self);
@@ -1255,21 +1275,28 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
-        args.selectedPanel.style.transform = "translateY(0%)";
+        args.selectedPanel.style.transform = "translateY(100%)";
         self.performCallback(args);
     }
     menuInFromLeft(args){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.classList.add("sic-transit-menupanel");
+        args.selectedPanel.classList.add("sic-transit-leftmenupanel");
         let dispatchEntry = self.dispatchTable["menuInFromLeft"];
-        let menuPercentage = 100 - dispatchEntry.menuPercentage;
-        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%", menuPercentage));
+        let menuSize =  dispatchEntry.menuSize;
+        let menuShift = "calc(-100% + " + menuSize + "em)";
+        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%", menuShift));
         args.selectedPanel.style.transform = "translateX(-100%)";
+        let sictransitmenucontainer = args.selectedPanel.querySelector('.sic-transit-menupanel .sic-transit-menucontainer');
+        if(sictransitmenucontainer !== null){
+            sictransitmenucontainer.style.width =  (menuSize - 1) + "em";
+        }
         self.moveToTos(args.selectedPanel,self);
         args.finishHandler = function(){
             args.selectedPanel.style.display= "block";
-            args.selectedPanel.style.transform = "translateX(-" +  menuPercentage + "%)";
+            args.selectedPanel.style.transform = "translateX(" + menuShift + ")";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1278,9 +1305,17 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.classList.add("sic-transit-menupanel");
+        args.selectedPanel.classList.add("sic-transit-leftmenupanel");
         let dispatchEntry = self.dispatchTable["menuInFromLeft"];
-        let menuPercentage =  100 - dispatchEntry.menuPercentage;
-        args.selectedPanel.style.transform = "translateX(-" +  menuPercentage + "%)";
+        let menuSize =  dispatchEntry.menuSize;
+        let sictransitmenucontainer = args.selectedPanel.querySelector('.sic-transit-menupanel .sic-transit-menucontainer');
+        if(sictransitmenucontainer !== null){
+            sictransitmenucontainer.style.width =  "calc(" + menuSize + "em - 1em)";
+        }
+        let menuShift = "calc(-100% + " + menuSize + "em)";
+        let transform = "translateX(" +  menuShift + ")";
+        args.selectedPanel.style.transform = transform;
         self.moveToTos(args.selectedPanel,self);
         args.selectedPanel.style.display = "block";
         self.performCallback(args);
@@ -1288,8 +1323,11 @@ resetPanel(panelSelector,self=this){
     menuOutToLeft(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["menuOutToLeft"];
-        let menuPercentage = 100 - dispatchEntry.menuPercentage;
-        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
+        let menuSize =  dispatchEntry.menuSize;
+        let menuShift = "calc(-100% + " + menuSize + "em)"
+        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuShift));
+        let transform = "translateX(" +  menuShift + ")";
+        args.selectedPanel.style.transform = transform;
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
             self.resetPanel(args.selectedPanel,self);
@@ -1301,21 +1339,29 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
-        args.selectedPanel.style.transform = "translateX(0%)";
+        args.selectedPanel.style.transform = "translateX(-100%)";
         self.performCallback(args);
     }
     menuInFromRight(args){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.classList.add("sic-transit-menupanel");
+        args.selectedPanel.classList.add("sic-transit-rightmenupanel");
         let dispatchEntry = self.dispatchTable["menuInFromRight"];
-        let menuPercentage = 100 - dispatchEntry.menuPercentage;
-        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
-        args.selectedPanel.transform = "translateX(100%)";
+
+        let menuSize =  dispatchEntry.menuSize;
+        let menuShift = "calc(100% - " + menuSize + "em)";
+        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuShift));
+        args.selectedPanel.style.transform = "translateX(100%)";
+        let sictransitmenucontainer = args.selectedPanel.querySelector('.sic-transit-menupanel .sic-transit-menucontainer');
+        if(sictransitmenucontainer !== null){
+            sictransitmenucontainer.style.width =  "calc(" + menuSize + "em - 1em)";
+        }
         self.moveToTos(args.selectedPanel,self);
         args.finishHandler = function(){
             args.selectedPanel.style.display= "block";
-            args.selectedPanel.style.transform = "translateX(" + menuPercentage + "%)";
+            args.selectedPanel.style.transform = "translateX(" + menuShift + ")";
             self.performCallback(args);
         }
         self.performAnimation(args);
@@ -1325,8 +1371,15 @@ resetPanel(panelSelector,self=this){
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
         let dispatchEntry = self.dispatchTable["menuInFromRight"];
-        let menuPercentage =  100 - dispatchEntry.menuPercentage;
-        args.selectedPanel.style.transform = "translateX(" +  menuPercentage + "%)";
+        let menuSize =  dispatchEntry.menuSize;
+        let menuShift = "calc(100% - " + menuSize + "em)"; 
+        args.selectedPanel.style.transform = "translateX(" +  menuShift + ")";
+        args.selectedPanel.classList.add("sic-transit-menupanel");
+        args.selectedPanel.classList.add("sic-transit-rightmenupanel");
+        let sictransitmenucontainer = args.selectedPanel.querySelector('.sic-transit-menupanel .sic-transit-menucontainer');
+        if(sictransitmenucontainer !== null){
+            sictransitmenucontainer.style.width =  "calc(" + menuSize + "em - 1em)";
+        }
         self.moveToTos(args.selectedPanel,self);
         args.selectedPanel.style.display = "block";
         self.performCallback(args);
@@ -1334,8 +1387,9 @@ resetPanel(panelSelector,self=this){
     menuOutToRight(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["menuOutToRight"];
-        let menuPercentage = 100 - dispatchEntry.menuPercentage;
-        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%", menuPercentage));
+        let menuSize =  dispatchEntry.menuSize;
+        let menuShift = "calc(100% - " + menuSize + "em)";
+        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%", menuShift));
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
             self.resetPanel(args.selectedPanel,self);
@@ -1347,20 +1401,27 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
-        args.selectedPanel.style.transform = "translateX(0%)";
+        args.selectedPanel.style.transform = "translateX(100%)";
         self.performCallback(args);
     }
     menuInFromTop(args){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.classList.add("sic-transit-menupanel");
+        args.selectedPanel.classList.add("sic-transit-topmenupanel");
+        let sictransitmenucontainer = args.selectedPanel.querySelector('.sic-transit-menupanel .sic-transit-menucontainer');
+        if(sictransitmenucontainer !== null){
+            sictransitmenucontainer.style.width =  "100%";
+        }
         let dispatchEntry = self.dispatchTable["menuInFromTop"];
-        let menuPercentage = 100 - dispatchEntry.menuPercentage;
-        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
+        let menuSize =  dispatchEntry.menuSize;
+        let menuShift = "calc(-100% + " + menuSize  + "em)";
+        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuShift));
         args.selectedPanel.transform = "translateY(-100%)";
         self.moveToTos(args.selectedPanel,self);
         args.finishHandler = function(){
-            args.selectedPanel.style.transform = "translateY(-" + menuPercentage + "%)"
+            args.selectedPanel.style.transform = "translateY(" + menuShift + ")"
             args.selectedPanel.style.display= "block";
             self.performCallback(args);
         }
@@ -1370,9 +1431,17 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
+        args.selectedPanel.classList.add("sic-transit-menupanel");
+        args.selectedPanel.classList.add("sic-transit-topmenupanel");
+        let sictransitmenucontainer = args.selectedPanel.querySelector('.sic-transit-menupanel .sic-transit-menucontainer');
+        if(sictransitmenucontainer !== null){
+            sictransitmenucontainer.style.width =  "100%";
+        }
         let dispatchEntry = self.dispatchTable["menuInFromTop"];
-        let menuPercentage =  100 - dispatchEntry.menuPercentage;
-        args.selectedPanel.style.transform = "translateY(-" + menuPercentage + "%)";
+        let menuSize =  dispatchEntry.menuSize;
+        let menuShift = "calc(-100% + " + menuSize + "em)";
+        let transform = "translateY(" +  menuShift + ")";
+        args.selectedPanel.style.transform = transform;
         self.moveToTos(args.selectedPanel,self);
         args.selectedPanel.style.display = "block";
         self.performCallback(args);
@@ -1380,8 +1449,9 @@ resetPanel(panelSelector,self=this){
     menuOutToTop(args){
         let self = args.self;
         let dispatchEntry = self.dispatchTable["menuOutToTop"];
-        let menuPercentage = 100 - dispatchEntry.menuPercentage;
-        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuPercentage));
+        let menuSize =  dispatchEntry.menuSize;
+        let menuShift = "calc(-100% + " + menuSize + "em)";
+        args.firstanimation = JSON.parse(JSON.stringify(dispatchEntry.firstanimation).replace("%%%",menuShift));
         args.finishHandler = function(){
             self.moveToBos(args.selectedPanel,self);
             self.resetPanel(args.selectedPanel,self);
@@ -1393,7 +1463,7 @@ resetPanel(panelSelector,self=this){
         let self = args.self;
         self.moveToBos(args.selectedPanel,self);
         self.resetPanel(args.selectedPanel,self);
-        args.selectedPanel.style.transform = "translateY(0%)";
+        args.selectedPanel.style.transform = "translateY(-100%)";
         self.performCallback(args);
     }
     spinIn(args){
