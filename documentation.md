@@ -1,6 +1,6 @@
 # SicTransit Documentation and Tutorial
 
-This is the full documentation for the SicTransit library. It has live examples for all the public methods which can be run directly from this documentation.
+This documentation includes live examples which can be run directly from this screen.
 
 SicTransit is [available on GitHub](https://github.com/pulpgrinder/sic-transit).
 
@@ -172,27 +172,27 @@ demoSic.performTransition({panelSelector:"#panel3",transitionName:"irisOutToBlac
 The `menuInFrom/menuOutTo` transitions do a "partial swipe" (see the swipe transitions above), sliding the specified panel in/out from/to the specified direction only partially. This is useful for making sliding menus. Valid directions are Left, Right, Top, and Bottom. The default menu coverage varies depending on the direction. This can be changed with `setParameter()` (see below). Examples: 
 
 ```javascript
-// Display "#menupanel" as a menu on the right 
+// Display "#menupaneltest" as a menu on the right 
 // side of the panel container.
 
 demoSic.performTransition({panelSelector:"#menupaneltest",transitionName:"menuInFromRight"});
 ```
 
 ```javascript
-// Hide the previous "#menupanel" menu.
+// Hide the previous "#menupaneltest" menu.
 
 demoSic.performTransition({panelSelector:"#menupaneltest",transitionName:"menuOutToRight"});
 ```
 
 ```javascript
-// Display "#menupanel" as a menu on the top 
+// Display "#menupaneltest" as a menu on the top 
 // side of the panel container.
 
 demoSic.performTransition({panelSelector:"#menupaneltest",transitionName:"menuInFromTop"});
 ```
 
 ```javascript
-// Hide the previous "#menupanel" menu.
+// Hide the previous "#menupaneltest" menu.
 
 demoSic.performTransition({panelSelector:"#menupaneltest",transitionName:"menuOutToTop"});
 ```
@@ -205,7 +205,7 @@ The CSS for basic menus is minimal. This demo has some extra CSS to add some vis
 A SicTransit menu has this basic form:
 
 ```html
-    <div id="(menupanel id)" class="(Sic Transit panel class">
+    <div id="(menupanel id)" class="(Sic Transit panel class)">
         <div class="sic-transit-menucontainer">
             <div class="sic-transit-menuitem">
                 Menu Item 1
@@ -272,7 +272,6 @@ This is handy if you want to remove several elements from the stack at once, in 
 `demoSic.performTransition({transitionName:"rotateStack",stackRotationNumber:3});`
 (panel that was third from the top of the stack is now on top).
 
-```
 
 #### `swap`
 
