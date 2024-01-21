@@ -121,6 +121,7 @@ class SicTransit {
         self.normalizeStack(self);
     }
 
+    animationLock = false;
 
 /* Performs the specified transition. The following keys in args are recognized:
     panelSelector: the selector for the panel to be transitioned. See selectPanel() for details.
@@ -132,6 +133,12 @@ class SicTransit {
             args.self = this;
         }
         let self = args.self;
+        // Would be nice if we could use  navigator.locks.request() instead of this hack, but it causes flickering in Safari. Investigate further
+        if(self.animationLock === true){
+            console.log("SicTransit: animation lock is set. Ignoring request to perform transition.");
+            return;
+        }
+        self.animationLock = true;
         const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)') === true || window.matchMedia('(prefers-reduced-motion: reduce)').matches === true;
         if(isReduced === true){
             console.log("SicTransit: prefers-reduced-motion is set to reduce. Using cutIn/cutOut transitions.");
@@ -804,6 +811,8 @@ resetPanel(panelSelector,self=this){
 /* Performs the callback function for the given transition, if one is specified. */
     performCallback(args){
         const self = args.self;
+        // Release the animation lock.
+        self.animationLock = false;
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
         if(dispatchEntry.callback === null){
             return;
