@@ -225,22 +225,6 @@ A SicTransit menu has this basic form:
 
 As noted above, you're welcome to apply your own CSS to style `sic-transit-menucontainer` and `sic-transit-menuitem`.
 
-#### hingeInFromTop, hingeOutToTop, hingeInFromBottom, hingeOutToBottom, hingeInFromLeft, hingeOutToLeft, hingeInFromRight, hingeOutToRight
-
-These transitions have the visual effect of a "hinge" on the specified side (like a door or a book opening).
-
-```javascript
-// Hinge "#panel2" in from the left side.
-demoSic.performTransition({panelSelector:"#panel2",transitionName:"hingeInFromLeft"});
-```
-
-```javascript
-// Hinge "#panel2" out to the top.
-demoSic.performTransition({panelSelector:"#panel2",transitionName:"hingeOutToTop"});
-```
-
-Edit the code samples above to see the hinge effect applied to different sides.
-
 
 #### spinIn, spinOut
 

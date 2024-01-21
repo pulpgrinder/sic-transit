@@ -9,7 +9,7 @@
 - Compatible with all major modern browsers (i.e., not Internet Explorer).
 - Weighs less than 40k minified.
 - Simple HTML markup.
-- More than 40 available transitions, including swipes, cuts, dissolves, fades, hinges, menus, irises, zooms, and more.
+- More than 40 available transitions, including swipes, cuts, dissolves, fades, menus, irises, zooms, and more.
 - Easy addition and removal of screen panels.
 - Customizable animation duration, easing, and more.
 - Multiple instances of `SicTransit` can coexist on the same page. Panels can be transferred from one instance to another.
