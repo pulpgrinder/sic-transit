@@ -828,7 +828,9 @@ resetPanel(panelSelector,self=this){
             return;
         }
         let temp1 = self.panelStack.pop();
+        self.resetPanel(temp1,self);
         let temp2 = self.panelStack.pop();
+        self.resetPanel(temp2,self);
         self.panelStack.push(temp1);
         self.panelStack.push(temp2);
         self.normalizeStack(self)
