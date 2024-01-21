@@ -121,39 +121,33 @@ class SicTransit {
         self.normalizeStack(self);
     }
 
-    animationLock = false;
-
 /* Performs the specified transition. The following keys in args are recognized:
     panelSelector: the selector for the panel to be transitioned. See selectPanel() for details.
     transitionName: the name of the transition to be performed. See getTransitionList() for a list of currently defined transitions.
     stackRotationNumber: the number of times to rotate the stack.  Only used by the rotateStack transition. Positive numbers move panels from the top of the stack to the bottom. Negative numbers move panels from the bottom of the stack to the top. Zero is a no-op. Default is 1.
 */
-    performTransition(args){
+    async performTransition(args){
         if(args.self === undefined){
             args.self = this;
         }
         let self = args.self;
-        // Would be nice if we could use  navigator.locks.request() instead of this hack, but it causes flickering in Safari. Investigate further
-        if(self.animationLock === true){
-            console.log("SicTransit: animation lock is set. Ignoring request to perform transition.");
-            return;
-        }
-        self.animationLock = true;
-        const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)') === true || window.matchMedia('(prefers-reduced-motion: reduce)').matches === true;
-        if(isReduced === true){
-            console.log("SicTransit: prefers-reduced-motion is set to reduce. Using cutIn/cutOut transitions.");
-            args.transitionName = args.self.dispatchTable[args.transitionName]["prefersReducedMotion"];
-        }
-        self.removeOverlayPanels(self);
-        args.selectedPanel =  self.selectPanel(args.panelSelector,self);
-        args.startTime = new Date().getTime();
-        if(self.dispatchTable[args.transitionName] === undefined){
-            throw new Error("SicTransit: " + args.transitionName + " is not a recognized transition");
-        }
-        args.transitionFunction = self.dispatchTable[args.transitionName]["forwardTransition"];
-        args.firstanimation = self.dispatchTable[args.transitionName]["animation"];
-        args.secondanimation = self.dispatchTable[args.transitionName]["secondanimation"];
-        args.transitionFunction(args);
+        await navigator.locks.request('animation_lock', async (lock) => {
+            const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)') === true || window.matchMedia('(prefers-reduced-motion: reduce)').matches === true;
+            if(isReduced === true){
+                console.log("SicTransit: prefers-reduced-motion is set to reduce. Using cutIn/cutOut transitions.");
+                args.transitionName = args.self.dispatchTable[args.transitionName]["prefersReducedMotion"];
+            }
+            self.removeOverlayPanels(self);
+            args.selectedPanel =  self.selectPanel(args.panelSelector,self);
+            args.startTime = new Date().getTime();
+            if(self.dispatchTable[args.transitionName] === undefined){
+                throw new Error("SicTransit: " + args.transitionName + " is not a recognized transition");
+            }
+            args.transitionFunction = self.dispatchTable[args.transitionName]["forwardTransition"];
+            args.firstanimation = self.dispatchTable[args.transitionName]["animation"];
+            args.secondanimation = self.dispatchTable[args.transitionName]["secondanimation"];
+            args.transitionFunction(args);
+        })
     }
 
 
@@ -811,8 +805,6 @@ resetPanel(panelSelector,self=this){
 /* Performs the callback function for the given transition, if one is specified. */
     performCallback(args){
         const self = args.self;
-        // Release the animation lock.
-        self.animationLock = false;
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
         if(dispatchEntry.callback === null){
             return;
