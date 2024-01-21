@@ -863,13 +863,13 @@ resetPanel(panelSelector,self=this){
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
         self.moveToTos(args.selectedPanel,self);
         
-        await navigator.locks.request('animation_lock', async (lock) => {
+    //    await navigator.locks.request('animation_lock', async (lock) => {
             const animation = args.selectedPanel.animate(args.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
             await animation.finished;
             animation.commitStyles();
             animation.cancel();
             args.finishHandler();
-        });
+       // });
     }
        
 
@@ -920,7 +920,7 @@ resetPanel(panelSelector,self=this){
         self.panelStack.push(self.specialtyPanels.graypanel);
         self.panelStack.push(topPanel);
         self.resetPanel(topPanel,self);
-        self.normalizeStack(self);
+       // self.normalizeStack(self);
         self.resetPanel(args.selectedPanel,self);
         self.moveToTos(args.selectedPanel,self);
         args.finishHandler = function(){
@@ -928,7 +928,7 @@ resetPanel(panelSelector,self=this){
             self.normalizeStack(self);
             self.performCallback(args);
         }
-        await navigator.locks.request('animation_lock', async (lock) => {
+       // await navigator.locks.request('animation_lock', async (lock) => {
             const animation = args.selectedPanel.animate(dispatchEntry.firstanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration + 100,fill:"forwards"});
             const topanimation = topPanel.animate(dispatchEntry.secondanimation,{easing: dispatchEntry.easing, duration: dispatchEntry.duration,fill:"forwards"});
             await animation.finished;
@@ -938,7 +938,7 @@ resetPanel(panelSelector,self=this){
             topanimation.commitStyles();
             topanimation.cancel();
             args.finishHandler(); 
-        });
+      //  });
         
     }
     async crossDissolveOut(args){
@@ -949,7 +949,6 @@ resetPanel(panelSelector,self=this){
         self.moveToBos(temp,self);
         args.selectedPanel = self.panelStack.pop();
         self.moveToTos(temp,self);
-        self.normalizeStack(self)
         self.crossDissolveIn(args);
         /* This *specific* bug (though not the one with flip transitions) seems to be fixed in Safari Technology Preview. Maybe go back to this with the next version of Safari. IF SO, be SURE to change this to use Web Locks, like crossDissolveIn, above.
         let dispatchEntry = self.dispatchTable[args["transitionName"]];
