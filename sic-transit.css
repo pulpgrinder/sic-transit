@@ -1,0 +1,112 @@
+/*  Base stylesheet for Sic Transit, copyright 2023 by
+ *  Anthony W. Hursh. MIT license.
+ */
+
+ .sic-transit-container {
+    /* Container needs to have a position in order for z-index to work
+       on children. Anything other than static should work.
+    */
+    position:relative;
+    padding:0;
+    width:300px;
+    height:450px;
+    display:inline-block;
+    /*  Don't display portions of children that lie outside the boundary. 
+     *  Might want to use scroll in some situations, or the overflow-x
+     *  and/or overflow-y properties.
+     */
+    overflow: hidden;
+    /*  Optionally, make the container resizable. */
+    resize:both;
+}
+
+.sic-transit-panel {
+   position:absolute;
+   left:0;
+   top: 0;
+   /*  We usually want panels to fill their container. Can change this
+    *  if desired.
+    */
+   width:100%;
+   height:100%;
+   opacity:100%;
+   background-color:white;
+   color:black;
+   margin:0;
+   padding:0.5em;
+   
+   /*  If there is a border, we want it to show up, even though
+       the panel is filling the whole container.
+    */
+   box-sizing: border-box;
+   display:block;
+
+   /*   Set the z-index to something that (hopefully) will 
+        have it hidden at the bottom of the stack until we
+        move it elsewhere.
+    */
+   z-index:-3000;
+
+   /*  Need this for flip transitions. */
+   backface-visibility: hidden;
+   transform-style: preserve-3d;
+ 
+}
+
+
+/* Classes for specialty panels used in certain transitions. */
+.sic-transit-blackpanel {
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    background-color:black;
+}
+.sic-transit-irispanel {
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    background: radial-gradient(circle, transparent 0%, transparent 0%, black 0%);
+}
+.sic-transit-whitepanel {
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    background-color:white;
+}
+.sic-transit-graypanel {
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    background-color:gray;
+}
+
+.sic-transit-flipbackgroundpanel {
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    background-color:gray;
+}
+
+.sic-transit-flippanel {
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:block;
+    perspective: 50px;
+    background-color:gray;
+    transform-style: preserve-3d;
+}
+
+.sic-transit-flipped-x {
+    transform:rotateX(180deg);
+}
+
+.sic-transit-flipped-y {
+    transform:rotateY(180deg);
+}
+
